@@ -44,6 +44,13 @@ in {
 
     shellAliases = { vim = "nvim"; };
 
+    # Sourced for every zsh invocation (interactive or not) - non-interactive
+    # scripts need these too, unlike initContent which only lands in .zshrc.
+    envExtra = ''
+      export PATH="$HOME/.local/bin:$PATH"
+      export XDG_CONFIG_HOME="$HOME/.config"
+    '';
+
 # Powerlevel10k instant prompt must be the very first thing in .zshrc, so
     # it goes into `initContent` with `lib.mkBefore` (HM promotes mkBefore
     # content to the head of .zshrc, ahead of the NIX_PROFILES fpath loop
