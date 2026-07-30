@@ -18,6 +18,7 @@
     ./tirith
     ./tmux
     ./yt-dlp
+    ./zen-settings.nix
     ./zsh
   ];
 }

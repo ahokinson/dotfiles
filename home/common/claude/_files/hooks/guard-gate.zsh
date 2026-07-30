@@ -9,8 +9,9 @@
 # job and cupcake is the thing that's broken.
 #
 # to recover, run the repair with a `!` prefix. that runs in your shell rather
-# than the agent's Bash tool, so it skips this hook: `! config/common/cupcake/dot.zsh sync`.
-# this has to be the first Bash PreToolUse hook, ahead of tirith and cupcake, so it wins.
+# than the agent's Bash tool, so it skips this hook: `! ./switch.zsh` from the
+# dotfiles repo root. this has to be the first Bash PreToolUse hook, ahead of
+# tirith and cupcake, so it wins.
 
 sentinel="${XDG_STATE_HOME:-$HOME/.local/state}/guard/degraded"
 [[ -f "${sentinel}" ]] || exit 0
@@ -20,7 +21,7 @@ jq -n --arg r "${reason}" '{
   hookSpecificOutput: {
     hookEventName: "PreToolUse",
     permissionDecision: "deny",
-    permissionDecisionReason: ("Agent command guards are degraded, so Bash is blocked fail-closed: under bypassPermissions the guards are the only protection and they are not currently enforcing. Cause: " + $r + ". Repair with `! config/common/cupcake/dot.zsh sync` (the ! prefix bypasses this gate), then restart the session.")
+    permissionDecisionReason: ("Agent command guards are degraded, so Bash is blocked fail-closed: under bypassPermissions the guards are the only protection and they are not currently enforcing. Cause: " + $r + ". Repair with `! ./switch.zsh` from the dotfiles repo root (the ! prefix bypasses this gate), then restart the session.")
   }
 }'
 exit 0

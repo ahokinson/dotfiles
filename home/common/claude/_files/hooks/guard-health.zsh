@@ -20,7 +20,7 @@ if ! command -v cupcake >/dev/null 2>&1; then
 else
     stub="${XDG_DATA_HOME:-$HOME/.local/share}/cupcake-stub"
     if [[ ! -d "${stub}/.cupcake/policies/claude" ]]; then
-        problems+=("cupcake stub project missing (${stub}/.cupcake), run dot.zsh sync")
+        problems+=("cupcake stub project missing (${stub}/.cupcake), run ./switch.zsh")
     else
         # end-to-end check: feed a known halt command (rm -rf /, FILESYSTEM-001)
         # through the real cupcake-guard.zsh and assert it denies. this exercises
@@ -51,5 +51,5 @@ fi
 joined="${(j: · :)problems}"
 mkdir -p "${sentinel:h}" 2>/dev/null && print -r -- "${joined}" >"${sentinel}" 2>/dev/null
 print -r -- "agent guard healthcheck failed: ${joined}" >&2
-printf '{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"Security guard degraded: %s. bypassPermissions is active and Bash is now gated fail-closed (guard-gate.zsh denies all Bash until healthy). Repair with `! config/common/cupcake/dot.zsh sync` (the ! prefix runs in your shell, bypassing the gate), then restart."}}\n' "${joined}"
+printf '{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"Security guard degraded: %s. bypassPermissions is active and Bash is now gated fail-closed (guard-gate.zsh denies all Bash until healthy). Repair with `! ./switch.zsh` from the dotfiles repo root (the ! prefix runs in your shell, bypassing the gate), then restart."}}\n' "${joined}"
 exit 0

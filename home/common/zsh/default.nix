@@ -59,6 +59,12 @@ in {
     # (mkAfter > default priority > mkBefore).
     initContent = lib.mkMerge [
       (lib.mkBefore ''
+        # Must be set before oh-my-zsh sources itself: its termsupport.zsh
+        # otherwise sets the window title on every prompt/command via its
+        # own escape sequences, independent of ghostty's own
+        # shell-integration-features title setting.
+        DISABLE_AUTO_TITLE="true"
+
         # Powerlevel10k instant prompt. Should stay near the top of .zshrc.
         if [[ -r "''${XDG_CONFIG_HOME:-$HOME/.cache}/p10k-instant-prompt-''${(%):-%n}.zsh" ]]; then
           source "''${XDG_CONFIG_HOME:-$HOME/.cache}/p10k-instant-prompt-''${(%):-%n}.zsh"
