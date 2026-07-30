@@ -1,0 +1,195 @@
+{
+  "permissions": {
+    "defaultMode": "bypassPermissions"
+  },
+  "enableAllProjectMcpServers": false,
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "zsh ~/.claude/hooks/guard-gate.zsh"
+          },
+          {
+            "type": "command",
+            "command": "zsh ~/.claude/hooks/guard-tirith.zsh"
+          },
+          {
+            "type": "command",
+            "command": "zsh ~/.claude/hooks/guard-cupcake.zsh"
+          },
+          {
+            "type": "command",
+            "command": "zsh ~/.claude/hooks/guard-context.zsh"
+          }
+        ]
+      },
+      {
+        "matcher": "Read|Grep|Glob|WebFetch",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "zsh ~/.claude/hooks/guard-cupcake.zsh"
+          }
+        ]
+      },
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "zsh ~/.claude/hooks/tmux-state.zsh tool"
+          }
+        ]
+      },
+      {
+        "matcher": "AskUserQuestion",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "zsh ~/.claude/hooks/tmux-state.zsh ask"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "zsh ~/.claude/hooks/tmux-state.zsh think"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "zsh ~/.claude/hooks/tmux-state.zsh think"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "zsh ~/.claude/hooks/tmux-state.zsh off"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "zsh ~/.claude/hooks/tmux-state.zsh notify"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "zsh ~/.claude/hooks/guard-health.zsh"
+          },
+          {
+            "type": "command",
+            "command": "zsh ~/.claude/hooks/embody.zsh"
+          },
+          {
+            "type": "command",
+            "command": "zsh ~/.claude/hooks/tmux-state.zsh off"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "zsh ~/.claude/hooks/tmux-state.zsh off"
+          }
+        ]
+      }
+    ]
+  },
+  "disableAllHooks": false,
+  "statusLine": {
+    "type": "command",
+    "command": "zsh ~/.claude/statusline.zsh",
+    "refreshInterval": 30
+  },
+  "enabledPlugins": {
+    "caveman@caveman": false,
+    "custom@local": true,
+    "gopls-lsp@claude-plugins-official": true,
+    "clangd-lsp@claude-plugins-official": true,
+    "press@press": true,
+    "swift-lsp@claude-plugins-official": true
+  },
+  "extraKnownMarketplaces": {
+    "caveman": {
+      "source": {
+        "source": "github",
+        "repo": "JuliusBrussee/caveman"
+      }
+    },
+    "press": {
+      "source": {
+        "source": "github",
+        "repo": "ahokinson/press"
+      }
+    }
+  },
+  "sandbox": {
+    "enabled": true,
+    "allowUnsandboxedCommands": true,
+    "network": {
+      "allowUnixSockets": ["~/.rd/docker.sock"],
+      "allowLocalBinding": true
+    },
+    "filesystem": {
+      "denyRead": [
+        "~/.ssh",
+        "~/.aws",
+        "~/.gnupg",
+        "~/.netrc",
+        "**/.env",
+        "**/.env.*",
+        "**/*.pem",
+        "**/*.key",
+        "**/*.p12",
+        "**/*.pfx",
+        "**/*.jks",
+        "**/*.keystore",
+        "**/id_rsa",
+        "**/id_dsa",
+        "**/id_ecdsa",
+        "**/id_ed25519",
+        "**/credentials",
+        "**/.credentials",
+        "**/.npmrc",
+        "**/.pypirc"
+      ]
+    }
+  },
+  "tui": "fullscreen",
+  "skipDangerousModePermissionPrompt": true,
+  "theme": "dark-ansi",
+  "editorMode": "normal",
+  "autoCompactEnabled": false,
+  "showTurnDuration": false,
+  "useAutoModeDuringPlan": false,
+  "skipDangerousModePermissionPrompt": true
+}

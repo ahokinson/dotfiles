@@ -1,0 +1,122 @@
+{
+  "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
+  "logo": {
+    "type": "auto",
+    "padding": {
+      "top": 1,
+      "left": 2
+    }
+  },
+  "display": {
+    "separator": " → ",
+    "color": {
+      "keys": "blue",
+      "title": "mauve"
+    }
+  },
+  "modules": [
+    {
+      "type": "title",
+      "format": "{user-name-colored}@{host-name-colored}"
+    },
+    {
+      "type": "separator",
+      "string": "─"
+    },
+    {
+      "type": "os",
+      "key": "OS",
+      "keyColor": "yellow"
+    },
+    {
+      "type": "host",
+      "key": "Host",
+      "keyColor": "yellow"
+    },
+    {
+      "type": "kernel",
+      "key": "Kernel",
+      "keyColor": "yellow"
+    },
+    {
+      "type": "uptime",
+      "key": "Uptime",
+      "keyColor": "yellow"
+    },
+    {
+      "type": "packages",
+      "key": "Packages",
+      "keyColor": "green"
+    },
+    {
+      "type": "shell",
+      "key": "Shell",
+      "keyColor": "green"
+    },
+    {
+      "type": "terminal",
+      "key": "Terminal",
+      "keyColor": "green"
+    },
+    {
+      "type": "terminalfont",
+      "key": "Font",
+      "keyColor": "green"
+    },
+    {
+      "type": "wm",
+      "key": "WM",
+      "keyColor": "blue"
+    },
+    {
+      "type": "wmtheme",
+      "key": "Theme",
+      "keyColor": "blue"
+    },
+    {
+      "type": "icons",
+      "key": "Icons",
+      "keyColor": "blue"
+    },
+    {
+      "type": "cpu",
+      "key": "CPU",
+      "keyColor": "red"
+    },
+    {
+      "type": "gpu",
+      "key": "GPU",
+      "keyColor": "red"
+    },
+    {
+      "type": "memory",
+      "key": "Memory",
+      "keyColor": "red"
+    },
+    {
+      "type": "disk",
+      "key": "Disk (/)",
+      "keyColor": "red"
+    },
+    {
+      "type": "localip",
+      "key": "Local IP",
+      "keyColor": "cyan",
+      "format": "{ipv4} ({ifname})"
+    },
+    {
+      "type": "battery",
+      "key": "Battery",
+      "keyColor": "cyan"
+    },
+    {
+      "type": "separator",
+      "string": "─"
+    },
+    {
+      "type": "colors",
+      "paddingLeft": 2,
+      "symbol": "circle"
+    }
+  ]
+}

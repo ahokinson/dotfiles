@@ -1,0 +1,15 @@
+select: nvim
+
+tools:
+  - name: zsh
+    command: zsh
+  - name: lazygit
+    command: lazygit
+  - name: nvim
+    command: nvim
+  - name: opencode
+    command: opencode
+  - name: hermes
+    command: hermes
+  - name: claude
+    command: claude

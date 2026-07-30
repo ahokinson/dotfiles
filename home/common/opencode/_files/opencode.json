@@ -1,0 +1,90 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "opencode-go/glm-5",
+  "small_model": "ollama/hermes3:8b",
+  "provider": {
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Local",
+      "options": {
+        "baseURL": "http://localhost:11434/v1"
+      },
+      "models": {
+        "gpt-oss:22b": {
+          "name": "GPT OSS",
+          "limit": {
+            "context": 131072,
+            "output": 32768
+          }
+        },
+
+        "glm-4.7-flash:31b": {
+          "name": "GLM 4.7 Flash",
+          "limit": {
+            "context": 131072,
+            "output": 32768
+          }
+        },
+
+        "deepseek-coder-v2-lite-instruct:16b": {
+          "name": "DeepSeek Coder V2 Lite",
+          "limit": {
+            "context": 131072,
+            "output": 32768
+          }
+        },
+
+        "hermes-4:424960": {
+          "name": "Hermes 4 14B",
+          "limit": {
+            "context": 131072,
+            "output": 32768
+          }
+        }
+      }
+    }
+  },
+  "theme": "catppuccin-frappe",
+  "permission": {
+    "edit": "allow",
+    "write": "allow",
+    "bash": {
+      "*": "allow"
+    },
+    "read": {
+      "*": "allow",
+      "**/.env": "deny",
+      "**/.env.*": "deny",
+      "**/*.pem": "deny",
+      "**/*.key": "deny",
+      "**/*.p12": "deny",
+      "**/*.pfx": "deny",
+      "**/*.jks": "deny",
+      "**/*.keystore": "deny",
+      "**/id_rsa": "deny",
+      "**/id_dsa": "deny",
+      "**/id_ecdsa": "deny",
+      "**/id_ed25519": "deny",
+      "**/credentials": "deny",
+      "**/.credentials": "deny",
+      "**/.npmrc": "deny",
+      "**/.pypirc": "deny",
+      "~/.aws/**": "deny",
+      "~/.gnupg/**": "deny",
+      "~/.netrc": "deny",
+      "~/.ssh/**": "deny"
+    },
+    "webfetch": "ask"
+  },
+  "share": "disabled",
+  "autoupdate": false,
+  "instructions": ["SOUL.md", "system.md"],
+  "agent": {
+    "build": {
+      "disable": false
+    },
+    "plan": {
+      "disable": false
+    }
+  }
+}

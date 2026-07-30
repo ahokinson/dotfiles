@@ -1,0 +1,106 @@
+gui:
+  theme:
+    activeBorderColor:
+      - blue
+      - bold
+    inactiveBorderColor:
+      - white
+    optionsTextColor:
+      - blue
+    selectedLineBgColor:
+      - default
+    selectedRangeBgColor:
+      - default
+    cherryPickedCommitBgColor:
+      - default
+    cherryPickedCommitFgColor:
+      - blue
+    defaultFgColor:
+      - default
+    searchingActiveBorderColor:
+      - yellow
+
+  showCommandLog: false
+  showRandomTip: false
+  nerdFontsVersion: "3"
+
+logs:
+  timestamps: false
+  since: '60m'
+  tail: '200'
+
+commandTemplates:
+  dockerCompose: docker compose
+  restartService: '{{ .DockerCompose }} restart {{ .Service.Name }}'
+  upService: '{{ .DockerCompose }} up -d {{ .Service.Name }}'
+  downService: '{{ .DockerCompose }} stop {{ .Service.Name }}'
+  serviceLogs: '{{ .DockerCompose }} logs --since=60m --follow {{ .Service.Name }}'
+  viewServiceConfig: '{{ .DockerCompose }} config {{ .Service.Name }}'
+  checkDockerCompose: 'docker compose config'
+  dockerBuild: 'docker build -t {{ .Image.Name }} .'
+  dockerRun: 'docker run -it --rm {{ .Image.Name }}'
+
+stats:
+  graphs:
+    - caption: CPU (%)
+      statPath: DerivedStats.CPUPercentage
+      color: blue
+  
+    - caption: Memory (%)
+      statPath: DerivedStats.MemoryPercentage
+      color: green
+
+os:
+  openCommand: 'open {{filename}}'
+  openLinkCommand: 'open {{link}}'
+  editCommand: 'nvim'
+  editCommandTemplate: '{{editor}} {{filename}}'
+
+confirmOnQuit: false
+
+customCommands:
+  containers:
+    - name: 'bash'
+      attach: true
+      command: 'docker exec -it {{ .Container.ID }} /bin/bash'
+      serviceNames: []
+    
+    - name: 'sh'
+      attach: true
+      command: 'docker exec -it {{ .Container.ID }} /bin/sh'
+      serviceNames: []
+    
+    - name: 'logs (all)'
+      attach: false
+      command: 'docker logs --timestamps --follow {{ .Container.ID }}'
+      serviceNames: []
+
+  services:
+    - name: 'build'
+      attach: false
+      command: '{{ .DockerCompose }} build {{ .Service.Name }}'
+      serviceNames: []
+    
+    - name: 'pull'
+      attach: false
+      command: '{{ .DockerCompose }} pull {{ .Service.Name }}'
+      serviceNames: []
+    
+    - name: 'recreate'
+      attach: false
+      command: '{{ .DockerCompose }} up -d --force-recreate {{ .Service.Name }}'
+      serviceNames: []
+
+bulkCommands:
+  services:
+    - name: 'up'
+      command: '{{ .DockerCompose }} up -d'
+    
+    - name: 'down'
+      command: '{{ .DockerCompose }} down'
+    
+    - name: 'stop all'
+      command: 'docker stop $(docker ps -q)'
+
+update:
+  method: never

@@ -1,0 +1,7 @@
+# Work Git identity.
+# Copy to ~/.gitconfig-work and fill in real values.
+# Auto-applied to repos under ~/.local/src/ via includeIf in ~/.gitconfig.
+# Never commit ~/.gitconfig-work.
+[user]
+	name = <work name>
+	email = <work email>

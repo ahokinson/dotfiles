@@ -1,0 +1,68 @@
+# K9s plugins configuration
+# Plugins allow you to extend k9s with custom actions
+
+plugins:
+  # Debug pod with ephemeral container
+  debug:
+    shortCut: Shift-D
+    description: Add debug container
+    scopes:
+      - pods
+    command: kubectl
+    background: false
+    args:
+      - debug
+      - -it
+      - -n
+      - $NAMESPACE
+      - $NAME
+      - --image=nicolaka/netshoot:v0.11
+      - --target=$NAME
+
+  # Open shell in a pod with sh (for minimal images)
+  shell-sh:
+    shortCut: Shift-S
+    description: Shell (sh)
+    scopes:
+      - containers
+    command: sh
+    background: false
+    args:
+      - -c
+      - "kubectl exec -it -n $NAMESPACE $POD -c $NAME -- sh"
+
+  # Logs with stern (if installed)
+  stern:
+    shortCut: Ctrl-L
+    description: Logs with stern
+    scopes:
+      - pods
+    command: bash
+    background: false
+    args:
+      - -c
+      - "stern --tail 50 -n $NAMESPACE $NAME"
+
+  # Port-forward shortcut
+  port-forward:
+    shortCut: Shift-F
+    description: Port Forward
+    scopes:
+      - pods
+    command: bash
+    background: false
+    args:
+      - -c
+      - "kubectl port-forward -n $NAMESPACE $NAME"
+
+  # Get YAML
+  get-yaml:
+    shortCut: y
+    description: Get YAML
+    scopes:
+      - all
+    command: bash
+    background: false
+    args:
+      - -c
+      - "kubectl get -n $NAMESPACE $RESOURCE_NAME $NAME -o yaml | less"

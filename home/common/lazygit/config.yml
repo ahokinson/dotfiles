@@ -1,0 +1,56 @@
+gui:
+  theme:
+    activeBorderColor:
+      - blue
+      - bold
+    inactiveBorderColor:
+      - white
+    optionsTextColor:
+      - blue
+    selectedLineBgColor:
+      - default
+    cherryPickedCommitBgColor:
+      - default
+    cherryPickedCommitFgColor:
+      - blue
+    unstagedChangesColor:
+      - red
+    defaultFgColor:
+      - default
+    searchingActiveBorderColor:
+      - yellow
+  showRandomTip: false
+  showCommandLog: false
+  nerdFontsVersion: "3"
+git:
+  pagers:
+    - colorArg: always
+      pager: delta --paging=never
+  skipHookPrefix: WIP
+  branchLogCmd: 'git log --graph --color=always --abbrev-commit --decorate --date=relative --pretty=medium {{branchName}} --'
+os:
+  editPreset: 'nvim'
+  edit: 'nvim {{filename}}'
+  editAtLine: 'nvim +{{line}} {{filename}}'
+  editAtLineAndWait: 'nvim +{{line}} {{filename}}'
+  open: 'open {{filename}}'
+  openLink: 'open {{link}}'
+customCommands:
+  - key: 'C'
+    command: 'git cz'
+    description: 'Commit with commitizen'
+    context: 'files'
+    loadingText: 'Opening commitizen...'
+    output: terminal
+  - key: '<c-p>'
+    command: 'git push --force-with-lease'
+    description: 'Force push with lease'
+    context: 'global'
+    loadingText: 'Pushing...'
+  - key: 'E'
+    command: 'git commit --amend --no-edit'
+    description: 'Amend commit without editing message'
+    context: 'files'
+    loadingText: 'Amending...'
+update:
+  method: never

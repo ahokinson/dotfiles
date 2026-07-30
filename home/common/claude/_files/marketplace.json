@@ -1,0 +1,17 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "local",
+  "description": "Local custom plugins managed via dotfiles",
+  "owner": {
+    "name": "anders",
+    "email": "anders@localhost"
+  },
+  "plugins": [
+    {
+      "name": "custom",
+      "description": "Custom skills and agents managed via dotfiles",
+      "source": "./plugins/custom",
+      "category": "security"
+    }
+  ]
+}

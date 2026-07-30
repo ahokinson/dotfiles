@@ -1,0 +1,45 @@
+# Task (go-task) global configuration
+# See: https://taskfile.dev/
+
+version: '3'
+
+# Global settings for all taskfiles
+settings:
+  # Run tasks in parallel when possible
+  parallel: false
+  
+  # Disable color output
+  color: true
+  
+  # Silent mode - only show output from commands
+  silent: false
+  
+  # Verbose mode - show full command output
+  verbose: false
+  
+  # Force color output even when not in TTY
+  force_color: false
+  
+  # Interval to check for changes in watch mode (ms)
+  interval: 5000
+
+# Default variables available in all taskfiles
+vars:
+  GREETING: "Hello from Task!"
+
+# Default environment variables
+env:
+  GO111MODULE: "on"
+  CGO_ENABLED: "1"
+
+# Dotenv files to load (if present in project directory)
+dotenv:
+  - .env
+  - .env.local
+
+# Task output style
+# Options: interleaved, group, prefixed
+output: prefixed
+
+# Run tasks in this directory by default (usually overridden per-project)
+dir: "."
