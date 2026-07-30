@@ -4,6 +4,10 @@
   # Apple Silicon mac
   nixpkgs.hostPlatform = "aarch64-darwin";
 
+  # Required since nix-darwin's multi-user migration: user-scoped
+  # system.defaults options (dock, finder, NSGlobalDomain) apply to this user.
+  system.primaryUser = "anders";
+
   # Use the Determinate Nix installer style (handles launchd services).
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nixpkgs.config.allowUnfree = true;

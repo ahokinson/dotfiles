@@ -8,6 +8,11 @@
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
+    # First activation on a machine still running the old ~/.dotfiles
+    # symlink-based setup will collide on real pre-existing files
+    # (.zshrc, .gitconfig, etc). Back those up with this suffix instead of
+    # hard-failing.
+    backupFileExtension = "hm-backup";
     users."anders" = {
       imports = [
         ../../home/common

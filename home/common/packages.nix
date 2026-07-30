@@ -63,7 +63,7 @@
     syft
     terraform
     testssl
-    texlive.combined.scheme-basic
+    texliveBasic
     trivy
     trufflehog
     turso-cli

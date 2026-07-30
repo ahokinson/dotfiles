@@ -90,6 +90,7 @@
             home.username = "anders";
             home.homeDirectory = "/home/anders";
             home.stateVersion = "26.05";
+            home.backupFileExtension = "hm-backup";
           }
           ./home/common
           ./home/linux
