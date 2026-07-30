@@ -12,10 +12,18 @@
 # Detection strategy:
 #   - Linux: read /etc/os-release (ID=nixos) + /sys/class/dmi/id/product_name,
 #            or /proc/device-tree/compatible (Apple Silicon on Asahi).
-#   - macOS: read the ModelIdentifier (`hw.model`) and map to a known flake
-#            output by silicon generation.
+#   - macOS: match the current hostname (scutil LocalHostName) against the
+#            known darwin hosts. Each host config sets its own hostname, so
+#            this is trivially correct once a machine has been activated at
+#            least once. hw.model is cross-checked only as a sanity warning
+#            (catches e.g. a hostname copied onto the wrong machine) - it is
+#            NOT used to pick the output, since it's a hardcoded table that's
+#            easy to get wrong without the actual hardware in hand to verify.
+#   A brand-new, never-activated Mac has no matching hostname yet; pass the
+#   output explicitly for that first run: `./switch.zsh switch <output>`.
 #
-# Modify the MODEL_MAP tables below if you add or rename hosts in the flake.
+# Modify DARWIN_HOSTS (and DARWIN_MODEL_MAP, optionally) when you add or
+# rename hosts in the flake.
 
 set -euo pipefail
 
@@ -39,14 +47,22 @@ p()  { print -P "%F{${C[$2]:-7}}$1%f" }
 pb() { print -P "%F{${C[$2]:-7}}%B$1%b%f" }
 
 # --- Mapping tables -------------------------------------------------------
-# macOS Model Identifier (hw.model) -> flake output name (without the leading #)
-# Update this table whenever you add a new mac host. Verify with
-# `sysctl -n hw.model` on the actual machine - don't guess (Mac Studio was
-# wrong here before being checked against real hardware).
+# Known darwin flake outputs, keyed by the hostname each host config sets
+# via networking.localHostName. This is the primary signal - see detect_host_darwin.
+typeset -a DARWIN_HOSTS=(
+  macbookpro14-m1-pro
+  macbookpro16-m5
+  macstudio-m1-max
+)
+
+# hw.model -> expected hostname, used only as a sanity cross-check (warns on
+# mismatch, never picks the output itself). Verify any new entry with
+# `sysctl -n hw.model` on the actual machine before adding it - don't guess
+# (Mac Studio's entry here was wrong until checked against real hardware).
 typeset -A DARWIN_MODEL_MAP=(
-  "MacBookPro18,3"  "macbookpro14-m1-pro"
   "Mac13,1"         "macstudio-m1-max"
   "Mac17,2"         "macbookpro16-m5"
+  "MacBookPro18,3"  "macbookpro14-m1-pro"
 )
 
 # NixOS hardware signal -> flake output. Keys are matched as a substring
@@ -77,26 +93,25 @@ detect_os() {
 # --- Hardware detection ---------------------------------------------------
 # Print "<flake-output> <human-readable hardware id>" or exit 1.
 detect_host_darwin() {
-  local model
-  # hw.model is e.g. "MacBookPro18,3" on most macs, or "Mac17,2" on the M5.
-  model=$(sysctl -n hw.model 2>/dev/null || true)
-  [[ -z "$model" ]] && return 1
-
-  if [[ -n "${DARWIN_MODEL_MAP[$model]:-}" ]]; then
-    print "${DARWIN_MODEL_MAP[$model]} $model"
-    return
-  fi
-
-  # Fallback: trust scutil LocalHostName (already nix-darwin-managed)
   local name
   name=$(scutil --get LocalHostName 2>/dev/null || hostname -s 2>/dev/null || true)
-  if [[ -n "$name" ]] && (( ${+DARWIN_MODEL_MAP[(r)$name]} )); then
-    print "$name $name(LocalHostName)"
-    return
+
+  if [[ -z "$name" ]] || (( ! ${DARWIN_HOSTS[(Ie)$name]} )); then
+    print "" "hostname '$name'(not a known host - first activation? pass an explicit output name)"
+    return 1
   fi
 
-  print "" "$model(unknown)"
-  return 1
+  # Sanity cross-check only: warn (don't fail) if hw.model disagrees with
+  # what this hostname implies - could mean a hostname got copied onto the
+  # wrong machine.
+  local model expected
+  model=$(sysctl -n hw.model 2>/dev/null || true)
+  expected=${DARWIN_MODEL_MAP[$model]:-}
+  if [[ -n "$expected" && "$expected" != "$name" ]]; then
+    p "warning: hostname '$name' but hw.model '$model' suggests '$expected'" yellow >&2
+  fi
+
+  print "$name $name(hostname)"
 }
 
 detect_host_nixos() {
