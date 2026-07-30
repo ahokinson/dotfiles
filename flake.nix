@@ -19,6 +19,11 @@
     };
 
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+
+    # Own input (not reached through ahokinson/flake) so we can use its
+    # home-manager module for proper macOS .app bundle installation.
+    zen-browser.url = "github:0xc000022070/zen-browser-flake";
+    zen-browser.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = inputs@{ self, nixpkgs, nix-darwin, home-manager, ... }:

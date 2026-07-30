@@ -15,6 +15,7 @@
     backupFileExtension = "hm-backup";
     users."anders" = {
       imports = [
+        inputs.zen-browser.homeModules.beta
         ../../home/common
         ../../home/darwin
       ];
