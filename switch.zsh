@@ -168,10 +168,27 @@ detect_host() {
 # Returns the right nix tool + args for the requested mode on a given output.
 build_args() {
   local mode=$1 output=$2 kind=$3
+
+  local darwin_subcmd
+  case $mode in
+    switch) darwin_subcmd=switch ;;
+    build)  darwin_subcmd=build ;;
+    dry)    darwin_subcmd=check ;;
+  esac
+
   case $kind:$mode in
-    darwin:switch) print sudo darwin-rebuild switch --flake "$DOTFILES#$output" ;;
-    darwin:build)  print sudo darwin-rebuild build  --flake "$DOTFILES#$output" ;;
-    darwin:dry)     print sudo darwin-rebuild check  --flake "$DOTFILES#$output" ;;
+    darwin:switch|darwin:build|darwin:dry)
+      if command -v darwin-rebuild &>/dev/null; then
+        print sudo darwin-rebuild "$darwin_subcmd" --flake "$DOTFILES#$output"
+      else
+        # First-ever activation on this Mac: darwin-rebuild isn't installed
+        # yet, and root's own Nix config won't have flakes enabled until
+        # after a successful activation writes it system-wide - so this has
+        # to bootstrap through `nix run nix-darwin` with the flags passed
+        # explicitly instead.
+        print "sudo nix --extra-experimental-features \"nix-command flakes\" run nix-darwin -- $darwin_subcmd --flake \"$DOTFILES#$output\""
+      fi
+      ;;
     darwin:list)   return 0 ;;
     nixos:switch)  print sudo nixos-rebuild switch --flake "$DOTFILES#$output" ;;
     nixos:build)   print nixos-rebuild build      --flake "$DOTFILES#$output" ;;
