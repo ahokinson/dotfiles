@@ -1,7 +1,7 @@
 { pkgs, ... }: {
   home.packages = [ pkgs.bloom ];
 
-  home.file.".bloom" = {
+  xdg.configFile."bloom" = {
     source = ./_files;
     recursive = true;
   };

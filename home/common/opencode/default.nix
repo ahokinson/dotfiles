@@ -1,10 +1,15 @@
 { pkgs, ... }: {
   home.packages = [ pkgs.opencode ];
 
-  # opencode reads its config from $XDG_CONFIG_HOME/opencode/.
-  # The upstream tree ships opencode.json, themes/, and plugin/ — copy verbatim.
   xdg.configFile."opencode" = {
     source = ./_files;
     recursive = true;
   };
+
+  xdg.configFile."opencode/docs" = {
+    source = ../_shared/docs;
+    recursive = true;
+  };
+  xdg.configFile."opencode/system.md".source = ../_shared/system.md;
+  xdg.configFile."opencode/SOUL.md".source = ../_shared/SOUL.md;
 }

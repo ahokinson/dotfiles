@@ -1,9 +1,13 @@
-{ pkgs, ... }: {
+{ pkgs, lib, ... }:
+let
+  destName = if pkgs.stdenv.hostPlatform.isDarwin
+    then "Library/Application Support/cupcake"
+    else ".config/cupcake";
+in {
   home.packages = [ pkgs.cupcake ];
 
-  # cupcake policy store + tests live under ~/.cupcake/.
-  home.file.".cupcake" = {
-    source = ./_files;
+  home.file.${destName} = {
+    source = ./_files/store;
     recursive = true;
   };
 }
