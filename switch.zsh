@@ -40,8 +40,9 @@ pb() { print -P "%F{${C[$2]:-7}}%B$1%b%f" }
 
 # --- Mapping tables -------------------------------------------------------
 # macOS Model Identifier (hw.model) -> flake output name (without the leading #)
-# Apple's identifier format is e.g. "MacBookPro18,3" or "Mac17,2" for the M5.
-# Update this table whenever you add a new mac host.
+# Update this table whenever you add a new mac host. Verify with
+# `sysctl -n hw.model` on the actual machine - don't guess (Mac Studio was
+# wrong here before being checked against real hardware).
 typeset -A DARWIN_MODEL_MAP=(
   "MacBookPro18,3"  "macbookpro14-m1-pro"
   "Mac13,1"         "macstudio-m1-max"
