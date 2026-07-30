@@ -19,7 +19,7 @@
     ../../modules/nixos/hermes.nix
     ../../modules/nixos/base.nix
     inputs.home-manager.nixosModules.home-manager
-    inputs.hermes-agent.nixosModules.default
+    inputs.flake.inputs.hermes-agent.nixosModules.default
   ];
 
   home-manager = {

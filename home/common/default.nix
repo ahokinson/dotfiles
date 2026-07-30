@@ -1,5 +1,3 @@
-# Imports all common tool modules. Apply via home-manager sharedHomeModule
-# from each platform entrypoint (nixos host, darwin host, asahi standalone).
 { ... }: {
   imports = [
     ./bloom
@@ -7,8 +5,8 @@
     ./claude
     ./cupcake
     ./fastfetch
-    ./git
     ./ghostty
+    ./git
     ./go-task
     ./hermes
     ./k9s
@@ -16,9 +14,10 @@
     ./lazygit
     ./nvim
     ./opencode
+    ./packages.nix
+    ./tirith
     ./tmux
     ./yt-dlp
     ./zsh
-    ./packages.nix
   ];
 }

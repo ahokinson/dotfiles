@@ -1,4 +1,6 @@
-_: {
+{ pkgs, ... }: {
+  home.packages = [ pkgs.claude-code ];
+
   # claude-code reads its config from ~/.claude/.
   home.file.".claude" = {
     source = ./_files;

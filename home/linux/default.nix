@@ -3,7 +3,6 @@
 # Use `osConfig`/`config ? osConfig` to gate items to one context.
 { inputs, pkgs, lib, config, ... }: {
   imports = [
-    ./zsh
     ./packages.nix
     ./catppuccin.nix
   ];

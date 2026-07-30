@@ -8,7 +8,6 @@
   imports = [
     ../../modules/darwin/system.nix
     ../../modules/darwin/home-manager.nix
-    ../../modules/darwin/casks.nix
     ../../modules/darwin/hardware-macbookpro16.nix
   ];
 }

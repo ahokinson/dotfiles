@@ -1,4 +1,4 @@
-{ inputs, pkgs, lib, ... }: {
+{ pkgs, lib, ... }: {
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   # Cap build parallelism so the fans don't spin up.
   nix.settings.max-jobs = lib.mkDefault 2;
@@ -12,7 +12,7 @@
     # ghostty installed via home-manager (programs.ghostty) instead.
     git
     opencode
-    inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
+    zen-browser
   ];
 
   # zsh login shell (per modules/nixos/user.nix).

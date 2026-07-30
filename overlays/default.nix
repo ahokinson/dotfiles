@@ -1,8 +1,4 @@
-# Overlay that exposes the hermes-agent + zen-browser flake inputs under `pkgs`
-# so per-tool home modules can pull them without spelling out `inputs.*`.
-inputs: final: prev: {
-  hermes-agent = inputs.hermes-agent.packages.${final.stdenv.hostPlatform.system}.default
-    or prev.hermes-agent or null;
-  zen-browser = inputs.zen-browser.packages.${final.stdenv.hostPlatform.system}.default
-    or prev.zen-browser or null;
-}
+# claude-code, codex, and opencode are plain nixpkgs packages - used directly
+# as pkgs.claude-code / pkgs.codex / pkgs.opencode, not listed here.
+inputs: final: prev:
+inputs.flake.overlays.default final prev

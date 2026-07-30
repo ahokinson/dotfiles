@@ -18,10 +18,10 @@
 #   * Linux: the HM module installs `pkgs.ghostty` via `home.packages` (default
 #     `package`); the orphan `ghostty` entries in `home/linux/packages.nix` /
 #     `modules/nixos/base.nix` were removed.
-#   * macOS: nix-darwin installs the GUI via the brew cask in
-#     `modules/darwin/casks.nix`. We set `package = null` so HM does not try to
-#     install the nixpkgs derivation alongside it, while still writing the
-#     config + theme files for the cask-installed binary to pick up.
+#   * macOS: nixpkgs' `pkgs.ghostty` is Linux-only (no darwin in meta.platforms
+#     - upstream lacks a Swift 6/xcodebuild-friendly nixpkgs environment), so
+#     we override to `pkgs.ghostty-bin`, which fetches the signed macOS binary
+#     directly. No Homebrew involved.
 { pkgs, lib, ... }:
 
 let
@@ -30,7 +30,7 @@ in
 {
   programs.ghostty = {
     enable = true;
-    package = lib.mkIf isDarwin null;
+    package = lib.mkIf isDarwin pkgs.ghostty-bin;
     enableZshIntegration = true;
 
     settings = {

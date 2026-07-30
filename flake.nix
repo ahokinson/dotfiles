@@ -2,7 +2,11 @@
   description = "Unified Nix flake for NixOS, macOS (Apple Silicon), and Asahi Fedora.";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    catppuccin.url = "github:catppuccin/nix";
+    catppuccin.inputs.nixpkgs.follows = "nixpkgs";
+
+    flake.url = "github:ahokinson/flake";
+    flake.inputs.nixpkgs.follows = "nixpkgs";
 
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -14,24 +18,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    hermes-agent.url = "github:NousResearch/hermes-agent";
-    hermes-agent.inputs.nixpkgs.follows = "nixpkgs";
-
-    zen-browser.url = "github:youwen5/zen-browser-flake";
-    zen-browser.inputs.nixpkgs.follows = "nixpkgs";
-
-    # Catppuccin Nix port — supplies the catppuccin Home-Manager module used
-    # to theme GTK / Kvantum / cursors / etc. with the Frappe palette.
-    catppuccin.url = "github:catppuccin/nix";
-    catppuccin.inputs.nixpkgs.follows = "nixpkgs";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
   };
 
   outputs = inputs@{ self, nixpkgs, nix-darwin, home-manager, ... }:
     let
-      # Reusable overlay exposed to all hosts.
       overlays.default = import ./overlays/default.nix inputs;
 
-      # Common pkgs constructor per system that injects our overlay.
       mkPkgs = system: import nixpkgs {
         inherit system;
         overlays = [ overlays.default ];
