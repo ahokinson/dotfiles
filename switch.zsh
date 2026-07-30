@@ -44,7 +44,7 @@ pb() { print -P "%F{${C[$2]:-7}}%B$1%b%f" }
 # Update this table whenever you add a new mac host.
 typeset -A DARWIN_MODEL_MAP=(
   "MacBookPro18,3"  "macbookpro14-m1-pro"
-  "MacStudio1,1"    "macstudio-m1-max"
+  "Mac13,1"         "macstudio-m1-max"
   "Mac17,2"         "macbookpro16-m5"
 )
 
@@ -153,9 +153,9 @@ detect_host() {
 build_args() {
   local mode=$1 output=$2 kind=$3
   case $kind:$mode in
-    darwin:switch) print darwin-rebuild switch   --flake "$DOTFILES#$output" ;;
-    darwin:build)  print darwin-rebuild build    --flake "$DOTFILES#$output" ;;
-    darwin:dry)     print darwin-rebuild check    --flake "$DOTFILES#$output" ;;
+    darwin:switch) print sudo darwin-rebuild switch --flake "$DOTFILES#$output" ;;
+    darwin:build)  print sudo darwin-rebuild build  --flake "$DOTFILES#$output" ;;
+    darwin:dry)     print sudo darwin-rebuild check  --flake "$DOTFILES#$output" ;;
     darwin:list)   return 0 ;;
     nixos:switch)  print sudo nixos-rebuild switch --flake "$DOTFILES#$output" ;;
     nixos:build)   print nixos-rebuild build      --flake "$DOTFILES#$output" ;;
