@@ -72,9 +72,22 @@ typeset -A NIXOS_HW_MAP=(
   "Framework Laptop 13"  "framework13-amd-ryzen"
 )
 
-# Asahi always maps to the shared home-manager profile, since both macs
-# dual-boot it and home-manager only owns $HOME.
-readonly ASAHI_OUTPUT="anders@asahi"
+# Device-tree codename (first entry of /proc/device-tree/compatible) -> the
+# hostname of the corresponding darwin flake output. The flake output for
+# each Asahi machine is "anders@<hostname>" (see flake.nix) - never
+# "asahi", so a machine reports the same hostname whether it's booted into
+# macOS or Asahi. home-manager can't set the *system* hostname itself (no
+# root), so switch.zsh also does that directly via hostnamectl. Verify any
+# new entry with `tr '\0' '\n' < /proc/device-tree/compatible` on the
+# actual Asahi boot before adding it - don't guess (same rule as
+# DARWIN_MODEL_MAP).
+typeset -A ASAHI_HW_MAP=(
+  "apple,j314s"  "macbookpro14-m1-pro"
+)
+
+# Set as a side effect of detect_host_asahi when the codename is recognized;
+# consumed by cmd_apply to sync the system hostname after a switch.
+typeset -g ASAHI_TARGET_HOSTNAME=""
 
 # Flake URI for the home-manager tool itself (used when running standalone
 # against a non-NixOS distribution, e.g. Fedora Asahi). Pinned to home-manager
@@ -135,15 +148,24 @@ detect_host_nixos() {
 }
 
 detect_host_asahi() {
-  # /proc/device-tree/compatible on Apple Silicon looks like "apple,t8103\0apple,arm-platform"
-  local compat
-  compat=$(tr '\0' '\n' < /proc/device-tree/compatible 2>/dev/null | head -2 | tail -1)
-  if [[ "$compat" == apple,* ]]; then
-    print "$ASAHI_OUTPUT $compat"
-  else
+  # /proc/device-tree/compatible on Apple Silicon looks like
+  # "apple,j314s\0apple,t6000\0apple,arm-platform" - first entry is the
+  # machine-specific codename, used to look up the matching hostname.
+  local codename hostname_target
+  codename=$(tr '\0' '\n' < /proc/device-tree/compatible 2>/dev/null | head -1)
+  if [[ "$codename" != apple,* ]]; then
     print "" "(not Apple Silicon)"
     return 1
   fi
+
+  hostname_target=${ASAHI_HW_MAP[$codename]:-}
+  if [[ -z "$hostname_target" ]]; then
+    print "" "codename '$codename'(unrecognized Asahi machine - add it to ASAHI_HW_MAP)"
+    return 1
+  fi
+
+  ASAHI_TARGET_HOSTNAME=$hostname_target
+  print "anders@$hostname_target $hostname_target($codename)"
 }
 
 detect_host() {
@@ -233,7 +255,7 @@ cmd_list() {
     p "  Flake output  : (could not auto-detect — pass explicitly)" red
   fi
   pb "\nAvailable flake outputs" yellow
-  for o in framework13-amd-ryzen macbookpro14-m1-pro macstudio-m1-max macbookpro16-m5 anders@asahi; do
+  for o in framework13-amd-ryzen macbookpro14-m1-pro macstudio-m1-max macbookpro16-m5 anders@macbookpro14-m1-pro anders@macstudio-m1-max; do
     if [[ "$o" == "$host" ]]; then
       p "  * $o" green
     else
@@ -274,6 +296,9 @@ cmd_apply() {
     # pick it up until reboot. Force it so `hostname` matches immediately.
     if [[ $kind == nixos && $mode == switch ]]; then
       sync_kernel_hostname "$host"
+    fi
+    if [[ $kind == home && $mode == switch && -n "$ASAHI_TARGET_HOSTNAME" ]]; then
+      sync_asahi_hostname "$ASAHI_TARGET_HOSTNAME"
     fi
   else
     pb "FAIL (${rc}) after ${elapsed}s" red
@@ -324,6 +349,20 @@ sync_kernel_hostname() {
   sudo hostname "$want" || p "  (failed to update kernel hostname; reboot to apply)" red
 }
 
+# Asahi has no nix layer to own the system hostname (home-manager only owns
+# $HOME), so switch.zsh sets it directly - persistently, via hostnamectl,
+# since Fedora expects that rather than the transient `hostname` command.
+sync_asahi_hostname() {
+  local want=$1
+  local have
+  have=$(hostname 2>/dev/null || true)
+  if [[ "$have" == "$want" ]]; then
+    return
+  fi
+  p "  hostname: '$have' -> '$want'" yellow
+  sudo hostnamectl set-hostname "$want" || p "  (failed to update hostname)" red
+}
+
 # --- Main -----------------------------------------------------------------
 main() {
   local mode=switch explicit=""
@@ -352,7 +391,7 @@ main() {
 
   if [[ -z "$host" ]]; then
     p "Could not auto-detect host. Pass an explicit output name." red
-    p "Available outputs: framework13-amd-ryzen, macbookpro14-m1-pro, macstudio-m1-max, macbookpro16-m5, anders@asahi" gray
+    p "Available outputs: framework13-amd-ryzen, macbookpro14-m1-pro, macstudio-m1-max, macbookpro16-m5, anders@macbookpro14-m1-pro, anders@macstudio-m1-max" gray
     exit 1
   fi
 
@@ -361,7 +400,7 @@ main() {
   case $host in
     framework13-amd-ryzen|nixos) kind=nixos ;;
     macbookpro14-m1-pro|macstudio-m1-max|macbookpro16-m5) kind=darwin ;;
-    anders@asahi|*@*) kind=home ;;
+    *@*) kind=home ;;
     *) p "Unknown flake output: $host" red; exit 1 ;;
   esac
 

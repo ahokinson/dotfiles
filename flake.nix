@@ -41,6 +41,24 @@
         config.allowUnfree = true;
       };
 
+      # Both macs that dual-boot Asahi share one home-manager config
+      # (home-manager owns only $HOME, so there's nothing host-specific to
+      # configure) — exposed under two output names below, one per machine.
+      asahiHome = home-manager.lib.homeManagerConfiguration {
+        pkgs = mkPkgs "aarch64-linux";
+        extraSpecialArgs = { inherit inputs selfPath; };
+        modules = [
+          {
+            home.username = "anders";
+            home.homeDirectory = "/home/anders";
+            home.stateVersion = "26.05";
+            home.backupFileExtension = "hm-backup";
+          }
+          (selfPath "home/common")
+          (selfPath "home/linux")
+        ];
+      };
+
       in
     {
       # --- NixOS (current box, x86_64-linux) ---
@@ -88,24 +106,14 @@
       };
 
       # --- Asahi Fedora (aarch64-linux) — standalone home-manager profile.
-      # Both macs dual-boot Asahi and share a single home-manager profile:
-      # home-manager owns only $HOME, so it cannot distinguish machines.
-      # Set each machine's *system* hostname via `hostnamectl set-hostname <name>`
-      # separately; this entry is identical on both.
-      homeConfigurations."anders@asahi" = home-manager.lib.homeManagerConfiguration {
-        pkgs = mkPkgs "aarch64-linux";
-        extraSpecialArgs = { inherit inputs selfPath; };
-        modules = [
-          {
-            home.username = "anders";
-            home.homeDirectory = "/home/anders";
-            home.stateVersion = "26.05";
-            home.backupFileExtension = "hm-backup";
-          }
-          (selfPath "home/common")
-          (selfPath "home/linux")
-        ];
-      };
+      # Named per-machine, matching each machine's darwin hostname, so it
+      # reports the same hostname whether booted into macOS or Asahi — never
+      # "asahi" itself. switch.zsh picks the right one by mapping the Apple
+      # Silicon device-tree codename to a hostname (see ASAHI_HW_MAP) and
+      # also sets the system hostname via hostnamectl, since home-manager
+      # can't do that itself.
+      homeConfigurations."anders@macbookpro14-m1-pro" = asahiHome;
+      homeConfigurations."anders@macstudio-m1-max" = asahiHome;
 
       # Expose for downstream compositors/hosts if needed.
       inherit overlays;
