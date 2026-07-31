@@ -7,6 +7,9 @@
 
   imports = [
     (selfPath "modules/darwin/system.nix")
+    # No modules/darwin/universalaccess.nix here: this is a work-managed
+    # laptop and an MDM profile blocks writes to com.apple.universalaccess,
+    # which aborts activation.
     (selfPath "modules/darwin/home-manager.nix")
     (selfPath "modules/darwin/hardware-macbookpro16.nix")
   ];

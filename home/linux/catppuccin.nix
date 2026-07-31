@@ -29,12 +29,9 @@
     accent = "mauve";
 
     # `gtk.icon` defaults to catppuccin.autoEnable so it is already true.
-    # `cursors` opts out of auto-enable so set it here. `kvantum` is left
-    # to catppuccin-qt.nix on hosts that import it.
-    cursors.enable = true;
+    # `cursors` opts out of auto-enable and is deliberately left disabled -
+    # the Catppuccin cursor theme isn't good, so cursors stay on whatever
+    # theme the desktop environment defaults to. `kvantum` is left to
+    # catppuccin-qt.nix on hosts that import it.
   };
-
-  # The catppuccin cursors module only sets `home.pointerCursor.{name,package}`;
-  # HM now requires `enable = true` explicitly (silences a deprecation warning).
-  home.pointerCursor.enable = true;
 }

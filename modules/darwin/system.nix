@@ -23,7 +23,8 @@ in {
   # home-manager's home.packages - see home/common/fonts.nix).
   fonts.packages = sharedFonts.packages;
 
-  # macOS user defaults, set exhaustively so all 3 Macs stay identical.
+  # macOS user defaults, set exhaustively so all 3 Macs stay identical
+  # (except universalaccess.* - see modules/darwin/universalaccess.nix).
   system.defaults = {
     dock.autohide = true;
     dock.magnification = false;
@@ -115,7 +116,8 @@ in {
     NSGlobalDomain.ApplePressAndHoldEnabled = false;
     NSGlobalDomain.AppleScrollerPagingBehavior = false;
     NSGlobalDomain.AppleSpacesSwitchOnActivate = true;
-    # Consistent with universalaccess.reduceMotion below.
+    # Consistent with universalaccess.reduceMotion in universalaccess.nix
+    # (personal Macs only).
     NSGlobalDomain.NSAutomaticWindowAnimationsEnabled = false;
     NSGlobalDomain.NSUseAnimatedFocusRing = false;
     NSGlobalDomain.NSScrollAnimationEnabled = false;
@@ -178,12 +180,6 @@ in {
     finder._FXEnableColumnAutoSizing = false;
     finder._FXSortFoldersFirstOnDesktop = false;
     finder.NewWindowTarget = "Recents";
-
-    universalaccess.reduceMotion = true;
-    universalaccess.reduceTransparency = true;
-    universalaccess.mouseDriverCursorSize = 1.0;
-    universalaccess.closeViewScrollWheelToggle = false;
-    universalaccess.closeViewZoomFollowsFocus = false;
 
     WindowManager.GloballyEnabled = false; # Stage Manager off
     WindowManager.EnableStandardClickToShowDesktop = true;
