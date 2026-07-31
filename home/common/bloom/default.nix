@@ -1,8 +1,8 @@
-{ pkgs, ... }: {
+{ selfPath, pkgs, ... }: {
   home.packages = [ pkgs.bloom ];
 
   xdg.configFile."bloom" = {
-    source = ./_files;
+    source = selfPath "home/common/bloom/_files";
     recursive = true;
   };
 }

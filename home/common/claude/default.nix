@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }: {
+{ selfPath, pkgs, lib, ... }: {
   home.packages = [ pkgs.claude-code ];
 
   home.file.".claude" = {
@@ -8,16 +8,16 @@
     # -evolved copy Claude Code maintains on each machine and aborts
     # activation. Not something to declaratively manage.
     source = lib.cleanSourceWith {
-      src = ./_files;
+      src = selfPath "home/common/claude/_files";
       filter = path: _type: !(lib.hasSuffix "/plugins/known_marketplaces.json" path);
     };
     recursive = true;
   };
 
   home.file.".claude/plugins/marketplaces/local/plugins/custom/docs" = {
-    source = ../_shared/docs;
+    source = selfPath "home/common/_shared/docs";
     recursive = true;
   };
-  home.file.".claude/plugins/marketplaces/local/plugins/custom/system.md".source = ../_shared/system.md;
-  home.file.".claude/plugins/marketplaces/local/plugins/custom/SOUL.md".source = ../_shared/SOUL.md;
+  home.file.".claude/plugins/marketplaces/local/plugins/custom/system.md".source = selfPath "home/common/_shared/system.md";
+  home.file.".claude/plugins/marketplaces/local/plugins/custom/SOUL.md".source = selfPath "home/common/_shared/SOUL.md";
 }

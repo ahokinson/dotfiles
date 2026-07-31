@@ -1,3 +1,3 @@
-_: {
-  xdg.configFile."lazydocker/config.yml".source = ./config.yml;
+{ selfPath, ... }: {
+  xdg.configFile."lazydocker/config.yml".source = selfPath "home/common/lazydocker/config.yml";
 }

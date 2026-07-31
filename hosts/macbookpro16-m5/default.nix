@@ -1,13 +1,13 @@
 # MacBook Pro 16", M5. Apply with:
 #   darwin-rebuild switch --flake ~/.dotfiles#macbookpro16-m5
-{ inputs, ... }: {
+{ selfPath, ... }: {
   networking.hostName = "macbookpro16-m5";
   networking.computerName = "macbookpro16-m5";
   networking.localHostName = "macbookpro16-m5";
 
   imports = [
-    ../../modules/darwin/system.nix
-    ../../modules/darwin/home-manager.nix
-    ../../modules/darwin/hardware-macbookpro16.nix
+    (selfPath "modules/darwin/system.nix")
+    (selfPath "modules/darwin/home-manager.nix")
+    (selfPath "modules/darwin/hardware-macbookpro16.nix")
   ];
 }

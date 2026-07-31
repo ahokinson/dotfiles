@@ -1,5 +1,5 @@
-_: {
-  xdg.configFile."k9s/config.yaml".source = ./config.yaml;
-  xdg.configFile."k9s/plugins.yaml".source = ./plugins.yaml;
-  xdg.configFile."k9s/skins/catppuccin-frappe.yaml".source = ./skins/catppuccin-frappe.yaml;
+{ selfPath, ... }: {
+  xdg.configFile."k9s/config.yaml".source = selfPath "home/common/k9s/config.yaml";
+  xdg.configFile."k9s/plugins.yaml".source = selfPath "home/common/k9s/plugins.yaml";
+  xdg.configFile."k9s/skins/catppuccin-frappe.yaml".source = selfPath "home/common/k9s/skins/catppuccin-frappe.yaml";
 }

@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{ selfPath, pkgs, ... }: {
   # Keep the upstream lazyvim-style lua verbatim under ~/.config/nvim.
   # The lazy.nvim bootstrap in init.lua fetches plugins at first launch;
   # we only install the editor + tree-sitter CLI.
@@ -7,7 +7,7 @@
     pkgs.tree-sitter
   ];
   xdg.configFile."nvim" = {
-    source = ./_files;
+    source = selfPath "home/common/nvim/_files";
     recursive = true;
   };
 }

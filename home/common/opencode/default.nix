@@ -1,15 +1,15 @@
-{ pkgs, ... }: {
+{ selfPath, pkgs, ... }: {
   home.packages = [ pkgs.opencode ];
 
   xdg.configFile."opencode" = {
-    source = ./_files;
+    source = selfPath "home/common/opencode/_files";
     recursive = true;
   };
 
   xdg.configFile."opencode/docs" = {
-    source = ../_shared/docs;
+    source = selfPath "home/common/_shared/docs";
     recursive = true;
   };
-  xdg.configFile."opencode/system.md".source = ../_shared/system.md;
-  xdg.configFile."opencode/SOUL.md".source = ../_shared/SOUL.md;
+  xdg.configFile."opencode/system.md".source = selfPath "home/common/_shared/system.md";
+  xdg.configFile."opencode/SOUL.md".source = selfPath "home/common/_shared/SOUL.md";
 }

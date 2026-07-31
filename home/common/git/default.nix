@@ -1,4 +1,4 @@
-{
+{ selfPath, ... }: {
   programs.git = {
     enable = true;
     settings = {
@@ -45,5 +45,5 @@
   };
 
   # Work identity override template (user fills in ~/.gitconfig-work)
-  home.file.".gitconfig-work.example".source = ./gitconfig-work.example;
+  home.file.".gitconfig-work.example".source = selfPath "home/common/git/gitconfig-work.example";
 }

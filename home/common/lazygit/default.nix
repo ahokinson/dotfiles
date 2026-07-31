@@ -1,4 +1,4 @@
-_: {
+{ selfPath, ... }: {
   home.packages = [ ];
-  xdg.configFile."lazygit/config.yml".source = ./config.yml;
+  xdg.configFile."lazygit/config.yml".source = selfPath "home/common/lazygit/config.yml";
 }

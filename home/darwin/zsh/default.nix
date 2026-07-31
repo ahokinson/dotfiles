@@ -1,6 +1,6 @@
-{ lib, ... }:
+{ selfPath, lib, ... }:
 let
-  files = ./.;
+  files = selfPath "home/darwin/zsh";
 in {
   programs.zsh.initContent = lib.mkAfter ''
     export PATH="$HOME/.local/bin:$PATH"

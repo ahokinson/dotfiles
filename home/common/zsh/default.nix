@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ selfPath, pkgs, lib, ... }:
 let
   # Upstream OMZ-style repo roots ship `<name>.plugin.zsh` at the repo root,
   # which is what oh-my-zsh's `is_plugin` check requires. The nixpkgs
@@ -121,8 +121,8 @@ in {
   xdg.configFile."zsh/omz-custom/plugins/zsh-completions".source = "${zsh-completions-src}";
 
   # Verbatim helpers preserved verbatim from the upstream repo
-  home.file.".hushlogin".source = ./_files/.hushlogin;
-  home.file.".zsh/options.zsh".source = ./_files/options.zsh;
-  home.file.".zsh/completions.zsh".source = ./_files/completions.zsh;
-  home.file.".p10k.zsh".source = ./_files/.p10k.zsh;
+  home.file.".hushlogin".source = selfPath "home/common/zsh/_files/.hushlogin";
+  home.file.".zsh/options.zsh".source = selfPath "home/common/zsh/_files/options.zsh";
+  home.file.".zsh/completions.zsh".source = selfPath "home/common/zsh/_files/completions.zsh";
+  home.file.".p10k.zsh".source = selfPath "home/common/zsh/_files/.p10k.zsh";
 }

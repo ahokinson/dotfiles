@@ -11,9 +11,9 @@
 # used to adopt an existing one. This only ever touches user.js and a
 # chrome/ subdirectory inside the profile Zen already considers default —
 # it never writes profiles.ini.
-{ inputs, config, lib, pkgs, ... }:
+{ inputs, selfPath, config, lib, pkgs, ... }:
 let
-  prefs = import ./zen-browser-prefs.nix;
+  prefs = import (selfPath "home/common/zen-browser-prefs.nix");
 
   toPrefLiteral = value:
     if builtins.isBool value then (if value then "true" else "false")

@@ -1,24 +1,24 @@
-{ ... }: {
+{ selfPath, ... }: {
   imports = [
-    ./bloom
-    ./btop
-    ./claude
-    ./cupcake
-    ./fastfetch
-    ./ghostty
-    ./git
-    ./go-task
-    ./hermes
-    ./k9s
-    ./lazydocker
-    ./lazygit
-    ./nvim
-    ./opencode
-    ./packages.nix
-    ./tirith
-    ./tmux
-    ./yt-dlp
-    ./zen-settings.nix
-    ./zsh
+    (selfPath "home/common/bloom")
+    (selfPath "home/common/btop")
+    (selfPath "home/common/claude")
+    (selfPath "home/common/cupcake")
+    (selfPath "home/common/fastfetch")
+    (selfPath "home/common/ghostty")
+    (selfPath "home/common/git")
+    (selfPath "home/common/go-task")
+    (selfPath "home/common/hermes")
+    (selfPath "home/common/k9s")
+    (selfPath "home/common/lazydocker")
+    (selfPath "home/common/lazygit")
+    (selfPath "home/common/nvim")
+    (selfPath "home/common/opencode")
+    (selfPath "home/common/packages.nix")
+    (selfPath "home/common/tirith")
+    (selfPath "home/common/tmux")
+    (selfPath "home/common/yt-dlp")
+    (selfPath "home/common/zen-settings.nix")
+    (selfPath "home/common/zsh")
   ];
 }

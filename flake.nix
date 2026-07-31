@@ -28,7 +28,12 @@
 
   outputs = inputs@{ self, nixpkgs, nix-darwin, home-manager, ... }:
     let
-      overlays.default = import ./overlays/default.nix inputs;
+      # Joins a repo-root-relative subpath onto the flake's own source,
+      # e.g. `selfPath "hosts/foo"` — avoids `../../`-style relative imports
+      # that get fragile with directory nesting.
+      selfPath = subpath: self + "/${subpath}";
+
+      overlays.default = import (selfPath "overlays/default.nix") inputs;
 
       mkPkgs = system: import nixpkgs {
         inherit system;
@@ -42,43 +47,43 @@
       # Framework Laptop 13, AMD Ryzen AI 7 350. Hostname:
       # `framework13-amd-ryzen` — see hosts/framework13-amd-ryzen/default.nix.
       nixosConfigurations.framework13-amd-ryzen = nixpkgs.lib.nixosSystem {
-        specialArgs = { inherit inputs; };
+        specialArgs = { inherit inputs selfPath; };
         modules = [
           { nixpkgs.hostPlatform = "x86_64-linux"; }
           { nixpkgs.overlays = [ overlays.default ]; }
-          ./hosts/framework13-amd-ryzen
+          (selfPath "hosts/framework13-amd-ryzen")
         ];
       };
 
       # --- macOS (Apple Silicon, aarch64-darwin) ---
       # MacBook Pro 14", M1 Pro. Hardware tweaks: modules/darwin/hardware-macbookpro14.nix
       darwinConfigurations.macbookpro14-m1-pro = nix-darwin.lib.darwinSystem {
-        specialArgs = { inherit inputs; };
+        specialArgs = { inherit inputs selfPath; };
         modules = [
           { nixpkgs.hostPlatform = "aarch64-darwin"; }
           { nixpkgs.overlays = [ overlays.default ]; }
-          ./hosts/macbookpro14-m1-pro
+          (selfPath "hosts/macbookpro14-m1-pro")
         ];
       };
 
       # Mac Studio, M1 Max. Hardware tweaks: modules/darwin/hardware-macstudio.nix
       darwinConfigurations.macstudio-m1-max = nix-darwin.lib.darwinSystem {
-        specialArgs = { inherit inputs; };
+        specialArgs = { inherit inputs selfPath; };
         modules = [
           { nixpkgs.hostPlatform = "aarch64-darwin"; }
           { nixpkgs.overlays = [ overlays.default ]; }
-          ./hosts/macstudio-m1-max
+          (selfPath "hosts/macstudio-m1-max")
         ];
       };
 
       # MacBook Pro 16", M5. Hardware tweaks: modules/darwin/hardware-macbookpro16.nix
       # (macOS-only — does not dual-boot Asahi.)
       darwinConfigurations.macbookpro16-m5 = nix-darwin.lib.darwinSystem {
-        specialArgs = { inherit inputs; };
+        specialArgs = { inherit inputs selfPath; };
         modules = [
           { nixpkgs.hostPlatform = "aarch64-darwin"; }
           { nixpkgs.overlays = [ overlays.default ]; }
-          ./hosts/macbookpro16-m5
+          (selfPath "hosts/macbookpro16-m5")
         ];
       };
 
@@ -89,7 +94,7 @@
       # separately; this entry is identical on both.
       homeConfigurations."anders@asahi" = home-manager.lib.homeManagerConfiguration {
         pkgs = mkPkgs "aarch64-linux";
-        extraSpecialArgs = { inherit inputs; };
+        extraSpecialArgs = { inherit inputs selfPath; };
         modules = [
           {
             home.username = "anders";
@@ -97,8 +102,8 @@
             home.stateVersion = "26.05";
             home.backupFileExtension = "hm-backup";
           }
-          ./home/common
-          ./home/linux
+          (selfPath "home/common")
+          (selfPath "home/linux")
         ];
       };
 

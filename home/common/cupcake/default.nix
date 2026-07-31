@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ selfPath, config, pkgs, lib, ... }:
 let
   destName = if pkgs.stdenv.hostPlatform.isDarwin
     then "Library/Application Support/cupcake"
@@ -13,7 +13,7 @@ in {
   # generated config. Vendoring those generated files into the repo doesn't
   # work anyway: they're gitignored, so a flake build never sees them.
   home.file.${destName} = {
-    source = ./_files/store;
+    source = selfPath "home/common/cupcake/_files/store";
     recursive = true;
   };
 

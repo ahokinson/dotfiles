@@ -1,10 +1,10 @@
-{ pkgs, ... }: {
+{ selfPath, pkgs, ... }: {
   home.packages = [ pkgs.hermes ];
 
   home.file.".hermes" = {
-    source = ./config-files;
+    source = selfPath "home/common/hermes/config-files";
     recursive = true;
   };
 
-  home.file.".hermes/SOUL.md".source = ../_shared/SOUL.md;
+  home.file.".hermes/SOUL.md".source = selfPath "home/common/_shared/SOUL.md";
 }

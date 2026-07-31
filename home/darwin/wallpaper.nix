@@ -4,9 +4,9 @@
 # `osascript` in a home-manager activation hook, which runs as the logged-in
 # user (unlike nix-darwin's system activation scripts, which run as root and
 # wouldn't affect the user's Finder/Dock session state).
-{ config, lib, ... }:
+{ selfPath, config, lib, ... }:
 let
-  wallpaper = ./_files/wallpaper-frappe-base.png;
+  wallpaper = selfPath "home/common/_files/wallpaper-frappe-base.png";
   wallpaperPath = "${config.home.homeDirectory}/Pictures/Wallpapers/frappe-base.png";
 in {
   home.file."Pictures/Wallpapers/frappe-base.png".source = wallpaper;

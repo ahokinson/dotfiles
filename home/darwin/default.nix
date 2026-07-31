@@ -1,9 +1,9 @@
 # Add to system/home-manager only on macOS hosts.
-{ ... }: {
+{ selfPath, ... }: {
   imports = [
-    ./zsh
-    ./zen-browser.nix
-    ./wallpaper.nix
+    (selfPath "home/darwin/zsh")
+    (selfPath "home/darwin/zen-browser.nix")
+    (selfPath "home/darwin/wallpaper.nix")
   ];
 
   # modules/darwin/system.nix points screencapture.location here; make sure
