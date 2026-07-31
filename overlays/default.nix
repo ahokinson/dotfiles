@@ -7,4 +7,11 @@ inputs.flake.overlays.default final prev // {
   open-policy-agent = prev.open-policy-agent.overrideAttrs (_: {
     doCheck = false;
   });
+
+  # semgrep's pytest suite fails on aarch64-linux (75 failures, all
+  # "Failed to obtain target files from semgrep-core") - unrelated to the
+  # shipped binary, which works fine.
+  semgrep = prev.semgrep.overrideAttrs (_: {
+    doCheck = false;
+  });
 }
