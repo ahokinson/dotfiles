@@ -11,7 +11,7 @@
 //
 // to recover, run the repair in your own shell rather than through the agent,
 // then restart opencode:
-//   config/common/cupcake/dot.zsh sync
+//   ./switch.zsh (from the dotfiles repo root, in your own shell)
 import { spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { dirname } from "node:path";
@@ -34,7 +34,7 @@ function healthProblems() {
     return problems;
   }
   if (!existsSync(`${stub}/.cupcake/policies/opencode`)) {
-    problems.push("cupcake stub missing, run dot.zsh sync");
+    problems.push("cupcake stub missing, run ./switch.zsh");
     return problems;
   }
   // canary: a known halt command must produce a blocking decision. uses the same
@@ -89,7 +89,7 @@ export const GuardGate = async () => {
         throw new Error(
           "Agent command guards are degraded, so bash is blocked fail-closed: the " +
             "tirith/cupcake guards are not currently enforcing. Repair with " +
-            "`config/common/cupcake/dot.zsh sync` in your shell, then restart opencode.",
+            "`./switch.zsh` in your shell, then restart opencode.",
         );
       }
     },

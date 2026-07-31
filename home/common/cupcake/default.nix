@@ -24,4 +24,20 @@ in {
     run ${pkgs.cupcake}/bin/cupcake init --global --harness claude
     run ${pkgs.cupcake}/bin/cupcake init --global --harness opencode
   '';
+
+  # Cupcake 0.3.0 needs a *project-level* .cupcake/ in whatever cwd
+  # `cupcake eval` runs from (see guard-cupcake.zsh/cupcake-guard.js, both of
+  # which `cd` here before calling `cupcake eval`) - the global store above
+  # only supplies the rules that apply on top of that. Idempotent, like
+  # cupcakeGlobalInit above.
+  home.activation.cupcakeStubInit = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    cupcakeStub="''${XDG_DATA_HOME:-$HOME/.local/share}/cupcake-stub"
+    if [[ ! -d "$cupcakeStub/.cupcake/policies/claude" ]]; then
+      run ${pkgs.coreutils}/bin/mkdir -p "$cupcakeStub"
+      ( cd "$cupcakeStub" && run ${pkgs.cupcake}/bin/cupcake init --harness claude )
+    fi
+    if [[ ! -d "$cupcakeStub/.cupcake/policies/opencode" ]]; then
+      ( cd "$cupcakeStub" && run ${pkgs.cupcake}/bin/cupcake init --harness opencode )
+    fi
+  '';
 }
