@@ -30,6 +30,7 @@
       imports = [
         (selfPath "home/common")
         (selfPath "home/linux")
+        (selfPath "home/linux/catppuccin-qt.nix")
       ];
       home.username = "anders";
       home.homeDirectory = "/home/anders";
