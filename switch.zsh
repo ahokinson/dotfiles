@@ -73,16 +73,14 @@ typeset -A NIXOS_HW_MAP=(
 )
 
 # Device-tree codename (first entry of /proc/device-tree/compatible) -> the
-# hostname of the corresponding darwin flake output. The flake output for
-# each Asahi machine is "anders@<hostname>" (see flake.nix) - never
-# "asahi", so a machine reports the same hostname whether it's booted into
-# macOS or Asahi. home-manager can't set the *system* hostname itself (no
-# root), so switch.zsh also does that directly via hostnamectl. Verify any
-# new entry with `tr '\0' '\n' < /proc/device-tree/compatible` on the
-# actual Asahi boot before adding it - don't guess (same rule as
-# DARWIN_MODEL_MAP).
+# short per-machine hostname to use on Asahi (see flake.nix's
+# homeConfigurations - never "asahi" itself). home-manager can't set the
+# *system* hostname itself (no root), so switch.zsh does that directly via
+# hostnamectl. Verify any new entry with
+# `tr '\0' '\n' < /proc/device-tree/compatible` on the actual Asahi boot
+# before adding it - don't guess (same rule as DARWIN_MODEL_MAP).
 typeset -A ASAHI_HW_MAP=(
-  "apple,j314s"  "macbookpro14-m1-pro"
+  "apple,j314s"  "bookpro14-m1-pro"
 )
 
 # Set as a side effect of detect_host_asahi when the codename is recognized;
@@ -165,7 +163,7 @@ detect_host_asahi() {
   fi
 
   ASAHI_TARGET_HOSTNAME=$hostname_target
-  print "anders@$hostname_target $hostname_target($codename)"
+  print "$hostname_target $hostname_target($codename)"
 }
 
 detect_host() {
@@ -216,7 +214,11 @@ build_args() {
     nixos:build)   print nixos-rebuild build      --flake "$DOTFILES#$output" ;;
     nixos:dry)     print nixos-rebuild dry-build  --flake "$DOTFILES#$output" ;;
     nixos:list)    return 0 ;;
-    home:switch)   print "nix run $HOME_MANAGER_TOOL -- switch --flake \"$DOTFILES#$output\"" ;;
+    # -b backs up colliding unmanaged files instead of aborting activation;
+    # `home.backupFileExtension` isn't a valid option for a standalone
+    # homeManagerConfiguration (only nix-darwin/NixOS-integrated ones), so
+    # this CLI flag is the actual mechanism for a bootstrap/first switch.
+    home:switch)   print "nix run $HOME_MANAGER_TOOL -- switch -b hm-backup --flake \"$DOTFILES#$output\"" ;;
     home:build)    print "nix build \"$DOTFILES#homeConfigurations.\\\"$output\\\".activationPackage\"" ;;
     home:dry)      print "nix run $HOME_MANAGER_TOOL -- build --flake \"$DOTFILES#$output\"" ;;
     home:list)     return 0 ;;
@@ -255,7 +257,7 @@ cmd_list() {
     p "  Flake output  : (could not auto-detect — pass explicitly)" red
   fi
   pb "\nAvailable flake outputs" yellow
-  for o in framework13-amd-ryzen macbookpro14-m1-pro macstudio-m1-max macbookpro16-m5 anders@macbookpro14-m1-pro anders@macstudio-m1-max; do
+  for o in framework13-amd-ryzen macbookpro14-m1-pro macstudio-m1-max macbookpro16-m5 bookpro14-m1-pro studio-m1-max; do
     if [[ "$o" == "$host" ]]; then
       p "  * $o" green
     else
@@ -391,7 +393,7 @@ main() {
 
   if [[ -z "$host" ]]; then
     p "Could not auto-detect host. Pass an explicit output name." red
-    p "Available outputs: framework13-amd-ryzen, macbookpro14-m1-pro, macstudio-m1-max, macbookpro16-m5, anders@macbookpro14-m1-pro, anders@macstudio-m1-max" gray
+    p "Available outputs: framework13-amd-ryzen, macbookpro14-m1-pro, macstudio-m1-max, macbookpro16-m5, bookpro14-m1-pro, studio-m1-max" gray
     exit 1
   fi
 
@@ -400,7 +402,7 @@ main() {
   case $host in
     framework13-amd-ryzen|nixos) kind=nixos ;;
     macbookpro14-m1-pro|macstudio-m1-max|macbookpro16-m5) kind=darwin ;;
-    *@*) kind=home ;;
+    bookpro14-m1-pro|studio-m1-max) kind=home ;;
     *) p "Unknown flake output: $host" red; exit 1 ;;
   esac
 

@@ -44,6 +44,10 @@
       # Both macs that dual-boot Asahi share one home-manager config
       # (home-manager owns only $HOME, so there's nothing host-specific to
       # configure) — exposed under two output names below, one per machine.
+      # home.backupFileExtension is a nix-darwin/NixOS module-integration
+      # option; it doesn't exist for a standalone homeManagerConfiguration
+      # like this one. The standalone equivalent is the `-b <ext>` CLI flag
+      # (see switch.zsh's home:switch/build/dry commands).
       asahiHome = home-manager.lib.homeManagerConfiguration {
         pkgs = mkPkgs "aarch64-linux";
         extraSpecialArgs = { inherit inputs selfPath; };
@@ -52,7 +56,6 @@
             home.username = "anders";
             home.homeDirectory = "/home/anders";
             home.stateVersion = "26.05";
-            home.backupFileExtension = "hm-backup";
           }
           (selfPath "home/common")
           (selfPath "home/linux")
@@ -106,14 +109,15 @@
       };
 
       # --- Asahi Fedora (aarch64-linux) — standalone home-manager profile.
-      # Named per-machine, matching each machine's darwin hostname, so it
-      # reports the same hostname whether booted into macOS or Asahi — never
-      # "asahi" itself. switch.zsh picks the right one by mapping the Apple
-      # Silicon device-tree codename to a hostname (see ASAHI_HW_MAP) and
-      # also sets the system hostname via hostnamectl, since home-manager
-      # can't do that itself.
-      homeConfigurations."anders@macbookpro14-m1-pro" = asahiHome;
-      homeConfigurations."anders@macstudio-m1-max" = asahiHome;
+      # Named per-machine, short forms of each machine's darwin hostname
+      # (never "asahi" itself, and no "user@" prefix - unlike the darwin/
+      # nixos outputs above these are never confusable with each other, so
+      # the extra prefix is just noise). switch.zsh picks the right one by
+      # mapping the Apple Silicon device-tree codename to a hostname (see
+      # ASAHI_HW_MAP) and also sets the system hostname via hostnamectl,
+      # since home-manager can't do that itself.
+      homeConfigurations."bookpro14-m1-pro" = asahiHome;
+      homeConfigurations."studio-m1-max" = asahiHome;
 
       # Expose for downstream compositors/hosts if needed.
       inherit overlays;
