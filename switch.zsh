@@ -218,9 +218,15 @@ build_args() {
     # `home.backupFileExtension` isn't a valid option for a standalone
     # homeManagerConfiguration (only nix-darwin/NixOS-integrated ones), so
     # this CLI flag is the actual mechanism for a bootstrap/first switch.
-    home:switch)   print "nix run $HOME_MANAGER_TOOL -- switch -b hm-backup --flake \"$DOTFILES#$output\"" ;;
-    home:build)    print "nix build \"$DOTFILES#homeConfigurations.\\\"$output\\\".activationPackage\"" ;;
-    home:dry)      print "nix run $HOME_MANAGER_TOOL -- build --flake \"$DOTFILES#$output\"" ;;
+    #
+    # --extra-experimental-features is passed explicitly (same reasoning as
+    # the darwin bootstrap branch above): a brand-new Asahi install's stock
+    # Nix has flakes/nix-command disabled until something enables them in
+    # nix.conf, and this is the very first command that would ever run
+    # there - it can't assume that's already been done.
+    home:switch)   print "nix --extra-experimental-features \"nix-command flakes\" run $HOME_MANAGER_TOOL -- switch -b hm-backup --flake \"$DOTFILES#$output\"" ;;
+    home:build)    print "nix --extra-experimental-features \"nix-command flakes\" build \"$DOTFILES#homeConfigurations.\\\"$output\\\".activationPackage\"" ;;
+    home:dry)      print "nix --extra-experimental-features \"nix-command flakes\" run $HOME_MANAGER_TOOL -- build --flake \"$DOTFILES#$output\"" ;;
     home:list)     return 0 ;;
     *) return 1 ;;
   esac
