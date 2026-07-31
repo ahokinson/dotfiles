@@ -219,14 +219,17 @@ build_args() {
     # homeManagerConfiguration (only nix-darwin/NixOS-integrated ones), so
     # this CLI flag is the actual mechanism for a bootstrap/first switch.
     #
-    # --extra-experimental-features is passed explicitly (same reasoning as
-    # the darwin bootstrap branch above): a brand-new Asahi install's stock
-    # Nix has flakes/nix-command disabled until something enables them in
-    # nix.conf, and this is the very first command that would ever run
-    # there - it can't assume that's already been done.
-    home:switch)   print "nix --extra-experimental-features \"nix-command flakes\" run $HOME_MANAGER_TOOL -- switch -b hm-backup --flake \"$DOTFILES#$output\"" ;;
-    home:build)    print "nix --extra-experimental-features \"nix-command flakes\" build \"$DOTFILES#homeConfigurations.\\\"$output\\\".activationPackage\"" ;;
-    home:dry)      print "nix --extra-experimental-features \"nix-command flakes\" run $HOME_MANAGER_TOOL -- build --flake \"$DOTFILES#$output\"" ;;
+    # experimental-features is set via NIX_CONFIG (not a CLI flag): a
+    # brand-new Asahi install's stock Nix has flakes/nix-command disabled
+    # until something enables them, and this is the very first command
+    # that would ever run there - it can't assume that's already been
+    # done. It has to be an env var, not --extra-experimental-features,
+    # because `nix run home-manager -- switch` shells out to further `nix`
+    # invocations internally (e.g. to build the activation package) that
+    # don't inherit their parent's CLI flags - only its environment.
+    home:switch)   print "NIX_CONFIG=\"experimental-features = nix-command flakes\" nix run $HOME_MANAGER_TOOL -- switch -b hm-backup --flake \"$DOTFILES#$output\"" ;;
+    home:build)    print "NIX_CONFIG=\"experimental-features = nix-command flakes\" nix build \"$DOTFILES#homeConfigurations.\\\"$output\\\".activationPackage\"" ;;
+    home:dry)      print "NIX_CONFIG=\"experimental-features = nix-command flakes\" nix run $HOME_MANAGER_TOOL -- build --flake \"$DOTFILES#$output\"" ;;
     home:list)     return 0 ;;
     *) return 1 ;;
   esac
