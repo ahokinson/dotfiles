@@ -1,6 +1,9 @@
 # nix-darwin system defaults, fonts, and user account.
 # Everything that targets a system-wide concern (not a user dotfile) lives here.
-{ config, pkgs, ... }: {
+{ config, pkgs, selfPath, ... }:
+let
+  sharedFonts = import (selfPath "home/common/fonts.nix") { inherit pkgs; };
+in {
   # Apple Silicon mac
   nixpkgs.hostPlatform = "aarch64-darwin";
 
@@ -16,11 +19,9 @@
   # default of 30000. Must match the actual group or activation aborts.
   ids.gids.nixbld = 350;
 
-  # Fonts available to all macOS apps via the system (Nerd Fonts live in home-manager)
-  fonts.packages = with pkgs; [
-    nerd-fonts.jetbrains-mono
-    nerd-fonts.meslo-lg
-  ];
+  # Fonts available to all macOS apps via the system (same list as
+  # home-manager's home.packages - see home/common/fonts.nix).
+  fonts.packages = sharedFonts.packages;
 
   # macOS user defaults, set exhaustively so all 3 Macs stay identical.
   system.defaults = {

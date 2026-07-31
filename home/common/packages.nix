@@ -1,4 +1,7 @@
-{ pkgs, lib, ... }:
+{ pkgs, lib, selfPath, ... }:
+let
+  sharedFonts = import (selfPath "home/common/fonts.nix") { inherit pkgs; };
+in
 {
   home.packages = with pkgs; lib.flatten [
     acli
@@ -39,8 +42,7 @@
     lazydocker
     lazygit
     mediainfo
-    nerd-fonts.jetbrains-mono
-    nerd-fonts.meslo-lg
+    sharedFonts.packages
     nmap
     nuclei
     ollama
