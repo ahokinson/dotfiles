@@ -52,6 +52,7 @@
         pkgs = mkPkgs "aarch64-linux";
         extraSpecialArgs = { inherit inputs selfPath; };
         modules = [
+          inputs.zen-browser.homeModules.beta
           {
             home.username = "anders";
             home.homeDirectory = "/home/anders";
@@ -59,6 +60,7 @@
           }
           (selfPath "home/common")
           (selfPath "home/linux")
+          (selfPath "home/linux/zen-browser.nix")
         ];
       };
 
