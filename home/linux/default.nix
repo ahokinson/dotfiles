@@ -5,5 +5,6 @@
   imports = [
     (selfPath "home/linux/packages.nix")
     (selfPath "home/linux/catppuccin.nix")
+    (selfPath "home/linux/wallpaper.nix")
   ];
 }

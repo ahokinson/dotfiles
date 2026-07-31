@@ -31,6 +31,8 @@
         (selfPath "home/common")
         (selfPath "home/linux")
         (selfPath "home/linux/catppuccin-qt.nix")
+        inputs.plasma-manager.homeModules.plasma-manager
+        (selfPath "home/linux/plasma.nix")
       ];
       home.username = "anders";
       home.homeDirectory = "/home/anders";
