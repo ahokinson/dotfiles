@@ -19,6 +19,7 @@
 { pkgs, selfPath, ... }:
 let
   sharedFonts = import (selfPath "home/common/fonts.nix") { inherit pkgs; };
+  wallpaper = selfPath "home/common/_files/wallpaper-frappe-base.png";
 in
 {
   programs.plasma = {
@@ -33,7 +34,7 @@ in
       colorScheme = "CatppuccinFrappeBlue";
       # No cursor.theme override - the Catppuccin cursor theme isn't good,
       # so this stays on Plasma's default (Breeze).
-      wallpaper = selfPath "home/common/_files/wallpaper-frappe-base.png";
+      wallpaper = wallpaper;
       # KPlugin.Id/library confirmed via the built catppuccin-kde derivation:
       # share/plasma/look-and-feel/Catppuccin-Frappe-Blue/contents/defaults.
       windowDecorations = {
@@ -77,6 +78,11 @@ in
     # typed plasma-manager option for it, and it's what flashes an accent-
     # colored bar at the bottom edge just before the autohide panel appears.
     configFile."kwinrc"."Plugins"."screenedgeEnabled" = false;
+
+    # The lock screen (kscreenlocker) is separate from SDDM's login greeter and
+    # from the desktop wallpaper; point it at the same image so it matches. Its
+    # colors already follow the global CatppuccinFrappeBlue color scheme.
+    kscreenlocker.appearance.wallpaper = wallpaper;
 
     # All categories pinned (not just general/fixedWidth) so the whole session
     # is one font instead of mixing in Plasma's defaults for toolbar/menu/etc.
