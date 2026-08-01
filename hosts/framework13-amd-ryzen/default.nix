@@ -28,6 +28,7 @@
     backupFileExtension = "hm-backup";
     users."anders" = {
       imports = [
+        inputs.zen-browser.homeModules.beta
         (selfPath "home/common")
         (selfPath "home/linux")
         (selfPath "home/linux/catppuccin-qt.nix")

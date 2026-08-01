@@ -66,7 +66,6 @@
           }
           (selfPath "home/common")
           (selfPath "home/linux")
-          (selfPath "home/linux/zen-browser.nix")
         ];
       };
 

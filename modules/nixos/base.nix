@@ -12,7 +12,6 @@
     # ghostty installed via home-manager (programs.ghostty) instead.
     git
     opencode
-    zen-browser
   ];
 
   # zsh login shell (per modules/nixos/user.nix).

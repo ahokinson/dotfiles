@@ -1,4 +1,6 @@
-{ lib, ... }: {
+{ lib, selfPath, ... }: {
+  imports = [ (selfPath "home/common/zen-extensions.nix") ];
+
   programs.zen-browser.enable = true;
 
   # One-time self-heal: earlier attempts at this declared
