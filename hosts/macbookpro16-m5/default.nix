@@ -12,5 +12,6 @@
     # which aborts activation.
     (selfPath "modules/darwin/home-manager.nix")
     (selfPath "modules/darwin/hardware-macbookpro16.nix")
+    (selfPath "modules/darwin/hermes.nix")
   ];
 }

@@ -10,5 +10,6 @@
     (selfPath "modules/darwin/universalaccess.nix")
     (selfPath "modules/darwin/home-manager.nix")
     (selfPath "modules/darwin/hardware-macstudio.nix")
+    (selfPath "modules/darwin/hermes.nix")
   ];
 }
