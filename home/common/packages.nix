@@ -8,7 +8,9 @@ in
     awscli2
     btop
     bun
+    cargo
     clipleaks
+    clippy
     cmake
     codex
     colima
@@ -21,7 +23,9 @@ in
     f3
     fd
     ffmpeg
+    fish
     fzf
+    gcc
     gh
     gitleaks
     glab
@@ -43,6 +47,7 @@ in
     mediainfo
     sharedFonts.packages
     nmap
+    nodejs
     nuclei
     ollama
     onefetch
@@ -56,6 +61,9 @@ in
     pv
     ripgrep
     ruff
+    rust-analyzer
+    rustc
+    rustfmt
     scorecard
     semgrep
     sox
