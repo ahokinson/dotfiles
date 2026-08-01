@@ -33,5 +33,10 @@
     # the Catppuccin cursor theme isn't good, so cursors stay on whatever
     # theme the desktop environment defaults to. `kvantum` is left to
     # catppuccin-qt.nix on hosts that import it.
+
+    # delta and bat are themed in home/common (git/default.nix, bat/default.nix);
+    # disable the module's ports here so they aren't double-themed on Linux.
+    delta.enable = false;
+    bat.enable = false;
   };
 }

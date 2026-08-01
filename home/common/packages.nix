@@ -6,7 +6,6 @@ in
   home.packages = with pkgs; lib.flatten [
     acli
     awscli2
-    bat
     btop
     bun
     clipleaks
