@@ -1,7 +1,4 @@
-{ selfPath, lib, ... }:
-let
-  files = selfPath "home/darwin/zsh";
-in {
+{ lib, ... }: {
   programs.zsh.initContent = lib.mkAfter ''
     export PATH="$HOME/.local/bin:$PATH"
 
@@ -14,11 +11,4 @@ in {
     # bun completions
     [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
   '';
-
-  home.file.".zprofile".source = "${files}/.zprofile";
-  home.file.".secrets.zsh".source = "${files}/.secrets.zsh";
-  home.file.".zsh/manage-secret" = {
-    source = "${files}/manage-secret";
-    executable = true;
-  };
 }
