@@ -17,6 +17,7 @@
     (selfPath "home/common/opencode")
     (selfPath "home/common/packages.nix")
     (selfPath "home/common/reliquary")
+    (selfPath "home/common/ssh-agent.nix")
     (selfPath "home/common/tirith")
     (selfPath "home/common/tmux")
     (selfPath "home/common/yt-dlp")
