@@ -14,6 +14,14 @@ in {
   # Use the Determinate Nix installer style (handles launchd services).
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nixpkgs.config.allowUnfree = true;
+  # Old generations otherwise stack up indefinitely across switches
+  # (mirrors nix.gc in modules/nixos/base.nix). `interval` is a list per
+  # nix-darwin's launchd StartCalendarInterval type.
+  nix.gc = {
+    automatic = true;
+    interval = [{ Weekday = 0; Hour = 3; Minute = 15; }];
+    options = "--delete-older-than 14d";
+  };
 
   # Determinate Nix uses GID 350 for nixbld, not nix-darwin's historical
   # default of 30000. Must match the actual group or activation aborts.
