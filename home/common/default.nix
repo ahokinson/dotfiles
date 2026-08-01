@@ -16,6 +16,7 @@
     (selfPath "home/common/nvim")
     (selfPath "home/common/opencode")
     (selfPath "home/common/packages.nix")
+    (selfPath "home/common/reliquary")
     (selfPath "home/common/tirith")
     (selfPath "home/common/tmux")
     (selfPath "home/common/yt-dlp")

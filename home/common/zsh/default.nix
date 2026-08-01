@@ -105,6 +105,10 @@ in {
           eval "$(tirith init --shell zsh)"
         fi
 
+        if command -v reliquary &>/dev/null; then
+          eval "$(reliquary hook zsh)"
+        fi
+
         [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
       ''
     ];
