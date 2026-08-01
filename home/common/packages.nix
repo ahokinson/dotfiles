@@ -1,6 +1,10 @@
 { pkgs, lib, selfPath, ... }:
 let
   sharedFonts = import (selfPath "home/common/fonts.nix") { inherit pkgs; };
+  # macOS installs the fonts system-wide via fonts.packages
+  # (modules/darwin/system.nix), and fontconfig is inert for native macOS apps,
+  # so the home-level install/fontconfig is Linux-only to avoid duplicating them.
+  isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
 in
 {
   home.packages = with pkgs; lib.flatten [
@@ -45,7 +49,7 @@ in
     lazydocker
     lazygit
     mediainfo
-    sharedFonts.packages
+    (lib.optionals (!isDarwin) sharedFonts.packages)
     nmap
     nodejs
     nuclei
@@ -82,5 +86,5 @@ in
     zig
   ];
 
-  fonts.fontconfig.enable = true;
+  fonts.fontconfig.enable = lib.mkIf (!isDarwin) true;
 }
