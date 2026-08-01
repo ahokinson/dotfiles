@@ -44,9 +44,17 @@ in
       splashScreen.theme = "None";
     };
 
+    # All categories pinned (not just general/fixedWidth) so the whole session
+    # is one font instead of mixing in Plasma's defaults for toolbar/menu/etc.
+    # `small` deliberately keeps a smaller size - a 12pt "small" font defeats
+    # the category.
     fonts = {
-      general = { family = sharedFonts.generalFamily; pointSize = 10; };
-      fixedWidth = { family = sharedFonts.monoFamily; pointSize = 10; };
+      general = { family = sharedFonts.generalFamily; pointSize = sharedFonts.pointSize; };
+      fixedWidth = { family = sharedFonts.monoFamily; pointSize = sharedFonts.pointSize; };
+      toolbar = { family = sharedFonts.generalFamily; pointSize = sharedFonts.pointSize; };
+      menu = { family = sharedFonts.generalFamily; pointSize = sharedFonts.pointSize; };
+      windowTitle = { family = sharedFonts.generalFamily; pointSize = sharedFonts.pointSize; };
+      small = { family = sharedFonts.generalFamily; pointSize = sharedFonts.pointSize - 4; };
     };
   };
 }

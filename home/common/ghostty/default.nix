@@ -30,10 +30,11 @@
 # the theme above, and keybind/command-palette-entry are additive in
 # Ghostty's config format, so leaving them undeclared already preserves the
 # shipped defaults with no drift risk.
-{ pkgs, lib, ... }:
+{ pkgs, lib, selfPath, ... }:
 
 let
   isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
+  sharedFonts = import (selfPath "home/common/fonts.nix") { inherit pkgs; };
 in
 {
   programs.ghostty = {
@@ -58,8 +59,8 @@ in
 
       cursor-click-to-move = false;
 
-      font-family = "MesloLGS Nerd Font Mono";
-      font-size = 12;
+      font-family = sharedFonts.monoFamily;
+      font-size = sharedFonts.pointSize;
       font-thicken = true;
 
       # --- Everything below pins the shipped default explicitly ----------
