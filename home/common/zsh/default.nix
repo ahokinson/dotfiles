@@ -111,6 +111,10 @@ in {
 
         [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
       ''
+      ''
+        # bun completions
+        [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
+      ''
     ];
   };
 
