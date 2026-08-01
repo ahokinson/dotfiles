@@ -44,6 +44,40 @@ in
       splashScreen.theme = "None";
     };
 
+    # Mirrors the macOS Dock (modules/darwin/system.nix: dock.orientation,
+    # dock.autohide, dock.tilesize, dock.persistent-apps) so both platforms
+    # feel like the same bar: bottom, floating, auto-hiding, icon-only tasks
+    # sized to match the Dock's tilesize, with the same two apps pinned.
+    panels = [
+      {
+        location = "bottom";
+        floating = true;
+        hiding = "autohide";
+        height = 64;
+        widgets = [
+          "org.kde.plasma.kickoff"
+          "org.kde.plasma.pager"
+          {
+            iconTasks = {
+              launchers = [
+                "applications:zen-beta.desktop"
+                "applications:com.mitchellh.ghostty.desktop"
+              ];
+            };
+          }
+          "org.kde.plasma.marginsseparator"
+          "org.kde.plasma.systemtray"
+          "org.kde.plasma.digitalclock"
+          "org.kde.plasma.showdesktop"
+        ];
+      }
+    ];
+
+    # Disables the "Highlight Screen Edges and Hot Corners" KWin effect - no
+    # typed plasma-manager option for it, and it's what flashes an accent-
+    # colored bar at the bottom edge just before the autohide panel appears.
+    configFile."kwinrc"."Plugins"."screenedgeEnabled" = false;
+
     # All categories pinned (not just general/fixedWidth) so the whole session
     # is one font instead of mixing in Plasma's defaults for toolbar/menu/etc.
     # `small` deliberately keeps a smaller size - a 12pt "small" font defeats
