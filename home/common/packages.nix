@@ -17,7 +17,6 @@ in
     clippy
     cmake
     codex
-    colima
     cosign
     crane
     delta
@@ -59,6 +58,10 @@ in
     osv-scanner
     pandoc
     pkg-config
+    # macOS: needs `podman machine init && podman machine start` once per
+    # Mac (containers still run in a VM there); NixOS gets a native rootless
+    # runtime instead, see modules/nixos/containers.nix.
+    podman
     portaudio
     procs
     proton-vpn

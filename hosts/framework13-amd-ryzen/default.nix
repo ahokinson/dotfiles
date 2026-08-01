@@ -14,6 +14,7 @@
     (selfPath "modules/nixos/locale.nix")
     (selfPath "modules/nixos/desktop.nix")
     (selfPath "modules/nixos/audio-printing.nix")
+    (selfPath "modules/nixos/containers.nix")
     (selfPath "modules/nixos/ssh.nix")
     (selfPath "modules/nixos/user.nix")
     (selfPath "modules/nixos/hermes.nix")
