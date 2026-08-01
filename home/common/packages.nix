@@ -61,6 +61,7 @@ in
     pkg-config
     portaudio
     procs
+    proton-vpn
     prowler
     pv
     ripgrep
