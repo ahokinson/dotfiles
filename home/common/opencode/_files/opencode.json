@@ -78,7 +78,7 @@
   },
   "share": "disabled",
   "autoupdate": false,
-  "instructions": ["SOUL.md", "system.md"],
+  "instructions": ["system.md"],
   "agent": {
     "build": {
       "disable": false

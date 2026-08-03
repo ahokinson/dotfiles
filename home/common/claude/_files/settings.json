@@ -2,6 +2,39 @@
   "permissions": {
     "defaultMode": "bypassPermissions"
   },
+  "sandbox": {
+    "enabled": true,
+    "allowUnsandboxedCommands": true,
+    "network": {
+      "allowUnixSockets": ["~/.rd/docker.sock"],
+      "allowLocalBinding": true
+    },
+    "filesystem": {
+      "denyRead": [
+        "~/.ssh",
+        "~/.aws",
+        "~/.gnupg",
+        "~/.netrc",
+        "**/.env",
+        "**/.env.*",
+        "**/*.pem",
+        "**/*.key",
+        "**/*.p12",
+        "**/*.pfx",
+        "**/*.jks",
+        "**/*.keystore",
+        "**/id_rsa",
+        "**/id_dsa",
+        "**/id_ecdsa",
+        "**/id_ed25519",
+        "**/credentials",
+        "**/.credentials",
+        "**/.npmrc",
+        "**/.pypirc"
+      ]
+    }
+  },
+  "skipDangerousModePermissionPrompt": true,
   "enableAllProjectMcpServers": false,
   "hooks": {
     "PreToolUse": [
@@ -104,7 +137,7 @@
           },
           {
             "type": "command",
-            "command": "zsh ~/.claude/hooks/embody.zsh"
+            "command": "psyche --format claude ~/.claude/plugins/marketplaces/local/plugins/custom/SOUL.md"
           },
           {
             "type": "command",
@@ -131,7 +164,6 @@
     "refreshInterval": 30
   },
   "enabledPlugins": {
-    "caveman@caveman": false,
     "custom@local": true,
     "gopls-lsp@claude-plugins-official": true,
     "clangd-lsp@claude-plugins-official": true,
@@ -139,12 +171,6 @@
     "swift-lsp@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
-    "caveman": {
-      "source": {
-        "source": "github",
-        "repo": "JuliusBrussee/caveman"
-      }
-    },
     "press": {
       "source": {
         "source": "github",
@@ -152,44 +178,10 @@
       }
     }
   },
-  "sandbox": {
-    "enabled": true,
-    "allowUnsandboxedCommands": true,
-    "network": {
-      "allowUnixSockets": ["~/.rd/docker.sock"],
-      "allowLocalBinding": true
-    },
-    "filesystem": {
-      "denyRead": [
-        "~/.ssh",
-        "~/.aws",
-        "~/.gnupg",
-        "~/.netrc",
-        "**/.env",
-        "**/.env.*",
-        "**/*.pem",
-        "**/*.key",
-        "**/*.p12",
-        "**/*.pfx",
-        "**/*.jks",
-        "**/*.keystore",
-        "**/id_rsa",
-        "**/id_dsa",
-        "**/id_ecdsa",
-        "**/id_ed25519",
-        "**/credentials",
-        "**/.credentials",
-        "**/.npmrc",
-        "**/.pypirc"
-      ]
-    }
-  },
   "tui": "fullscreen",
-  "skipDangerousModePermissionPrompt": true,
   "theme": "dark-ansi",
   "editorMode": "normal",
   "autoCompactEnabled": false,
   "showTurnDuration": false,
-  "useAutoModeDuringPlan": false,
-  "skipDangerousModePermissionPrompt": true
+  "useAutoModeDuringPlan": false
 }

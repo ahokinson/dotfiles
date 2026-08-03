@@ -16,6 +16,7 @@
     (selfPath "home/common/nvim")
     (selfPath "home/common/opencode")
     (selfPath "home/common/packages.nix")
+    (selfPath "home/common/psyche")
     (selfPath "home/common/reliquary")
     (selfPath "home/common/ssh-agent.nix")
     (selfPath "home/common/tirith")
