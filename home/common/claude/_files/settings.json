@@ -73,7 +73,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "zsh ~/.claude/hooks/tmux-state.zsh tool"
+            "command": "pharos tmux dispatch tool"
           }
         ]
       },
@@ -82,7 +82,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "zsh ~/.claude/hooks/tmux-state.zsh ask"
+            "command": "pharos tmux dispatch ask"
           }
         ]
       }
@@ -93,7 +93,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "zsh ~/.claude/hooks/tmux-state.zsh think"
+            "command": "pharos tmux dispatch think"
           }
         ]
       }
@@ -103,7 +103,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "zsh ~/.claude/hooks/tmux-state.zsh think"
+            "command": "pharos tmux dispatch think"
           }
         ]
       }
@@ -113,7 +113,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "zsh ~/.claude/hooks/tmux-state.zsh off"
+            "command": "pharos tmux dispatch off"
           }
         ]
       }
@@ -123,7 +123,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "zsh ~/.claude/hooks/tmux-state.zsh notify"
+            "command": "pharos tmux dispatch notify"
           }
         ]
       }
@@ -141,7 +141,7 @@
           },
           {
             "type": "command",
-            "command": "zsh ~/.claude/hooks/tmux-state.zsh off"
+            "command": "pharos tmux dispatch off"
           }
         ]
       }
@@ -151,7 +151,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "zsh ~/.claude/hooks/tmux-state.zsh off"
+            "command": "pharos tmux dispatch off"
           }
         ]
       }
@@ -160,7 +160,7 @@
   "disableAllHooks": false,
   "statusLine": {
     "type": "command",
-    "command": "zsh ~/.claude/statusline.zsh",
+    "command": "pharos render",
     "refreshInterval": 30
   },
   "enabledPlugins": {
