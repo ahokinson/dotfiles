@@ -141,14 +141,20 @@ _hsl2rgb() { # $1 h $2 s $3 l (0..1) -> caller r g b (0-255)
   _hue2channel $p $q $h;               (( g = channel * 255 + 0.5 ))
   _hue2channel $p $q $(( h - 1.0/3 )); (( b = channel * 255 + 0.5 ))
 }
+# Endpoint hues/sat/lum plus the hue delta swept the shorter way round the
+# wheel, shared by gradient() and lerp_color() (caller-scope out params).
+_hue_delta() { # $1 start colour $2 end colour -> caller h1 s1 l1 h2 s2 l2 dh
+  local -a start=(${(s:;:)${${1#"$fg"}%m}}) end=(${(s:;:)${${2#"$fg"}%m}})
+  local -F hue sat lum
+  _rgb2hsl $start[1] $start[2] $start[3]; h1=$hue; s1=$sat; l1=$lum
+  _rgb2hsl $end[1]   $end[2]   $end[3];   h2=$hue; s2=$sat; l2=$lum
+  dh=$(( h2 - h1 ))
+  (( dh > 0.5 )) && (( dh -= 1 )); (( dh < -0.5 )) && (( dh += 1 ))
+}
 gradient() { # $1 = text, $2 = start colour, $3 = end colour; opt $4 = offset, $5 = span
   local text="$1"
-  local -a start=(${(s:;:)${${2#"$fg"}%m}}) end=(${(s:;:)${${3#"$fg"}%m}})
-  local -F hue sat lum
-  _rgb2hsl $start[1] $start[2] $start[3]; local -F h1=$hue s1=$sat l1=$lum
-  _rgb2hsl $end[1]   $end[2]   $end[3];   local -F h2=$hue s2=$sat l2=$lum
-  local -F dh=$(( h2 - h1 ))                       # sweep the shorter way round
-  (( dh > 0.5 )) && (( dh -= 1 )); (( dh < -0.5 )) && (( dh += 1 ))
+  local -F h1 s1 l1 h2 s2 l2 dh
+  _hue_delta "$2" "$3"
   integer n=${#text} i r g b
   integer off=${4:-0} span=${5:-$n}       # colour text as chars [off, off+n) of a span-wide sweep
   local -F t h
@@ -166,12 +172,8 @@ gradient() { # $1 = text, $2 = start colour, $3 = end colour; opt $4 = offset, $
 # Colours a value by magnitude, e.g. a usage % on a green->red ramp.
 lerp_color() { # $1 = t (0..1)  $2 = start escape  $3 = end escape  -> REPLY = colour escape
   local -F t=$1; (( t < 0 )) && t=0; (( t > 1 )) && t=1
-  local -a s=(${(s:;:)${${2#"$fg"}%m}}) e=(${(s:;:)${${3#"$fg"}%m}})
-  local -F hue sat lum
-  _rgb2hsl $s[1] $s[2] $s[3]; local -F h1=$hue s1=$sat l1=$lum
-  _rgb2hsl $e[1] $e[2] $e[3]; local -F h2=$hue s2=$sat l2=$lum
-  local -F dh=$(( h2 - h1 ))                       # sweep the shorter way round
-  (( dh > 0.5 )) && (( dh -= 1 )); (( dh < -0.5 )) && (( dh += 1 ))
+  local -F h1 s1 l1 h2 s2 l2 dh
+  _hue_delta "$2" "$3"
   local -F h=$(( h1 + dh * t )); (( h < 0 )) && (( h += 1 )); (( h >= 1 )) && (( h -= 1 ))
   integer r g b
   _hsl2rgb $h $(( s1 + (s2 - s1) * t )) $(( l1 + (l2 - l1) * t ))
