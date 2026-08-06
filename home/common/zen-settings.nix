@@ -42,7 +42,7 @@ let
 
   configDir =
     if pkgs.stdenv.hostPlatform.isDarwin
-    then "${config.home.homeDirectory}/Library/Application Support/Zen"
+    then "${config.home.homeDirectory}/Library/Application Support/zen"
     else "${config.home.homeDirectory}/.zen";
 
   # Zen can, on some launches, fail to recognize its own installation
