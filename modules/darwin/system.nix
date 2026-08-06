@@ -218,7 +218,46 @@ in {
     ActivityMonitor.SortColumn = "CPUUsage";
     ActivityMonitor.SortDirection = 0; # descending
     ActivityMonitor.OpenMainWindow = true;
+
+    SoftwareUpdate.AutomaticallyInstallMacOSUpdates = true;
   };
+
+  # Application Layer Firewall. blockAllIncoming stays false - true would
+  # also kill things like AirDrop/sharing; stealth mode still keeps the
+  # machine from responding to unsolicited probes. Signed software (both
+  # already-installed and newly downloaded) is let through automatically
+  # rather than prompting for every built-in daemon. (system.defaults.alf.*
+  # is the old, partially-removed home for this - this is its replacement.)
+  networking.applicationFirewall = {
+    enable = true;
+    blockAllIncoming = false;
+    allowSigned = true;
+    allowSignedApp = true;
+    enableStealthMode = true;
+  };
+
+  # Remote Login (SSH) off - deliberately not managed via services.openssh
+  # elsewhere on darwin, so this is authoritative for it.
+  services.openssh.enable = false;
+
+  # Things nix-darwin has no declarative option for, so enforced imperatively
+  # on every activation (same self-healing pattern as
+  # home/darwin/zen-browser.nix). `|| true` throughout: a work machine's MDM
+  # profile may re-lock these, and a failed disable here shouldn't fail the
+  # whole activation.
+  system.activationScripts.extraActivation.text = ''
+    # Touch ID is not a secret you can refuse to give up - unlike a
+    # passcode, biometrics generally aren't protected against compelled
+    # unlock. Disabled system-wide, both for unlock and for any other use
+    # (e.g. sudo), rather than opted into anywhere in this config.
+    /usr/bin/bioutil -w -s -f 0 -u 0 || true
+
+    # Screen Sharing off.
+    launchctl bootout system /System/Library/LaunchDaemons/com.apple.screensharing.plist || true
+
+    # Remote Management (Apple Remote Desktop) off.
+    /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -deactivate -stop || true
+  '';
 
   # Caps Lock -> Control (terminal/emacs-style bindings).
   system.keyboard.enableKeyMapping = true;
