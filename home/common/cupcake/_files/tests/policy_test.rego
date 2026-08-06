@@ -23,6 +23,7 @@ import data.cupcake.global.policies.network.reverse_shell as revsh
 import data.cupcake.global.policies.packages.install as pkg
 import data.cupcake.global.policies.process.termination as process
 import data.cupcake.global.policies.secrets.exfil as secrets
+import data.cupcake.global.policies.tools.ripgrep as ripgrep
 
 bash(cmd) := {"tool_name": "Bash", "tool_input": {"command": cmd}}
 
@@ -126,6 +127,14 @@ test_pkill_deny if count(process.deny) == 1 with input as bash("pkill -f some-da
 
 test_killall_deny if count(process.deny) == 1 with input as bash("killall node")
 
+test_rg_replace_short_deny if count(ripgrep.deny) == 1 with input as bash("rg -r n 'psyche' .")
+
+test_rg_replace_clustered_deny if count(ripgrep.deny) == 1 with input as bash("rg -rn 'psyche' .")
+
+test_rg_replace_clustered_reversed_deny if count(ripgrep.deny) == 1 with input as bash("rg -nr 'psyche' .")
+
+test_rg_replace_absolute_path_deny if count(ripgrep.deny) == 1 with input as bash("/usr/bin/rg -rn SOUL /tmp")
+
 # --- should NOT fire (benign) ---
 
 test_benign_no_cloud if count(cloud.deny) == 0 with input as bash("git status && npm test")
@@ -159,3 +168,13 @@ test_killed_word_no_process if count(process.deny) == 0 with input as bash("echo
 test_git_reset_soft_ok if count(gitreset.deny) == 0 with input as bash("git reset --soft HEAD~1")
 
 test_git_clean_dry_run_ok if count(gitclean.deny) == 0 with input as bash("git clean -n")
+
+test_rg_plain_ok if count(ripgrep.deny) == 0 with input as bash("rg -n 'psyche' .")
+
+test_rg_long_replace_ok if count(ripgrep.deny) == 0 with input as bash("rg --replace n 'psyche' .")
+
+test_rg_pipe_to_other_flag_ok if count(ripgrep.deny) == 0 with input as bash("rg -n foo | xargs rm -rf")
+
+test_rg_after_other_flag_ok if count(ripgrep.deny) == 0 with input as bash("ls -r | rg foo")
+
+test_rg_dashed_pattern_ok if count(ripgrep.deny) == 0 with input as bash("rg -e -pattern src/")
