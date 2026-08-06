@@ -69,19 +69,21 @@ in
           "org.kde.plasma.marginsseparator"
           "org.kde.plasma.systemtray"
           # Matches the macOS menu bar clock (modules/darwin/system.nix:
-          # menuExtraClock.Show24Hour/ShowDate/IsAnalog) - 24h time, date
-          # inline rather than stacked underneath, and a fixed compact font
-          # instead of Plasma's default of scaling the clock to fill this
-          # panel's 64px height.
+          # menuExtraClock.Show24Hour/ShowDate/IsAnalog) - 24h time with
+          # seconds, a custom "Wed Aug 5" date inline rather than stacked
+          # underneath, and a fixed compact font (smaller than the general UI
+          # font, matching fonts.small below) instead of Plasma's default of
+          # scaling the clock to fill this panel's 64px height.
           {
             digitalClock = {
               date.enable = true;
               date.position = "besideTime";
-              date.format = "shortDate";
+              date.format = { custom = "ddd MMM d"; };
               time.format = "24h";
+              time.showSeconds = "always";
               font = {
                 family = sharedFonts.generalFamily;
-                size = sharedFonts.pointSize;
+                size = sharedFonts.pointSize - 2;
               };
             };
           }

@@ -18,5 +18,5 @@
 
   # Single source of truth for font size. ghostty (terminal) and Plasma (DE)
   # both read this so the two never drift; change it here to resize everything.
-  pointSize = 12;
+  pointSize = 10;
 }
