@@ -97,6 +97,47 @@ in
     # colored bar at the bottom edge just before the autohide panel appears.
     configFile."kwinrc"."Plugins"."screenedgeEnabled" = false;
 
+    # Force-maximize on launch for the two apps pinned above. Window class
+    # values match their .desktop ids (iconTasks.launchers); "zen" is a
+    # substring match since Zen's exact WM_CLASS varies by channel
+    # (zen-beta/zen/zen-twilight).
+    window-rules = [
+      {
+        description = "Force maximize Zen Browser";
+        match.window-class = {
+          value = "zen";
+          type = "substring";
+        };
+        apply = {
+          maximizehoriz = {
+            value = true;
+            apply = "force";
+          };
+          maximizevert = {
+            value = true;
+            apply = "force";
+          };
+        };
+      }
+      {
+        description = "Force maximize Ghostty";
+        match.window-class = {
+          value = "com.mitchellh.ghostty";
+          type = "substring";
+        };
+        apply = {
+          maximizehoriz = {
+            value = true;
+            apply = "force";
+          };
+          maximizevert = {
+            value = true;
+            apply = "force";
+          };
+        };
+      }
+    ];
+
     # The lock screen (kscreenlocker) is separate from SDDM's login greeter and
     # from the desktop wallpaper; point it at the same image so it matches. Its
     # colors already follow the global CatppuccinFrappeBlue color scheme.
