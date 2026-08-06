@@ -3,6 +3,14 @@
 
   programs.zen-browser.enable = true;
 
+  # Force-installed on Mac only (not in zen-extensions.nix's shared list) -
+  # syncs Safari/iCloud Keychain passwords, so it's only useful on Apple
+  # hardware.
+  programs.zen-browser.policies.ExtensionSettings."password-manager-firefox-extension@apple.com" = {
+    install_url = "https://addons.mozilla.org/firefox/downloads/latest/icloud-passwords/latest.xpi";
+    installation_mode = "force_installed";
+  };
+
   # One-time self-heal: earlier attempts at this declared
   # programs.zen-browser.profiles, which makes home-manager fully own and
   # regenerate profiles.ini from only the profiles it's told about — that
