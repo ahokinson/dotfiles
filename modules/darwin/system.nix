@@ -70,7 +70,7 @@ in {
     dock.show-recents = false;
     dock.slow-motion-allowed = false;
     dock.static-only = false;
-    dock.tilesize = 64;
+    dock.tilesize = 32;
     dock.largesize = 16;
 
     # Verified against this machine's actual settings rather than

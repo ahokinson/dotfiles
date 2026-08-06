@@ -48,13 +48,18 @@ in
     # Mirrors the macOS Dock (modules/darwin/system.nix: dock.orientation,
     # dock.autohide, dock.tilesize, dock.persistent-apps) so both platforms
     # feel like the same bar: bottom, floating, auto-hiding, icon-only tasks
-    # sized to match the Dock's tilesize, with the same two apps pinned.
+    # with the same two apps pinned.
+    #
+    # height is NOT dock.tilesize. tilesize is macOS's icon size; this is the
+    # panel's full thickness, and a floating panel spends roughly 12px of it on
+    # margin. So height runs above tilesize to land on the same icon size:
+    # 44 here against tilesize 32. Change both together or they drift apart.
     panels = [
       {
         location = "bottom";
         floating = true;
         hiding = "autohide";
-        height = 64;
+        height = 44;
         widgets = [
           "org.kde.plasma.kickoff"
           "org.kde.plasma.pager"
