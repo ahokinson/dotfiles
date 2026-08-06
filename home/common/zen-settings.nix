@@ -13,7 +13,7 @@
 # it never writes profiles.ini.
 { inputs, selfPath, config, lib, pkgs, ... }:
 let
-  prefs = import (selfPath "home/common/zen-browser-prefs.nix");
+  prefs = import (selfPath "home/common/zen-browser-prefs.nix") { inherit pkgs selfPath; };
 
   toPrefLiteral = value:
     if builtins.isBool value then (if value then "true" else "false")

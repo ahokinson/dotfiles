@@ -2,12 +2,22 @@
 # Linux), sourced from the actual shipped defaults in zen-browser/desktop's
 # prefs/zen/*.yaml, with a handful of deliberate overrides (see git history
 # for the reasoning behind each divergence from the shipped default).
+{ pkgs, selfPath, ... }:
+let
+  sharedFonts = import (selfPath "home/common/fonts.nix") { inherit pkgs; };
+in
 {
   "browser.contentblocking.category" = "standard";
   "browser.urlbar.shortcuts.workspaces" = true;
   "dom.security.https_only_mode" = true;
   "extensions.formautofill.addresses.enabled" = false;
   "extensions.formautofill.creditCards.enabled" = false;
+  # Default/fallback fonts only - browser.display.use_document_fonts stays
+  # at its default (1), so pages that specify their own fonts are unaffected.
+  # Matches the family strings ghostty and Plasma already use (fonts.nix).
+  "font.name.monospace.x-western" = sharedFonts.monoFamily;
+  "font.name.sans-serif.x-western" = sharedFonts.generalFamily;
+  "font.name.serif.x-western" = sharedFonts.generalFamily;
   "image.avif.enabled" = true;
   "image.jxl.enabled" = true;
   "media.eme.enabled" = true;
