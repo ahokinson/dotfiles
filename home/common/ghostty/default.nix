@@ -70,6 +70,12 @@ let
         --set LIBGL_DRIVERS_PATH /usr/lib64/dri \
         --set __EGL_VENDOR_LIBRARY_DIRS /usr/share/glvnd/egl_vendor.d
     '';
+    # symlinkJoin doesn't carry the wrapped package's meta over, and
+    # lib.getExe (used for the +validate-config check below, and by
+    # anything else that resolves the binary name from meta.mainProgram)
+    # would otherwise guess "ghostty-asahi-gl" from this derivation's own
+    # name - which doesn't exist in $out/bin, only "ghostty" does.
+    meta = pkgs.ghostty.meta // { mainProgram = "ghostty"; };
   };
 in
 {
