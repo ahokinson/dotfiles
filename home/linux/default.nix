@@ -10,5 +10,6 @@
     (selfPath "home/linux/catppuccin.nix")
     (selfPath "home/linux/wallpaper.nix")
     (selfPath "home/linux/zen-browser.nix")
+    (selfPath "home/linux/desktop-file-trust.nix")
   ];
 }
