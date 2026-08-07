@@ -69,6 +69,24 @@ let
       wrapProgram $out/bin/ghostty \
         --set LIBGL_DRIVERS_PATH /usr/lib64/dri \
         --set __EGL_VENDOR_LIBRARY_DIRS /usr/share/glvnd/egl_vendor.d
+
+      # symlinkJoin only symlinks these through unchanged, and both bake an
+      # absolute Exec=/ExecStart= path straight to ghostty's own unwrapped
+      # store path (confirmed: "Exec=${pkgs.ghostty}/bin/ghostty ...",
+      # "DBusActivatable=true", "ExecStart=${pkgs.ghostty}/bin/ghostty ...")
+      # - the .desktop launch (and D-Bus activation, since it's
+      # DBusActivatable) would otherwise bypass this wrapper's GL fix
+      # entirely and go straight to the unwrapped binary. Regenerate both
+      # pointing at $out/bin/ghostty instead.
+      rm -f $out/share/applications/com.mitchellh.ghostty.desktop
+      sed "s|${pkgs.ghostty}/bin/ghostty|$out/bin/ghostty|g" \
+        ${pkgs.ghostty}/share/applications/com.mitchellh.ghostty.desktop \
+        > $out/share/applications/com.mitchellh.ghostty.desktop
+
+      rm -f $out/share/systemd/user/app-com.mitchellh.ghostty.service
+      sed "s|${pkgs.ghostty}/bin/ghostty|$out/bin/ghostty|g" \
+        ${pkgs.ghostty}/share/systemd/user/app-com.mitchellh.ghostty.service \
+        > $out/share/systemd/user/app-com.mitchellh.ghostty.service
     '';
     # symlinkJoin doesn't carry the wrapped package's meta over, and
     # lib.getExe (used for the +validate-config check below, and by
