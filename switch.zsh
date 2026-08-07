@@ -82,6 +82,9 @@ typeset -A NIXOS_HW_MAP=(
 # before adding it - don't guess (same rule as DARWIN_MODEL_MAP).
 typeset -A ASAHI_HW_MAP=(
   "apple,j314s"  "bookpro14-m1-pro"
+  # TODO: Mac Studio's codename unverified - boot Asahi on it, run
+  # `tr '\0' '\n' < /proc/device-tree/compatible | head -1`, and add:
+  # "apple,XXXX"  "studio-m1-max"
 )
 
 # Set as a side effect of detect_host_asahi when the codename is recognized;

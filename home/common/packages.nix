@@ -58,9 +58,9 @@ in
     osv-scanner
     pandoc
     pkg-config
-    # macOS: needs `podman machine init && podman machine start` once per
-    # Mac (containers still run in a VM there); NixOS gets a native rootless
-    # runtime instead, see modules/nixos/containers.nix.
+    # macOS: containers run in a VM there; init/start is automated in
+    # home/darwin/podman.nix. NixOS gets a native rootless runtime instead,
+    # see modules/nixos/containers.nix.
     podman
     portaudio
     procs

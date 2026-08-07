@@ -59,6 +59,7 @@
         extraSpecialArgs = { inherit inputs selfPath; };
         modules = [
           inputs.zen-browser.homeModules.beta
+          inputs.plasma-manager.homeModules.plasma-manager
           {
             home.username = "anders";
             home.homeDirectory = "/home/anders";
@@ -66,6 +67,9 @@
           }
           (selfPath "home/common")
           (selfPath "home/linux")
+          (selfPath "home/linux/plasma-panel.nix")
+          (selfPath "home/linux/plasma-theme.nix")
+          (selfPath "home/linux/kvantum-asahi.nix")
         ];
       };
 

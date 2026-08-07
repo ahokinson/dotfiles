@@ -3,6 +3,7 @@
   imports = [
     (selfPath "home/darwin/zen-browser.nix")
     (selfPath "home/darwin/wallpaper.nix")
+    (selfPath "home/darwin/podman.nix")
   ];
 
   # modules/darwin/system.nix points screencapture.location here; make sure
