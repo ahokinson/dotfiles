@@ -15,12 +15,37 @@
 # settings like windowDecorations is unreliable (the imperative apply step
 # reruns every login and overwrites them). Setting each piece explicitly
 # below avoids that and writes straight to config files at activation time.
-{ pkgs, selfPath, ... }:
+#
+# colorScheme and windowDecorations below reference assets from the
+# catppuccin-kde package - a pure-data stdenvNoCC derivation (SVGs/.colors
+# files, no compiled Qt code), so installing it carries none of
+# catppuccin-qt.nix's ABI risk. NixOS gets it system-wide via
+# environment.systemPackages (modules/nixos/desktop.nix), already on
+# XDG_DATA_DIRS by default. Asahi has no such system layer, so it's a home
+# package here instead, with its share/ exported into the live session via
+# plasma-workspace's own env-script mechanism - startplasma sources every
+# ~/.config/plasma-workspace/env/*.sh before launching kwin/plasmashell, the
+# same "needs a guaranteed-live-session hook, not home.activation" fix
+# workspace.wallpaper needed in plasma.nix.
+{ pkgs, lib, selfPath, config, osConfig ? null, ... }:
 let
   sharedFonts = import (selfPath "home/common/fonts.nix") { inherit pkgs; };
   wallpaper = selfPath "home/common/_files/wallpaper-frappe-base.png";
+  # osConfig is present only when wired in as a NixOS module (see
+  # plasma-panel.nix for the same test and why it has to be a function arg).
+  isNixOS = osConfig != null;
 in
 {
+  home.packages = lib.optionals (!isNixOS) [ pkgs.catppuccin-kde ];
+
+  # Only needed on Asahi - see header comment. NixOS's system profile is
+  # already on XDG_DATA_DIRS, so this would just be redundant there.
+  xdg.configFile."plasma-workspace/env/nix-profile-data-dirs.sh" = lib.mkIf (!isNixOS) {
+    text = ''
+      export XDG_DATA_DIRS="${config.home.profileDirectory}/share''${XDG_DATA_DIRS:+:$XDG_DATA_DIRS}"
+    '';
+  };
+
   programs.plasma = {
     workspace = {
       # Matches CatppuccinFrappeBlue.colors in share/color-schemes/.
