@@ -73,9 +73,10 @@ let
       wrapProgram $out/bin/ghostty --run '
         libdir="$HOME/.cache/ghostty-asahi-gl-libs"
         mkdir -p "$libdir"
-        for lib in libwayland-client.so.0 libwayland-egl.so.1 libwayland-cursor.so.0 libEGL.so.1 libGL.so.1 libGLX.so.0 libgbm.so.1 libdrm.so.2; do
-          found=$(find /usr/lib64 /usr/lib -maxdepth 1 -name "$lib" 2>/dev/null | head -1)
-          [ -n "$found" ] && ln -sf "$found" "$libdir/$lib"
+        for pattern in "libwayland-*.so*" "libEGL*.so*" "libGL*.so*" "libOpenGL*.so*" "libgbm.so*" "libdrm*.so*"; do
+          for f in /usr/lib64/$pattern /usr/lib/$pattern; do
+            [ -e "$f" ] && ln -sf "$f" "$libdir/$(basename "$f")"
+          done
         done
         export LD_LIBRARY_PATH="$libdir:$LD_LIBRARY_PATH"
         export LIBGL_DRIVERS_PATH=/usr/lib64/dri
