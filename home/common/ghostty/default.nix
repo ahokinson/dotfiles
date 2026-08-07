@@ -27,21 +27,26 @@
 #     rendering". Per Ghostty's own docs
 #     (ghostty.org/docs/help/gtk-opengl-context), this is "always an
 #     environment issue" - GTK4's GSK renderer is version-locked to nixpkgs'
-#     own Mesa/libwayland as a whole unit, not just a driver-path lookup, and
-#     upstream names Nix specifically as a known cause with no general
-#     app-side fix. A driver-redirect wrapper (LIBGL_DRIVERS_PATH etc.) was
-#     tried and confirmed insufficient on real hardware - it only covers
-#     classic DRI loading, not GTK4's own bundled Wayland/EGL integration.
-#     Nix builds are hermetic regardless of where they run, so building
-#     locally on the Asahi machine wouldn't help either - same pinned Mesa
-#     either way. `package = null` (home-manager's ghostty module explicitly
-#     supports it - "platforms where ghostty is not available or marked
-#     broken") drops the Nix binary but keeps this file writing
-#     `~/.config/ghostty/config`; install the actual binary via dnf instead
-#     (Fedora has no official package - use the scottames/ghostty COPR or
-#     the Terra repo, see ghostty.org/docs/install/binary) so it's linked
-#     against Fedora's own graphics stack as a coherent whole. Same split
-#     already used for kvantum-asahi.nix.
+#     own Mesa/libwayland as a whole unit, not just a driver-path lookup. A
+#     narrower fix (LIBGL_DRIVERS_PATH/__EGL_VENDOR_LIBRARY_DIRS only) was
+#     tried and confirmed insufficient on real hardware - it covers classic
+#     DRI/GLVND driver lookup but not GTK4's own bundled
+#     libwayland-client/libwayland-egl linkage. `ghosttyAsahiGl` below goes
+#     further: at launch time (not Nix build time - these have to come from
+#     whatever Fedora actually has installed right now, not something
+#     baked ahead of time) it symlinks Fedora's own libwayland-client/
+#     libwayland-egl/libwayland-cursor/libEGL/libGL/libGLX/libgbm/libdrm
+#     into a small cache dir and prepends only that dir to
+#     LD_LIBRARY_PATH - narrower than overriding the whole /usr/lib64 (which
+#     would also swap glib/pango/cairo/etc. underneath Nix's GTK4, a much
+#     bigger surface for a symbol-version clash), but broader than the
+#     driver-path-only attempt. This is genuinely untested and past what
+#     even nix-gl-host currently supports for Mesa (its own docs mark that
+#     path unsupported) - confirm on real hardware and adjust the library
+#     list if it's still failing or fails differently (mismatched-symbol
+#     crashes rather than a clean GL error would mean this made it worse,
+#     not better) - fall back to `package = null` + dnf, same split as
+#     kvantum-asahi.nix, if it doesn't pan out.
 #
 # Settings below are set exhaustively (mirrors the same treatment given to
 # macOS system.defaults and Zen), sourced from `ghostty +show-config
@@ -59,19 +64,55 @@ let
   # NixOS module - absent (default null) for the standalone Asahi profile,
   # same test used in home/linux/plasma-panel.nix and friends.
   isAsahi = !isDarwin && osConfig == null;
+
+  ghosttyAsahiGl = pkgs.symlinkJoin {
+    name = "ghostty-asahi-gl";
+    paths = [ pkgs.ghostty ];
+    nativeBuildInputs = [ pkgs.makeWrapper ];
+    postBuild = ''
+      wrapProgram $out/bin/ghostty --run '
+        libdir="$HOME/.cache/ghostty-asahi-gl-libs"
+        mkdir -p "$libdir"
+        for lib in libwayland-client.so.0 libwayland-egl.so.1 libwayland-cursor.so.0 libEGL.so.1 libGL.so.1 libGLX.so.0 libgbm.so.1 libdrm.so.2; do
+          found=$(find /usr/lib64 /usr/lib -maxdepth 1 -name "$lib" 2>/dev/null | head -1)
+          [ -n "$found" ] && ln -sf "$found" "$libdir/$lib"
+        done
+        export LD_LIBRARY_PATH="$libdir:$LD_LIBRARY_PATH"
+        export LIBGL_DRIVERS_PATH=/usr/lib64/dri
+        export __EGL_VENDOR_LIBRARY_DIRS=/usr/share/glvnd/egl_vendor.d
+      '
+
+      # symlinkJoin only symlinks these through unchanged, and both bake an
+      # absolute Exec=/ExecStart= path straight to ghostty's own unwrapped
+      # store path - the .desktop launch (and D-Bus activation, since it's
+      # DBusActivatable) would otherwise bypass this wrapper entirely and go
+      # straight to the unwrapped binary. Regenerate both pointing at
+      # $out/bin/ghostty instead.
+      rm -f $out/share/applications/com.mitchellh.ghostty.desktop
+      sed "s|${pkgs.ghostty}/bin/ghostty|$out/bin/ghostty|g" \
+        ${pkgs.ghostty}/share/applications/com.mitchellh.ghostty.desktop \
+        > $out/share/applications/com.mitchellh.ghostty.desktop
+
+      rm -f $out/share/systemd/user/app-com.mitchellh.ghostty.service
+      sed "s|${pkgs.ghostty}/bin/ghostty|$out/bin/ghostty|g" \
+        ${pkgs.ghostty}/share/systemd/user/app-com.mitchellh.ghostty.service \
+        > $out/share/systemd/user/app-com.mitchellh.ghostty.service
+    '';
+    # symlinkJoin doesn't carry the wrapped package's meta over, and
+    # lib.getExe (used for the +validate-config check below, and by
+    # anything else that resolves the binary name from meta.mainProgram)
+    # would otherwise guess "ghostty-asahi-gl" from this derivation's own
+    # name - which doesn't exist in $out/bin, only "ghostty" does.
+    meta = pkgs.ghostty.meta // { mainProgram = "ghostty"; };
+  };
 in
 {
   programs.ghostty = {
     enable = true;
     package =
       if isDarwin then pkgs.ghostty-bin
-      else if isAsahi then null
+      else if isAsahi then ghosttyAsahiGl
       else pkgs.ghostty;
-    # The module's systemd.enable default is `isLinux`, not `package !=
-    # null` (unlike installBatSyntax's), so it has to be turned off by hand
-    # here - otherwise it asserts because there's no package to point the
-    # user service at.
-    systemd.enable = !isAsahi;
     enableZshIntegration = true;
 
     settings = {
