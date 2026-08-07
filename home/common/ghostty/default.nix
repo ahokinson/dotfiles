@@ -15,13 +15,34 @@
 #     `theme = catppuccin-frappe` ourselves.
 #
 # Package ownership:
-#   * Linux: the HM module installs `pkgs.ghostty` via `home.packages` (default
+#   * NixOS: the HM module installs `pkgs.ghostty` via `home.packages` (default
 #     `package`); the orphan `ghostty` entries in `home/linux/packages.nix` /
 #     `modules/nixos/base.nix` were removed.
 #   * macOS: nixpkgs' `pkgs.ghostty` is Linux-only (no darwin in meta.platforms
 #     - upstream lacks a Swift 6/xcodebuild-friendly nixpkgs environment), so
 #     we override to `pkgs.ghostty-bin`, which fetches the signed macOS binary
 #     directly. No Homebrew involved.
+#   * Asahi: `pkgs.ghostty` is a Nix-built Linux binary. Confirmed on real
+#     hardware: it fails with "unable to acquire an opengl context for
+#     rendering" because Fedora Asahi's Apple GPU driver (Mesa's asahi/
+#     honeykrisp backend) is an actively-developed, out-of-tree fork nixpkgs'
+#     own Mesa doesn't ship - no Nix-built libGL has any driver for this GPU
+#     at all. Neither community wrapper tool fixes this: nixGL builds its own
+#     Mesa and has no ARM/Apple-GPU support; nix-gl-host explicitly marks the
+#     Mesa driver path unsupported (only proprietary Nvidia works there). So
+#     `ghostty-asahi-gl` below wraps the Nix binary to point Mesa/GLVND's
+#     driver-loading hooks at Fedora's own already-working driver files
+#     instead of swapping libraries wholesale (which would risk trading this
+#     crash for a glibc/libstdc++ ABI one) - LIBGL_DRIVERS_PATH covers
+#     classic DRI loading, __EGL_VENDOR_LIBRARY_DIRS covers the EGL path a
+#     GTK4/Wayland app like this actually takes. Paths assume Fedora's
+#     standard aarch64 layout (mesa-dri-drivers, libglvnd-gles - both present
+#     per the Aug 2026 dnf reconciliation); untested on real hardware, so
+#     confirm this actually works and adjust the paths if not (`rpm -ql
+#     mesa-dri-drivers` / `libglvnd-gles` to check). vim/bat syntax
+#     passthrough (`cfg.package.vim`/`.bat`) wouldn't survive this wrapper,
+#     but installVimSyntax/installBatSyntax aren't enabled below, so that's
+#     currently moot.
 #
 # Settings below are set exhaustively (mirrors the same treatment given to
 # macOS system.defaults and Zen), sourced from `ghostty +show-config
@@ -30,16 +51,34 @@
 # the theme above, and keybind/command-palette-entry are additive in
 # Ghostty's config format, so leaving them undeclared already preserves the
 # shipped defaults with no drift risk.
-{ pkgs, lib, selfPath, ... }:
+{ pkgs, lib, selfPath, osConfig ? null, ... }:
 
 let
   isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
   sharedFonts = import (selfPath "home/common/fonts.nix") { inherit pkgs; };
+  # osConfig is a specialArg home-manager injects only when wired in as a
+  # NixOS module - absent (default null) for the standalone Asahi profile,
+  # same test used in home/linux/plasma-panel.nix and friends.
+  isAsahi = !isDarwin && osConfig == null;
+
+  ghosttyAsahiGl = pkgs.symlinkJoin {
+    name = "ghostty-asahi-gl";
+    paths = [ pkgs.ghostty ];
+    nativeBuildInputs = [ pkgs.makeWrapper ];
+    postBuild = ''
+      wrapProgram $out/bin/ghostty \
+        --set LIBGL_DRIVERS_PATH /usr/lib64/dri \
+        --set __EGL_VENDOR_LIBRARY_DIRS /usr/share/glvnd/egl_vendor.d
+    '';
+  };
 in
 {
   programs.ghostty = {
     enable = true;
-    package = lib.mkIf isDarwin pkgs.ghostty-bin;
+    package =
+      if isDarwin then pkgs.ghostty-bin
+      else if isAsahi then ghosttyAsahiGl
+      else pkgs.ghostty;
     enableZshIntegration = true;
 
     settings = {
