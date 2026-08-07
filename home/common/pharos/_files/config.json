@@ -1,0 +1,14 @@
+{
+  "plugins": ["~/.config/pharos/guards.ts"],
+  "fieldOrder": [
+    "diff",
+    "tools",
+    "toolErrors",
+    "cost",
+    "tokens",
+    "context",
+    "guards",
+    "model",
+    "rate"
+  ]
+}

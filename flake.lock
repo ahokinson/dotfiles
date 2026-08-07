@@ -69,11 +69,11 @@
         "zen-browser": "zen-browser"
       },
       "locked": {
-        "lastModified": 1785795971,
-        "narHash": "sha256-CKDDntzP23fW02vzbV26TzLr4BGcismWxl+hHXXK5TY=",
+        "lastModified": 1786134514,
+        "narHash": "sha256-L4VDug+3O16rG2s/kLWthXBzw668Ie3MSw5g2cH8D4k=",
         "owner": "ahokinson",
         "repo": "flake",
-        "rev": "573ac1de69935069b408d204ba0419fa16c05276",
+        "rev": "00b6573c5d168312246efaaa3cdf2c67437f9199",
         "type": "github"
       },
       "original": {

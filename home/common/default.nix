@@ -3,6 +3,7 @@
     (selfPath "home/common/bat")
     (selfPath "home/common/bloom")
     (selfPath "home/common/btop")
+    (selfPath "home/common/cerberus")
     (selfPath "home/common/claude")
     (selfPath "home/common/cupcake")
     (selfPath "home/common/fastfetch")

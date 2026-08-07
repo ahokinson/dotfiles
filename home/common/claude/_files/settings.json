@@ -43,28 +43,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "zsh ~/.claude/hooks/guard-gate.zsh"
-          },
-          {
-            "type": "command",
-            "command": "zsh ~/.claude/hooks/guard-tirith.zsh"
-          },
-          {
-            "type": "command",
-            "command": "zsh ~/.claude/hooks/guard-cupcake.zsh"
-          },
-          {
-            "type": "command",
-            "command": "zsh ~/.claude/hooks/guard-context.zsh"
-          }
-        ]
-      },
-      {
-        "matcher": "Read|Grep|Glob|WebFetch",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "zsh ~/.claude/hooks/guard-cupcake.zsh"
+            "command": "cerberus guard"
           }
         ]
       },
@@ -133,7 +112,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "zsh ~/.claude/hooks/guard-health.zsh"
+            "command": "cerberus health"
           },
           {
             "type": "command",

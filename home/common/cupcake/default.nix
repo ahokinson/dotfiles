@@ -25,11 +25,12 @@ in {
     run ${pkgs.cupcake}/bin/cupcake init --global --harness opencode
   '';
 
-  # Cupcake 0.3.0 needs a *project-level* .cupcake/ in whatever cwd
-  # `cupcake eval` runs from (see guard-cupcake.zsh/cupcake-guard.js, both of
-  # which `cd` here before calling `cupcake eval`) - the global store above
-  # only supplies the rules that apply on top of that. Idempotent, like
-  # cupcakeGlobalInit above.
+  # Cupcake needs a *project-level* .cupcake/ in whatever cwd `cupcake eval`
+  # runs from (cerberus's policy head and opencode's cupcake-guard.js both
+  # run it from here), while the global store above only supplies the rules
+  # that apply on top of that. `cerberus init` creates this same stub, so
+  # this stays the declarative path to it. Idempotent, like cupcakeGlobalInit
+  # above.
   home.activation.cupcakeStubInit = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     cupcakeStub="''${XDG_DATA_HOME:-$HOME/.local/share}/cupcake-stub"
     if [[ ! -d "$cupcakeStub/.cupcake/policies/claude" ]]; then
