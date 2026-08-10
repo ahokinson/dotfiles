@@ -5,6 +5,7 @@
     (selfPath "home/common/btop")
     (selfPath "home/common/cerberus")
     (selfPath "home/common/claude")
+    (selfPath "home/common/codex")
     (selfPath "home/common/cupcake")
     (selfPath "home/common/fastfetch")
     (selfPath "home/common/ghostty")

@@ -16,7 +16,6 @@ in
     clipleaks
     clippy
     cmake
-    codex
     cosign
     crane
     delta
