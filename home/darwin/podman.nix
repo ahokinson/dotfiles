@@ -9,7 +9,14 @@
 { pkgs, lib, ... }:
 {
   home.activation.podmanMachine = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    export PATH="${pkgs.podman}/bin:$PATH"
+    # home-manager's activation PATH is hermetic - bash, coreutils and a
+    # handful of others, no /usr/bin - so `podman machine init` cannot find
+    # the system ssh-keygen it shells out to for the VM's keypair, and fails
+    # with `exec: "ssh-keygen": executable file not found in $PATH`. Interactive
+    # shells never hit this, which is why it only shows up on activation.
+    # vfkit and gvproxy need no such help: nixpkgs' podman wrapper already
+    # bakes vfkit into its PATH and ships gvproxy in libexec.
+    export PATH="${lib.makeBinPath [ pkgs.podman pkgs.openssh ]}:$PATH"
     if ! podman machine inspect podman-machine-default &>/dev/null; then
       run podman machine init
     fi
