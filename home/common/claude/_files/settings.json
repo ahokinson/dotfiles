@@ -143,11 +143,14 @@
     "refreshInterval": 30
   },
   "enabledPlugins": {
+    "clangd-lsp@claude-plugins-official": true,
     "custom@local": true,
     "gopls-lsp@claude-plugins-official": true,
-    "clangd-lsp@claude-plugins-official": true,
     "press@press": true,
-    "swift-lsp@claude-plugins-official": true
+    "pyright-lsp@claude-plugins-official": true,
+    "rust-analyzer-lsp@claude-plugins-official": true,
+    "swift-lsp@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "press": {
