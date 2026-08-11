@@ -66,6 +66,7 @@ in
     proton-vpn
     prowler
     pv
+    python3
     ripgrep
     ruff
     rust-analyzer

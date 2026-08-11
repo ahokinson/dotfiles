@@ -214,22 +214,24 @@ return {
       end
 
       dap.configurations.python = dap.configurations.python or {}
+
+      local function python_path()
+        local cwd = vim.fn.getcwd()
+        if vim.fn.executable(cwd .. "/venv/bin/python") == 1 then
+          return cwd .. "/venv/bin/python"
+        elseif vim.fn.executable(cwd .. "/.venv/bin/python") == 1 then
+          return cwd .. "/.venv/bin/python"
+        end
+        local python3 = vim.fn.exepath("python3")
+        return python3 ~= "" and python3 or "python3"
+      end
       
       table.insert(dap.configurations.python, {
         type = "python",
         request = "launch",
         name = "Launch file",
         program = "${file}",
-        pythonPath = function()
-          local cwd = vim.fn.getcwd()
-          if vim.fn.executable(cwd .. "/venv/bin/python") == 1 then
-            return cwd .. "/venv/bin/python"
-          elseif vim.fn.executable(cwd .. "/.venv/bin/python") == 1 then
-            return cwd .. "/.venv/bin/python"
-          else
-            return "/opt/homebrew/bin/python3"
-          end
-        end,
+        pythonPath = python_path,
       })
 
       table.insert(dap.configurations.python, {
@@ -241,16 +243,7 @@ return {
           local args_string = vim.fn.input("Arguments: ")
           return vim.split(args_string, " +")
         end,
-        pythonPath = function()
-          local cwd = vim.fn.getcwd()
-          if vim.fn.executable(cwd .. "/venv/bin/python") == 1 then
-            return cwd .. "/venv/bin/python"
-          elseif vim.fn.executable(cwd .. "/.venv/bin/python") == 1 then
-            return cwd .. "/.venv/bin/python"
-          else
-            return "/opt/homebrew/bin/python3"
-          end
-        end,
+        pythonPath = python_path,
       })
 
       table.insert(dap.configurations.python, {
