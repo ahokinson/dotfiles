@@ -1,4 +1,4 @@
-{ selfPath, pkgs, lib, ... }: {
+{ selfPath, pkgs, lib, config, ... }: {
   home.packages = [ pkgs.claude-code ];
 
   home.file.".claude" = {
@@ -9,10 +9,16 @@
     # activation. Not something to declaratively manage.
     source = lib.cleanSourceWith {
       src = selfPath "home/common/claude/_files";
-      filter = path: _type: !(lib.hasSuffix "/plugins/known_marketplaces.json" path);
+      filter = path: _type:
+        !(lib.hasSuffix "/plugins/known_marketplaces.json" path)
+        && !(lib.hasSuffix "/_files/settings.json" path);
     };
     recursive = true;
   };
+
+  home.file.".claude/settings.json".source =
+    config.lib.file.mkOutOfStoreSymlink
+      "${config.home.homeDirectory}/.dotfiles/home/common/claude/_files/settings.json";
 
   home.file.".claude/plugins/marketplaces/local/plugins/custom/docs" = {
     source = selfPath "home/common/_shared/docs";
