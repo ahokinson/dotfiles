@@ -6,7 +6,7 @@
     "enabled": true,
     "allowUnsandboxedCommands": true,
     "network": {
-      "allowUnixSockets": ["~/.rd/docker.sock"],
+      "allowUnixSockets": [],
       "allowLocalBinding": true
     },
     "filesystem": {
