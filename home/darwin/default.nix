@@ -5,6 +5,7 @@
     (selfPath "home/darwin/wallpaper.nix")
     (selfPath "home/darwin/podman.nix")
     (selfPath "home/darwin/monitorcontrol.nix")
+    (selfPath "home/darwin/reliquary-codesign.nix")
   ];
 
   # modules/darwin/system.nix points screencapture.location here; make sure
