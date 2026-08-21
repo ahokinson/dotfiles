@@ -12,7 +12,7 @@
     (selfPath "modules/nixos/boot.nix")
     (selfPath "modules/nixos/networking.nix")
     (selfPath "modules/nixos/locale.nix")
-    (selfPath "modules/nixos/desktop.nix")
+    (selfPath "modules/nixos/desktop-cosmic.nix")
     (selfPath "modules/nixos/audio-printing.nix")
     (selfPath "modules/nixos/containers.nix")
     (selfPath "modules/nixos/ssh.nix")
@@ -33,11 +33,10 @@
         inputs.zen-browser.homeModules.beta
         (selfPath "home/common")
         (selfPath "home/linux")
-        (selfPath "home/linux/catppuccin-qt.nix")
-        inputs.plasma-manager.homeModules.plasma-manager
-        (selfPath "home/linux/plasma-panel.nix")
-        (selfPath "home/linux/plasma-theme.nix")
-        (selfPath "home/linux/plasma.nix")
+        inputs.cosmic-manager.homeManagerModules.cosmic-manager
+        (selfPath "home/linux/cosmic/panel.nix")
+        (selfPath "home/linux/cosmic/theme.nix")
+        (selfPath "home/linux/cosmic/wallpaper.nix")
       ];
       home.username = "anders";
       home.homeDirectory = "/home/anders";
