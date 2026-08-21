@@ -9,6 +9,7 @@
 { pkgs, selfPath, osConfig ? null, ... }:
 let
   sharedFonts = import (selfPath "home/common/fonts.nix") { inherit pkgs; };
+  dockApps = import (selfPath "home/common/dock-apps.nix");
 
   # osConfig is a specialArg home-manager injects only when it's wired in as
   # a NixOS module - present (non-null) for framework13-amd-ryzen, absent
@@ -54,9 +55,9 @@ in
           "org.kde.plasma.pager"
           {
             iconTasks = {
-              launchers = [
-                "applications:zen-beta.desktop"
-                "applications:com.mitchellh.ghostty.desktop"
+              launchers = with dockApps; [
+                "applications:${zen.linuxDesktopId}"
+                "applications:${ghostty.linuxDesktopId}"
               ];
             };
           }

@@ -3,6 +3,7 @@
 { config, pkgs, selfPath, ... }:
 let
   sharedFonts = import (selfPath "home/common/fonts.nix") { inherit pkgs; };
+  dockApps = import (selfPath "home/common/dock-apps.nix");
 in {
   # Apple Silicon mac
   nixpkgs.hostPlatform = "aarch64-darwin";
@@ -38,9 +39,9 @@ in {
     dock.magnification = false;
     # Finder is always pinned by macOS regardless of what's declared here —
     # including it would risk a duplicate icon, so it's omitted.
-    dock.persistent-apps = [
-      "/Users/anders/Applications/Home Manager Apps/Zen Browser (Beta).app"
-      "/Users/anders/Applications/Home Manager Apps/Ghostty.app"
+    dock.persistent-apps = with dockApps; [
+      "/Users/anders/Applications/Home Manager Apps/${zen.darwinApp}"
+      "/Users/anders/Applications/Home Manager Apps/${ghostty.darwinApp}"
     ];
     dock.wvous-br-corner = 4; # Desktop
     dock.wvous-tr-corner = 2; # Mission Control
