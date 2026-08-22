@@ -23,9 +23,9 @@ gui:
   showCommandLog: false
   nerdFontsVersion: "3"
 git:
-  pagers:
+  diffRenderers:
     - colorArg: always
-      pager: delta --paging=never
+      command: delta --paging=never
   skipHookPrefix: WIP
   branchLogCmd: 'git log --graph --color=always --abbrev-commit --decorate --date=relative --pretty=medium {{branchName}} --'
 os:
