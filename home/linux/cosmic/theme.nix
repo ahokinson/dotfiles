@@ -34,18 +34,18 @@ in
         accent = {
           __type = "optional";
           value = {
-            red = 0.549019607843137;
-            green = 0.666666666666667;
-            blue = 0.933333333333333;
+            red = 0.549020;
+            green = 0.666667;
+            blue = 0.933333;
           };
         };
         # #303446
         bg_color = {
           __type = "optional";
           value = {
-            red = 0.188235294117647;
-            green = 0.203921568627451;
-            blue = 0.274509803921569;
+            red = 0.188235;
+            green = 0.203922;
+            blue = 0.274510;
             alpha = 1.0;
           };
         };
@@ -53,6 +53,11 @@ in
     };
 
     toolkit = {
+      # Extends the Catppuccin/COSMIC theme to non-COSMIC GTK apps too,
+      # instead of them falling back to their own GTK theme - one look
+      # across the session rather than COSMIC apps only.
+      apply_theme_global = true;
+
       interface_font = {
         family = sharedFonts.generalFamily;
         stretch = { __type = "enum"; variant = "Normal"; };
