@@ -2,39 +2,7 @@
   "permissions": {
     "defaultMode": "bypassPermissions"
   },
-  "sandbox": {
-    "enabled": true,
-    "allowUnsandboxedCommands": true,
-    "network": {
-      "allowUnixSockets": [],
-      "allowLocalBinding": true
-    },
-    "filesystem": {
-      "denyRead": [
-        "~/.ssh",
-        "~/.aws",
-        "~/.gnupg",
-        "~/.netrc",
-        "**/.env",
-        "**/.env.*",
-        "**/*.pem",
-        "**/*.key",
-        "**/*.p12",
-        "**/*.pfx",
-        "**/*.jks",
-        "**/*.keystore",
-        "**/id_rsa",
-        "**/id_dsa",
-        "**/id_ecdsa",
-        "**/id_ed25519",
-        "**/credentials",
-        "**/.credentials",
-        "**/.npmrc",
-        "**/.pypirc"
-      ]
-    }
-  },
-  "skipDangerousModePermissionPrompt": true,
+  "model": "opus[1m]",
   "enableAllProjectMcpServers": false,
   "hooks": {
     "PreToolUse": [
@@ -137,6 +105,7 @@
     ]
   },
   "disableAllHooks": false,
+  "workflowKeywordTriggerEnabled": false,
   "statusLine": {
     "type": "command",
     "command": "pharos render",
@@ -160,10 +129,105 @@
       }
     }
   },
+  "sandbox": {
+    "enabled": true,
+    "allowUnsandboxedCommands": true,
+    "excludedCommands": [
+      "git clone:*",
+      "git fetch:*",
+      "git ls-remote:*",
+      "git pull:*",
+      "git push:*",
+      "ssh:*"
+    ],
+    "network": {
+      "allowUnixSockets": [],
+      "allowLocalBinding": true,
+      "strictAllowlist": true,
+      "allowedDomains": [
+        "grype.anchore.io",
+        "toolbox-data.anchore.io",
+        "api.armosec.io",
+        "astral.sh",
+        "*.astral.sh",
+        "acli.atlassian.com",
+        "bun.sh",
+        "*.bun.sh",
+        "*.cachix.org",
+        "code.claude.com",
+        "crates.io",
+        "*.crates.io",
+        "install.determinate.systems",
+        "*.docker.com",
+        "docker.io",
+        "*.docker.io",
+        "cache.flakehub.com",
+        "gcr.io",
+        "mirror.gcr.io",
+        "ghcr.io",
+        "github.com",
+        "*.github.com",
+        "*.githubusercontent.com",
+        "go.dev",
+        "*.golang.org",
+        "gopkg.in",
+        "*.hashicorp.com",
+        "*.nixos.org",
+        "*.npmjs.org",
+        "api.osv.dev",
+        "pypi.org",
+        "*.pypi.org",
+        "*.pythonhosted.org",
+        "*.rust-lang.org",
+        "*.schemastore.org",
+        "api.securityscorecards.dev",
+        "semgrep.dev",
+        "*.semgrep.dev",
+        "*.sigstore.dev",
+        "taskfile.dev",
+        "registry.terraform.io",
+        "ziglang.org",
+        "*.ziglang.org"
+      ],
+      "deniedDomains": [
+        "gist.github.com"
+      ]
+    },
+    "filesystem": {
+      "denyRead": [
+        "~/.ssh",
+        "~/.aws",
+        "~/.gnupg",
+        "~/.netrc",
+        "**/.env",
+        "**/.env.*",
+        "**/*.pem",
+        "**/*.key",
+        "**/*.p12",
+        "**/*.pfx",
+        "**/*.jks",
+        "**/*.keystore",
+        "**/id_rsa",
+        "**/id_dsa",
+        "**/id_ecdsa",
+        "**/id_ed25519",
+        "**/credentials",
+        "**/.credentials",
+        "**/.npmrc",
+        "**/.pypirc"
+      ]
+    }
+  },
+  "effortLevel": "xhigh",
+  "promptSuggestionEnabled": false,
+  "awaySummaryEnabled": false,
   "tui": "fullscreen",
+  "skipDangerousModePermissionPrompt": true,
   "theme": "dark-ansi",
   "editorMode": "normal",
   "autoCompactEnabled": false,
+  "fileCheckpointingEnabled": false,
   "showTurnDuration": false,
+  "remoteControlAtStartup": false,
   "useAutoModeDuringPlan": false
 }
