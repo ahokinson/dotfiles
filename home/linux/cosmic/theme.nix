@@ -75,6 +75,19 @@ in
       # home/linux/catppuccin.nix.
       icon_theme = "WhiteSur-dark";
 
+      # Tightens COSMIC's own chrome - padding, row heights, header bars.
+      #
+      # Spacing only, not display scale. The scale factor that decides how
+      # large everything actually renders is per-output and lives in
+      # cosmic-comp's *state* (~/.local/state/cosmic/com.system76.CosmicComp),
+      # keyed by the monitor's own identity; cosmic-manager exposes no option
+      # for it (its compositor module covers input and workspaces, not
+      # outputs). Set it in COSMIC Settings > Displays, then capture the
+      # resulting file here via wayland.desktopManager.cosmic.stateFile if it
+      # should be reproducible.
+      interface_density = { __type = "enum"; variant = "Compact"; };
+      header_size = { __type = "enum"; variant = "Compact"; };
+
       interface_font = {
         family = sharedFonts.generalFamily;
         stretch = { __type = "enum"; variant = "Normal"; };
