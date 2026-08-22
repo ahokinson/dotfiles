@@ -142,10 +142,10 @@ in
   #
   # Repointing this button to open About instead of the App Library was tried
   # (shadowing CosmicPanelAppButton's own .desktop under $XDG_DATA_HOME to
-  # rewrite the argument) and confirmed NOT to work on real hardware — the
-  # button still spawns with the original hardcoded argument, so cosmic-panel
-  # isn't resolving that .desktop the same way cosmic-panel-button resolves
-  # its own target-app argument. Left targeting the App Library.
+  # rewrite the argument); the test was inconclusive (the build under test
+  # turned out stale/inconsistent) rather than a clean disproof, but it's not
+  # worth chasing again blind. Left targeting the App Library, which is the
+  # confirmed-working target.
   #
   # Written into two themes because hicolor alone did not win: the active theme
   # is WhiteSur-dark (home/linux/cosmic/theme.nix), and a theme's own
