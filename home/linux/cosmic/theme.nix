@@ -53,10 +53,27 @@ in
     };
 
     toolkit = {
-      # Extends the Catppuccin/COSMIC theme to non-COSMIC GTK apps too,
-      # instead of them falling back to their own GTK theme - one look
-      # across the session rather than COSMIC apps only.
-      apply_theme_global = true;
+      # Off, despite this being the setting that extends COSMIC's theme to
+      # non-COSMIC apps. With it on, cosmic-settings-daemon owns
+      # ~/.config/gtk-{3,4}.0/gtk.css (it symlinks them at a palette it
+      # generates) and reclaims those paths on every switch, since our own
+      # cosmic-ctl writes are what wake it. gtk.css is also the only
+      # user-level CSS hook libadwaita apps respect, so it has to be
+      # home-manager's for the macOS window-control styling in
+      # home/linux/cosmic/gtk.nix to exist at all.
+      #
+      # The palette the daemon used to generate is kept instead as
+      # _files/gtk-palette.css and prepended to that styling, so GTK apps
+      # keep COSMIC's colors. What is genuinely lost is the daemon's Qt side
+      # (kdeglobals, qt5ct, qt6ct) - nothing else themes Qt on this host, so
+      # Qt apps fall back to their own defaults.
+      apply_theme_global = false;
+
+      # COSMIC's own toolkit defaults to the "Cosmic" icon theme, which is
+      # independent of GTK's - without this, COSMIC Files/Settings keep their
+      # stock icons while GTK apps use the WhiteSur set from
+      # home/linux/catppuccin.nix.
+      icon_theme = "WhiteSur-dark";
 
       interface_font = {
         family = sharedFonts.generalFamily;
