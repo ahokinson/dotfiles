@@ -58,6 +58,12 @@ in
   # "Applications"/"Workspaces", so the leftmost one reads as a logo the way
   # macOS's Apple menu does. Keyed by panel name; the Dock's own buttons are
   # left alone.
+  # macOS menu-bar clock: weekday + month + day, 24-hour time with seconds.
+  wayland.desktopManager.cosmic.applets."time".settings = {
+    military_time = true;
+    show_seconds = true;
+  };
+
   wayland.desktopManager.cosmic.applets."panel-button".settings.configs = {
     __type = "map";
     value = [
@@ -74,7 +80,23 @@ in
     # left at COSMIC's defaults — tune there if the reveal feels slow.
     "com.system76.CosmicPanel.Dock" = {
       version = 1;
-      entries.autohide = ronEnum "Always";
+      entries = {
+        autohide = ronEnum "Always";
+
+        # macOS keeps the dock to applications. COSMIC ships it holding the
+        # launcher, workspaces and app-library buttons too; app-library stays
+        # available as the Nix logo on the panel, and workspaces comes off the
+        # bar entirely (gesture and keybind still reach it). That leaves the
+        # pinned/running app list and the minimize tray.
+        plugins_center = ronOptional [
+          "com.system76.CosmicAppList"
+          "com.system76.CosmicAppletMinimize"
+        ];
+
+        # Detach the dock from the screen edge, so its existing
+        # border_radius reads as a floating slab the way macOS's does.
+        anchor_gap = true;
+      };
     };
 
     # macOS menu-bar layout: the Apple menu at the far left, the clock at the
@@ -87,22 +109,17 @@ in
         plugins_wings = ronOptional {
           __type = "tuple";
           value = [
+            # Left wing: the Nix logo alone, in the Apple menu's corner. The
+            # workspaces button that shipped beside it is gone - macOS has
+            # app menus there, and COSMIC has no equivalent to put in its
+            # place, so an empty run of bar is the closer match. Workspaces
+            # stay reachable by gesture and keybind.
+            [ "com.system76.CosmicPanelAppButton" ]
             [
-              "com.system76.CosmicPanelAppButton"
-              "com.system76.CosmicPanelWorkspacesButton"
-            ]
-            [
-              "com.system76.CosmicAppletInputSources"
-              "com.system76.CosmicAppletA11y"
-              "com.system76.CosmicAppletStatusArea"
-              "com.system76.CosmicAppletTiling"
-              "com.system76.CosmicAppletAudio"
-              "com.system76.CosmicAppletBluetooth"
               "com.system76.CosmicAppletNetwork"
               "com.system76.CosmicAppletBattery"
-              "com.system76.CosmicAppletNotifications"
-              "com.system76.CosmicAppletPower"
               "com.system76.CosmicAppletTime"
+              "com.system76.CosmicAppletPower"
             ]
           ];
         };
