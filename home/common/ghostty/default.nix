@@ -60,6 +60,54 @@
 let
   isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
   sharedFonts = import (selfPath "home/common/fonts.nix") { inherit pkgs; };
+
+  # The two Catppuccin Frappe colors the window chrome needs, matching the
+  # palette's own background/foreground (see the catppuccin-frappe theme
+  # below, which repeats them for darwin).
+  frappe = {
+    base = "303446";
+    text = "c6d0f5";
+  };
+
+  # Leaves the header bar carrying nothing but the traffic lights.
+  #
+  # It has to be CSS because ghostty has no setting for this - the only
+  # nearby switch, gtk-titlebar = false, removes the whole bar including the
+  # window controls. And it has to *shrink* rather than hide, because GTK4
+  # CSS supports neither display nor visibility.
+  #
+  # Keyed on the window controls' own classes rather than on position in the
+  # widget tree. Structure is the wrong thing to match here: `windowcontrols`
+  # lives *inside* box.start alongside ghostty's widgets, so a descendant
+  # selector would catch the traffic lights too, while a direct-child one
+  # misses the new-tab/dropdown pair because they sit in their own linked box.
+  # close/minimize/maximize are the classes GTK4 puts on the control buttons -
+  # the same ones WhiteSur's own theme selects on.
+  headerbarCss = pkgs.writeText "ghostty-headerbar.css" ''
+    headerbar button:not(.close):not(.minimize):not(.maximize),
+    headerbar menubutton {
+      opacity: 0;
+      min-width: 0;
+      min-height: 0;
+      padding: 0;
+      margin: 0;
+      -gtk-icon-size: 0;
+    }
+
+    /* The title label. `title = " "` should already blank it, but ghostty
+       falls back to a dynamic title when the value parses as empty. */
+    headerbar windowtitle,
+    headerbar label {
+      opacity: 0;
+    }
+
+    /* No seam between the bar and the terminal: gtk-toolbar-style = flat
+       drops the shadow, this drops the border WhiteSur draws under it. */
+    .window headerbar {
+      border: none;
+      box-shadow: none;
+    }
+  '';
   # osConfig is a specialArg home-manager injects only when wired in as a
   # NixOS module - absent (default null) for the standalone Asahi profile,
   # same test used in home/linux/plasma-panel.nix and friends.
@@ -122,12 +170,14 @@ in
       macos-icon-ghost-color = "737994";
       macos-icon-screen-color = "232634";
 
-      # Hide the top bar on both platforms. The mechanism has to differ by OS:
+      # The two platforms diverge on the top bar:
       #   * macOS: "hidden" removes the titlebar entirely (unlike
       #     "transparent", which keeps the native bar and just makes it
-      #     see-through — title/cwd text still renders on top of it).
-      #   * Linux/GTK: strip the window decoration entirely.
-      # `title = " "` is shared, kept as a defense-in-depth blank default.
+      #     see-through — title/cwd text still renders on top of it), and
+      #     `title = " "` below blanks the title as defense in depth.
+      #   * Linux/GTK: a header bar pared back to just the window controls -
+      #     see window-decoration and gtk-custom-css in the !isDarwin block.
+      # `title = " "` is shared: neither platform shows title text.
       macos-titlebar-style = "hidden";
       title = " ";
 
@@ -255,16 +305,37 @@ in
       macos-applescript = true;
       macos-shortcuts = "ask";
     } // lib.optionalAttrs (!isDarwin) {
-      # Linux counterpart to the macOS titlebar block above.
-      window-decoration = false;
+      # Linux counterpart to the macOS titlebar block above. "client" rather
+      # than "auto": auto lets COSMIC draw a server-side titlebar, whose
+      # buttons are pinned to the right with no setting to move them. A GTK
+      # header bar instead honours gtk-decoration-layout, which
+      # home/linux/cosmic/gtk.nix sets to macOS's left-hand
+      # close/minimize/zoom order.
+      window-decoration = "client";
 
       linux-cgroup = "never";
       linux-cgroup-hard-fail = false;
       gtk-opengl-debug = false;
       gtk-single-instance = "detect";
       gtk-tabs-location = "top";
+      # Stays true: `false` removes the header bar outright, traffic lights
+      # and all, rather than reducing it to the window controls. Paring it
+      # down to just those is done in headerbar.css instead.
+      gtk-titlebar = true;
       gtk-titlebar-hide-when-maximized = false;
-      gtk-toolbar-style = "raised";
+      gtk-custom-css = "${headerbarCss}";
+
+      # "flat" makes the bar continuous with the terminal below it instead of
+      # casting a shadow onto it, so the two read as one surface.
+      gtk-toolbar-style = "flat";
+
+      # window-theme = "ghostty" is the precondition for the titlebar colors
+      # below being honoured at all - they are ignored under "auto". The two
+      # colors are Frappe base and text, matching the terminal's own
+      # background/foreground so the bar disappears into the window.
+      window-theme = "ghostty";
+      window-titlebar-background = frappe.base;
+      window-titlebar-foreground = frappe.text;
       gtk-wide-tabs = true;
       quick-terminal-position = "top";
       gtk-quick-terminal-layer = "top";
