@@ -84,9 +84,10 @@ in
         autohide = ronEnum "Always";
 
         # macOS keeps the dock to applications. COSMIC ships it holding the
-        # launcher, workspaces and app-library buttons too; app-library stays
-        # available as the Nix logo on the panel, and workspaces comes off the
-        # bar entirely (gesture and keybind still reach it). That leaves the
+        # launcher, workspaces and app-library buttons too; the app-library
+        # button moves to the panel as the Nix logo (repointed to About, see
+        # panel.nix's xdg.dataFile below), and workspaces comes off the bar
+        # entirely (gesture and keybind still reach it). That leaves the
         # pinned/running app list and the minimize tray.
         plugins_center = ronOptional [
           "com.system76.CosmicAppList"
@@ -134,30 +135,40 @@ in
     run ${lib.getExe pkgs.killall} .cosmic-panel-wrapped || true
   '';
 
-  # Puts the NixOS logo where macOS puts the Apple logo. The name to shadow is
-  # com.system76.CosmicAppLibrary, NOT the CosmicPanelAppButton icon named in
-  # the button's own .desktop: that .desktop runs
-  # `cosmic-panel-button com.system76.CosmicAppLibrary`, and the button renders
-  # the icon of the app id it is passed rather than its own.
-  #
-  # Written into two themes because hicolor alone did not win: the active theme
-  # is WhiteSur-dark (home/linux/cosmic/theme.nix), and a theme's own
-  # directories are searched before anything it inherits. WhiteSur-dark lists
-  # apps/scalable in its index.theme Directories and ships no icon by this
-  # name, so a file dropped there under $XDG_DATA_HOME merges into the theme
-  # and takes precedence. The hicolor copy stays as the fallback for whatever
-  # resolves outside the active theme.
-  #
-  # The white snowflake rather than the colored one, to read as a monochrome
-  # menu-bar glyph — nix-snowflake.svg sits beside it in the same package if
-  # the colored version is wanted instead.
+  # Repoints the left-wing logo button from the App Library to About (macOS's
+  # menu bar has no App Library equivalent, but the Apple menu's "About This
+  # Mac" is the closer analogue). CosmicPanelAppButton itself is a fixed
+  # applet whose own .desktop hardcodes the target app id as a CLI arg
+  # (`cosmic-panel-button com.system76.CosmicAppLibrary`); cosmic-panel-button
+  # then resolves that id to a .desktop via a freedesktop-desktop-entry search
+  # over XDG data dirs (confirmed against cosmic-applets' cosmic-panel-button
+  # source) and uses THAT file's Icon/Exec to render/launch, not its own.
+  # Shadowing the applet's own .desktop under $XDG_DATA_HOME — which sorts
+  # ahead of the system dirs in that same search — swaps the arg to
+  # com.system76.CosmicSettings.About (cosmic-settings' "About" page), whose
+  # own .desktop carries `Icon=preferences-about` and `Exec=cosmic-settings
+  # about`.
   xdg.dataFile =
     let
-      nixLogo = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake-white.svg";
-      iconName = "com.system76.CosmicAppLibrary.svg";
+      nixLogo = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
     in
     {
-      "icons/WhiteSur-dark/apps/scalable/${iconName}".source = nixLogo;
-      "icons/hicolor/scalable/apps/${iconName}".source = nixLogo;
+      "applications/com.system76.CosmicPanelAppButton.desktop".source =
+        selfPath "home/linux/cosmic/_files/app-button.desktop";
+
+      # Puts the NixOS logo where macOS puts the Apple logo. The name to
+      # shadow is preferences-about — the Icon field of the About page's own
+      # .desktop that cosmic-panel-button now resolves to (see above) — not
+      # CosmicPanelAppButton's own Icon, which the button ignores.
+      #
+      # Written into two themes because hicolor alone did not win: the active
+      # theme is WhiteSur-dark (home/linux/cosmic/theme.nix), and a theme's
+      # own directories are searched before anything it inherits. WhiteSur-dark
+      # lists apps/scalable in its index.theme Directories and ships no icon
+      # by this name, so a file dropped there under $XDG_DATA_HOME merges into
+      # the theme and takes precedence. The hicolor copy stays as the fallback
+      # for whatever resolves outside the active theme.
+      "icons/WhiteSur-dark/apps/scalable/preferences-about.svg".source = nixLogo;
+      "icons/hicolor/scalable/apps/preferences-about.svg".source = nixLogo;
     };
 }

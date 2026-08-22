@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=App Button
+Comment=Panel button, repointed from the App Library to About
+Exec=cosmic-panel-button com.system76.CosmicSettings.About
+Terminal=false
+Categories=COSMIC;
+Icon=com.system76.CosmicPanelAppButton
+StartupNotify=true
+NoDisplay=true
+X-CosmicApplet=true
+X-OverflowPriority=10
