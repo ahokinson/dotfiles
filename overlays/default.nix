@@ -27,6 +27,26 @@ flakePkgs // {
     doCheck = false;
   });
 
+  # scorecard's package.nix hardcodes a separate vendorHash for non-Linux
+  # platforms (likely stale due to Go module vendoring behaving differently
+  # on darwin's case-insensitive filesystem) that's wrong even at current
+  # nixos-unstable HEAD, breaking the fixed-output goModules fetch on
+  # darwin. vendorHash itself isn't overridable (it's consumed internally
+  # by buildGoModule before this derivation exists), so patch the
+  # already-built goModules FOD's outputHash directly, using the hash the
+  # build itself reported as correct. Drop this once nixpkgs fixes the
+  # upstream hash - re-verify whenever scorecard's version bumps, since a
+  # version bump changes goModules' contents and invalidates this hash too.
+  scorecard =
+    if final.stdenv.hostPlatform.isLinux then
+      prev.scorecard
+    else
+      prev.scorecard.overrideAttrs (old: {
+        goModules = old.goModules.overrideAttrs (_: {
+          outputHash = "sha256-0KKKZheDNRPLBWtwXgXXG+ixpESO+Gq1FsW83PldiVo=";
+        });
+      });
+
   # semgrep's pytest suite fails on aarch64-linux (75 failures, all
   # "Failed to obtain target files from semgrep-core") - unrelated to the
   # shipped binary, which works fine. pkgs.semgrep is just
