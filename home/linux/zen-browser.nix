@@ -4,7 +4,7 @@
 # list (added per-host, since it comes from a flake input) - every
 # home/linux/default.nix consumer (NixOS hosts, the Asahi profile) does so.
 { selfPath, ... }: {
-  imports = [ (selfPath "home/common/zen-extensions.nix") ];
+  imports = [ (selfPath "home/common/zen/extensions.nix") ];
 
   programs.zen-browser.enable = true;
 }

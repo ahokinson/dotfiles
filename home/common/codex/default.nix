@@ -4,7 +4,7 @@
 # Declaratively symlinking the whole file the way home/common/claude or
 # home/common/opencode do would make it read-only and break that
 # trust-persistence, so instead this only patches in the [tui] theme key -
-# same read/rewrite/atomic-replace approach as zen-settings.nix's
+# same read/rewrite/atomic-replace approach as home/common/zen/activation.nix's
 # selfHealInstalls, which has the same "touch one field of an otherwise
 # unmanaged, runtime-mutated file" shape.
 { pkgs, lib, ... }:

@@ -1,9 +1,9 @@
 { lib, selfPath, ... }: {
-  imports = [ (selfPath "home/common/zen-extensions.nix") ];
+  imports = [ (selfPath "home/common/zen/extensions.nix") ];
 
   programs.zen-browser.enable = true;
 
-  # Force-installed on Mac only (not in zen-extensions.nix's shared list) -
+  # Force-installed on Mac only (not in zen/extensions.nix's shared list) -
   # syncs Safari/iCloud Keychain passwords, so it's only useful on Apple
   # hardware.
   programs.zen-browser.policies.ExtensionSettings."password-manager-firefox-extension@apple.com" = {

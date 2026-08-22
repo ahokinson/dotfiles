@@ -56,16 +56,12 @@
       # Both macs that dual-boot Asahi share one home-manager config
       # (home-manager owns only $HOME, so there's nothing host-specific to
       # configure) — exposed under two output names below, one per machine.
-      # home.backupFileExtension is a nix-darwin/NixOS module-integration
-      # option; it doesn't exist for a standalone homeManagerConfiguration
-      # like this one. The standalone equivalent is the `-b <ext>` CLI flag
-      # (see switch.zsh's home:switch/build/dry commands).
+      # A standalone homeManagerConfiguration has no home.backupFileExtension
+      # option; the equivalent is the `-b <ext>` CLI flag (switch.d/args.zsh).
       asahiHome = home-manager.lib.homeManagerConfiguration {
         pkgs = mkPkgs "aarch64-linux";
         extraSpecialArgs = { inherit inputs selfPath; };
         modules = [
-          inputs.zen-browser.homeModules.beta
-          inputs.plasma-manager.homeModules.plasma-manager
           {
             home.username = "anders";
             home.homeDirectory = "/home/anders";
@@ -73,9 +69,10 @@
           }
           (selfPath "home/common")
           (selfPath "home/linux")
-          (selfPath "home/linux/plasma-panel.nix")
-          (selfPath "home/linux/plasma-theme.nix")
           (selfPath "home/linux/kvantum-asahi.nix")
+          (selfPath "home/linux/plasma")
+          inputs.plasma-manager.homeModules.plasma-manager
+          inputs.zen-browser.homeModules.beta
         ];
       };
 
@@ -126,12 +123,9 @@
       };
 
       # --- Asahi Fedora (aarch64-linux) — standalone home-manager profile.
-      # Named per-machine, short forms of each machine's darwin hostname
-      # (never "asahi" itself, and no "user@" prefix - unlike the darwin/
-      # nixos outputs above these are never confusable with each other, so
-      # the extra prefix is just noise). switch.zsh picks the right one by
-      # mapping the Apple Silicon device-tree codename to a hostname (see
-      # ASAHI_HW_MAP) and also sets the system hostname via hostnamectl,
+      # Named per-machine, short forms of each machine's darwin hostname.
+      # switch.zsh maps the device-tree codename to a hostname (see
+      # switch.d/asahi.zsh's ASAHI_HW_MAP) and sets it via hostnamectl,
       # since home-manager can't do that itself.
       homeConfigurations."bookpro14-m1-pro" = asahiHome;
       homeConfigurations."studio-m1-max" = asahiHome;

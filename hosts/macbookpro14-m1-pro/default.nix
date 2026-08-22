@@ -6,7 +6,7 @@
   networking.localHostName = "macbookpro14-m1-pro";
 
   imports = [
-    (selfPath "modules/darwin/system.nix")
+    (selfPath "modules/darwin/system")
     (selfPath "modules/darwin/universalaccess.nix")
     (selfPath "modules/darwin/home-manager.nix")
     (selfPath "modules/darwin/hardware-macbookpro14.nix")

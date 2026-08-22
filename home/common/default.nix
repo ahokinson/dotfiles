@@ -25,7 +25,7 @@
     (selfPath "home/common/tirith")
     (selfPath "home/common/tmux")
     (selfPath "home/common/yt-dlp")
-    (selfPath "home/common/zen-settings.nix")
+    (selfPath "home/common/zen")
     (selfPath "home/common/zsh")
   ];
 }

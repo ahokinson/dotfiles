@@ -9,19 +9,20 @@
 
   imports = [
     (selfPath "hosts/framework13-amd-ryzen/hardware-configuration.nix")
-    (selfPath "modules/nixos/boot.nix")
-    (selfPath "modules/nixos/networking.nix")
-    (selfPath "modules/nixos/locale.nix")
-    (selfPath "modules/nixos/desktop-cosmic.nix")
     (selfPath "modules/nixos/audio-printing.nix")
+    (selfPath "modules/nixos/boot.nix")
     (selfPath "modules/nixos/containers.nix")
-    (selfPath "modules/nixos/ssh.nix")
-    (selfPath "modules/nixos/security.nix")
-    (selfPath "modules/nixos/user.nix")
+    (selfPath "modules/nixos/desktop-cosmic.nix")
     (selfPath "modules/nixos/hermes.nix")
-    (selfPath "modules/nixos/base.nix")
-    inputs.home-manager.nixosModules.home-manager
+    (selfPath "modules/nixos/locale.nix")
+    (selfPath "modules/nixos/networking.nix")
+    (selfPath "modules/nixos/packages.nix")
+    (selfPath "modules/nixos/security.nix")
+    (selfPath "modules/nixos/settings.nix")
+    (selfPath "modules/nixos/ssh.nix")
+    (selfPath "modules/nixos/user.nix")
     inputs.flake.inputs.hermes-agent.nixosModules.default
+    inputs.home-manager.nixosModules.home-manager
   ];
 
   home-manager = {
@@ -30,15 +31,11 @@
     backupFileExtension = "hm-backup";
     users."anders" = {
       imports = [
-        inputs.zen-browser.homeModules.beta
         (selfPath "home/common")
         (selfPath "home/linux")
+        (selfPath "home/linux/cosmic")
         inputs.cosmic-manager.homeManagerModules.cosmic-manager
-        (selfPath "home/linux/cosmic/panel.nix")
-        (selfPath "home/linux/cosmic/theme.nix")
-        (selfPath "home/linux/cosmic/wallpaper.nix")
-        (selfPath "home/linux/cosmic/compositor.nix")
-        (selfPath "home/linux/cosmic/gtk.nix")
+        inputs.zen-browser.homeModules.beta
       ];
       home.username = "anders";
       home.homeDirectory = "/home/anders";

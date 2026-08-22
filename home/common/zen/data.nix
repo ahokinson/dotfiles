@@ -1,7 +1,5 @@
-# Zen browser preferences applied identically on every machine (macOS and
-# Linux), sourced from the actual shipped defaults in zen-browser/desktop's
-# prefs/zen/*.yaml, with a handful of deliberate overrides (see git history
-# for the reasoning behind each divergence from the shipped default).
+# Zen browser preferences applied identically on every machine, sourced from
+# zen-browser/desktop's shipped prefs/zen/*.yaml with a handful of overrides.
 { pkgs, selfPath, ... }:
 let
   sharedFonts = import (selfPath "home/common/fonts.nix") { inherit pkgs; };

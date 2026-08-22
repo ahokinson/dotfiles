@@ -6,7 +6,7 @@
   networking.localHostName = "macbookpro16-m5";
 
   imports = [
-    (selfPath "modules/darwin/system.nix")
+    (selfPath "modules/darwin/system")
     # No modules/darwin/universalaccess.nix here: this is a work-managed
     # laptop and an MDM profile blocks writes to com.apple.universalaccess,
     # which aborts activation.

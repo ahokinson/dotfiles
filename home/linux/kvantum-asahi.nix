@@ -5,7 +5,7 @@
 # catppuccin-qt.nix). This writes only the theme *data* Kvantum needs
 # (SVG/config text - no compiled plugins, no QT_* env vars) and sets the
 # widget style through plasma-manager's config-file writer, the same
-# ABI-safe mechanism plasma-panel.nix already uses.
+# ABI-safe mechanism home/linux/plasma/panel.nix already uses.
 #
 # Requires Fedora's own Kvantum engine to be dnf-installed
 # (kvantum-qt5 / kvantum) - Nix can't own that on a foreign distro; see the

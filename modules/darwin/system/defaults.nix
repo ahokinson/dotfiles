@@ -1,39 +1,9 @@
-# nix-darwin system defaults, fonts, and user account.
-# Everything that targets a system-wide concern (not a user dotfile) lives here.
-{ config, pkgs, selfPath, ... }:
+{ config, selfPath, ... }:
 let
-  sharedFonts = import (selfPath "home/common/fonts.nix") { inherit pkgs; };
   dockApps = import (selfPath "home/common/dock-apps.nix");
 in {
-  # Apple Silicon mac
-  nixpkgs.hostPlatform = "aarch64-darwin";
-
-  # Required since nix-darwin's multi-user migration: user-scoped
-  # system.defaults options (dock, finder, NSGlobalDomain) apply to this user.
-  system.primaryUser = "anders";
-
-  # Use the Determinate Nix installer style (handles launchd services).
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
-  nixpkgs.config.allowUnfree = true;
-  # Old generations otherwise stack up indefinitely across switches
-  # (mirrors nix.gc in modules/nixos/base.nix). `interval` is a list per
-  # nix-darwin's launchd StartCalendarInterval type.
-  nix.gc = {
-    automatic = true;
-    interval = [{ Weekday = 0; Hour = 3; Minute = 15; }];
-    options = "--delete-older-than 14d";
-  };
-
-  # Determinate Nix uses GID 350 for nixbld, not nix-darwin's historical
-  # default of 30000. Must match the actual group or activation aborts.
-  ids.gids.nixbld = 350;
-
-  # Fonts available to all macOS apps via the system (same list as
-  # home-manager's home.packages - see home/common/fonts.nix).
-  fonts.packages = sharedFonts.packages;
-
   # macOS user defaults, set exhaustively so all 3 Macs stay identical
-  # (except universalaccess.* - see modules/darwin/universalaccess.nix).
+  # (except universalaccess.* — see modules/darwin/universalaccess.nix).
   system.defaults = {
     dock.autohide = true;
     dock.magnification = false;
@@ -74,10 +44,9 @@ in {
     dock.tilesize = 32;
     dock.largesize = 16;
 
-    # Verified against this machine's actual settings rather than
-    # nix-darwin's docs, which claim Clicking/TrackpadRightClick default to
-    # false/false and swipescrolldirection defaults to true — all three are
-    # wrong here (real values: false/true/false).
+    # Verified against this machine's actual settings, not nix-darwin's docs
+    # (which claim different defaults for Clicking/TrackpadRightClick/
+    # swipescrolldirection).
     trackpad.Clicking = false;
     trackpad.TrackpadRightClick = true;
     trackpad.Dragging = false;
@@ -104,12 +73,12 @@ in {
     NSGlobalDomain.AppleShowAllExtensions = true;
     NSGlobalDomain.InitialKeyRepeat = 14;
     NSGlobalDomain.KeyRepeat = 1;
-    # Dark mode everywhere, matching the Catppuccin Frappe theme used
-    # across terminal/editor/CLI tooling (home/common/*).
+    # Dark mode, matching the Catppuccin Frappe theme used across
+    # terminal/editor/CLI tooling.
     NSGlobalDomain.AppleInterfaceStyle = "Dark";
     NSGlobalDomain.AppleInterfaceStyleSwitchesAutomatically = false;
-    # Disable autocorrect/text-substitution/prediction globally — interferes
-    # with code/terminal/config text.
+    # Autocorrect/text-substitution/prediction off — interferes with
+    # code/terminal/config text.
     NSGlobalDomain.NSAutomaticCapitalizationEnabled = false;
     NSGlobalDomain.NSAutomaticDashSubstitutionEnabled = false;
     NSGlobalDomain.NSAutomaticPeriodSubstitutionEnabled = false;
@@ -120,13 +89,10 @@ in {
     NSGlobalDomain.AppleEnableMouseSwipeNavigateWithScrolls = true;
     NSGlobalDomain.AppleEnableSwipeNavigateWithScrolls = true;
     NSGlobalDomain.AppleKeyboardUIMode = 0;
-    # Otherwise held keys show the accent-picker popup instead of repeating,
-    # which fights the fast KeyRepeat/InitialKeyRepeat set above.
+    # Otherwise held keys show the accent-picker popup instead of repeating.
     NSGlobalDomain.ApplePressAndHoldEnabled = false;
     NSGlobalDomain.AppleScrollerPagingBehavior = false;
     NSGlobalDomain.AppleSpacesSwitchOnActivate = true;
-    # Consistent with universalaccess.reduceMotion in universalaccess.nix
-    # (personal Macs only).
     NSGlobalDomain.NSAutomaticWindowAnimationsEnabled = false;
     NSGlobalDomain.NSUseAnimatedFocusRing = false;
     NSGlobalDomain.NSScrollAnimationEnabled = false;
@@ -141,7 +107,6 @@ in {
     NSGlobalDomain."com.apple.sound.beep.feedback" = 1;
     NSGlobalDomain."com.apple.trackpad.enableSecondaryClick" = true;
     NSGlobalDomain."com.apple.swipescrolldirection" = false;
-    # Extends the 24-hour menu-bar clock choice below system-wide.
     NSGlobalDomain.AppleICUForce24HourTime = true;
     NSGlobalDomain._HIHideMenuBar = false;
 
@@ -200,8 +165,7 @@ in {
 
     hitoolbox.AppleFnUsageType = "Do Nothing";
 
-    # Requires logout to take effect.
-    spaces.spans-displays = true;
+    spaces.spans-displays = true; # Requires logout to take effect.
 
     iCal."first day of week" = "Monday";
     iCal.CalendarSidebarShown = true;
@@ -222,65 +186,4 @@ in {
 
     SoftwareUpdate.AutomaticallyInstallMacOSUpdates = true;
   };
-
-  # Application Layer Firewall. blockAllIncoming stays false - true would
-  # also kill things like AirDrop/sharing; stealth mode still keeps the
-  # machine from responding to unsolicited probes. Signed software (both
-  # already-installed and newly downloaded) is let through automatically
-  # rather than prompting for every built-in daemon. (system.defaults.alf.*
-  # is the old, partially-removed home for this - this is its replacement.)
-  networking.applicationFirewall = {
-    enable = true;
-    blockAllIncoming = false;
-    allowSigned = true;
-    allowSignedApp = true;
-    enableStealthMode = true;
-  };
-
-  # Remote Login (SSH) off - deliberately not managed via services.openssh
-  # elsewhere on darwin, so this is authoritative for it.
-  services.openssh.enable = false;
-
-  # Things nix-darwin has no declarative option for, so enforced imperatively
-  # on every activation (same self-healing pattern as
-  # home/darwin/zen-browser.nix). `|| true` throughout: a work machine's MDM
-  # profile may re-lock these, and a failed disable here shouldn't fail the
-  # whole activation.
-  system.activationScripts.extraActivation.text = ''
-    # Touch ID is not a secret you can refuse to give up - unlike a
-    # passcode, biometrics generally aren't protected against compelled
-    # unlock. Disabled system-wide, both for unlock and for any other use
-    # (e.g. sudo), rather than opted into anywhere in this config.
-    /usr/bin/bioutil -w -s -f 0 -u 0 || true
-
-    # Screen Sharing off.
-    launchctl bootout system /System/Library/LaunchDaemons/com.apple.screensharing.plist || true
-
-    # Remote Management (Apple Remote Desktop) off.
-    /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -deactivate -stop || true
-  '';
-
-  # Caps Lock -> Control (terminal/emacs-style bindings).
-  system.keyboard.enableKeyMapping = true;
-  system.keyboard.remapCapsLockToControl = true;
-  system.keyboard.remapCapsLockToEscape = false;
-  system.keyboard.nonUS.remapTilde = false;
-  system.keyboard.swapLeftCommandAndLeftAlt = false;
-  system.keyboard.swapRightCommandAndRightOption = false;
-  system.keyboard.swapCapsLockAndEscape = false;
-  system.keyboard.swapLeftCtrlAndFn = false;
-
-  # Make zsh the default user shell
-  programs.zsh.enable = true;
-
-  # User account (matches ahokinson/dotfiles /Users/anders). Default shell is
-  # nixpkgs-managed zsh (overrides the stock macOS zsh so it tracks nixpkgs).
-  users.users."anders" = {
-    name = "anders";
-    home = "/Users/anders";
-    shell = pkgs.zsh;
-  };
-
-  # State version for nix-darwin
-  system.stateVersion = 4;
 }

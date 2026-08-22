@@ -3,7 +3,7 @@
 # profile needs but NixOS provides directly via environment.systemPackages.
 # `osConfig` is a specialArg home-manager injects only when it's wired in as
 # a NixOS module, so `osConfig == null` cleanly identifies the standalone
-# context (see home/linux/plasma-panel.nix for the same test in use).
+# context (see home/linux/plasma/panel.nix for the same test in use).
 { pkgs, lib, osConfig ? null, ... }: {
   home.packages = with pkgs; lib.optionals (osConfig == null) [
     # ghostty installed via programs.ghostty (home/common/ghostty) instead.

@@ -1,8 +1,7 @@
 # Force-installs extensions via distribution/policies.json, independent of
-# any profile - safe under the profile-ownership constraint in
-# zen-settings.nix. Only imported where inputs.zen-browser.homeModules.beta
-# is present (home/darwin/zen-browser.nix, home/linux/zen-browser.nix);
-# the option doesn't exist under NixOS's plain nixpkgs zen-browser package.
+# any profile. Only imported where inputs.zen-browser.homeModules.beta is
+# present (home/darwin/zen-browser.nix, home/linux/zen-browser.nix) — the
+# option doesn't exist under NixOS's plain nixpkgs zen-browser package.
 { ... }: {
   programs.zen-browser.policies.ExtensionSettings =
     builtins.mapAttrs (_: slug: {
