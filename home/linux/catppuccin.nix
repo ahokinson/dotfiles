@@ -71,9 +71,13 @@
   # home-manager's cross-toolkit option (expands to GTK, X resources, and
   # Wayland env vars), the same one catppuccin/nix's own cursors.nix module
   # uses.
+  # size is set explicitly because home-manager's own default is 32, which
+  # renders noticeably larger than macOS's pointer; 24 is the conventional
+  # GTK/XDG size and the closest match.
   home.pointerCursor = {
     enable = true;
     name = "WhiteSur-cursors";
     package = pkgs.whitesur-cursors;
+    size = 24;
   };
 }

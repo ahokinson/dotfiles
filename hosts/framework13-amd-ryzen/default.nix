@@ -38,6 +38,7 @@
         (selfPath "home/linux/cosmic/theme.nix")
         (selfPath "home/linux/cosmic/wallpaper.nix")
         (selfPath "home/linux/cosmic/compositor.nix")
+        (selfPath "home/linux/cosmic/gtk.nix")
       ];
       home.username = "anders";
       home.homeDirectory = "/home/anders";
