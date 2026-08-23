@@ -1,21 +1,20 @@
-{ selfPath, config, pkgs, lib, ... }:
+{ inputs, pkgs, lib, ... }:
 let
   destName = if pkgs.stdenv.hostPlatform.isDarwin
     then "Library/Application Support/cupcake"
     else ".config/cupcake";
+
+  # Custom policies now live at github:ahokinson/cupcake (flake.nix's
+  # cupcake input, fetched as a plain source tree).
+  customPolicies = "${inputs.cupcake}/custom";
 in {
   home.packages = [ pkgs.cupcake ];
 
-  # Only policies/{claude,opencode}/custom/ is version-controlled (see
-  # _files/store/.gitignore) — everything else (the system/evaluate.rego
-  # aggregator entrypoint, builtins/, rulebook.yml) is scaffolded locally by
-  # `cupcake init --global` below, matching how cupcake expects to own that
-  # generated config. Vendoring those generated files into the repo doesn't
-  # work anyway: they're gitignored, so a flake build never sees them.
-  home.file.${destName} = {
-    source = selfPath "home/common/cupcake/_files/store";
-    recursive = true;
-  };
+  # One source, deployed to both harnesses. cupcakeGlobalInit below still
+  # writes system/evaluate.rego, builtins/, and rulebook.yml as siblings of
+  # this symlink inside each policies/<harness>/ dir.
+  home.file."${destName}/policies/claude/custom".source = customPolicies;
+  home.file."${destName}/policies/opencode/custom".source = customPolicies;
 
   # Idempotent: cupcake checks for its own rulebook.yml and no-ops with
   # "already initialized" if present, so this is safe to run on every

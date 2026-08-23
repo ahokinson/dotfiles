@@ -60,6 +60,22 @@
       }
     },
     "cupcake": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1787444538,
+        "narHash": "sha256-gFrXMLPgiTYz0r0xhr/cvGf3QTnRrwyKbNDSKxSulB0=",
+        "owner": "ahokinson",
+        "repo": "cupcake",
+        "rev": "175e56a5fc5031454faaa076f36853260bfff2ff",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ahokinson",
+        "repo": "cupcake",
+        "type": "github"
+      }
+    },
+    "cupcake_2": {
       "inputs": {
         "crane": "crane",
         "flake-utils": "flake-utils",
@@ -85,7 +101,7 @@
     },
     "flake": {
       "inputs": {
-        "cupcake": "cupcake",
+        "cupcake": "cupcake_2",
         "hermes-agent": "hermes-agent",
         "nixpkgs": [
           "nixpkgs"
@@ -327,6 +343,22 @@
         "type": "github"
       }
     },
+    "nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1787444525,
+        "narHash": "sha256-27FI6JnpMJM1tsHnsCtqnIessYTxcSZB0H4/3DUOHtM=",
+        "owner": "ahokinson",
+        "repo": "nvim",
+        "rev": "d3fb2e742e77b3b1301fa9cc8251be96a231fccf",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ahokinson",
+        "repo": "nvim",
+        "type": "github"
+      }
+    },
     "plasma-manager": {
       "inputs": {
         "home-manager": [
@@ -408,10 +440,12 @@
       "inputs": {
         "catppuccin": "catppuccin",
         "cosmic-manager": "cosmic-manager",
+        "cupcake": "cupcake",
         "flake": "flake",
         "home-manager": "home-manager_2",
         "nix-darwin": "nix-darwin",
         "nixpkgs": "nixpkgs_2",
+        "nvim": "nvim",
         "plasma-manager": "plasma-manager",
         "zen-browser": "zen-browser_2"
       }

@@ -11,6 +11,10 @@
       inputs.home-manager.follows = "home-manager";
     };
 
+    # Plain source tree, not a flake - see home/common/cupcake/default.nix.
+    cupcake.url = "github:ahokinson/cupcake";
+    cupcake.flake = false;
+
     flake.url = "github:ahokinson/flake";
     flake.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -25,6 +29,10 @@
     };
 
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+
+    # Plain source tree, not a flake - see home/common/nvim/default.nix.
+    nvim.url = "github:ahokinson/nvim";
+    nvim.flake = false;
 
     plasma-manager = {
       url = "github:nix-community/plasma-manager";

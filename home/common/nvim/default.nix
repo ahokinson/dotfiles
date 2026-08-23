@@ -1,9 +1,9 @@
-{ selfPath, pkgs, lib, ... }:
+{ inputs, pkgs, lib, ... }:
 let
-  # Keep in sync with the `parsers` list in
-  # _files/lua/custom/plugins/treesitter.lua. Any language added there but
-  # not here just falls back to nvim-treesitter's own runtime install (via
-  # the tree-sitter CLI + gcc below) on first use.
+  # Keep in sync with the `parsers` list in ahokinson/nvim's
+  # lua/custom/plugins/treesitter.lua. Any language added there but not here
+  # just falls back to nvim-treesitter's own runtime install (via the
+  # tree-sitter CLI + gcc below) on first use.
   treesitterParserNames = [
     "bash"
     "c"
@@ -40,17 +40,15 @@ let
     '') treesitterParserNames
   );
 in {
-  # Keep the upstream lazyvim-style lua verbatim under ~/.config/nvim.
-  # The lazy.nvim bootstrap in init.lua fetches plugins at first launch;
-  # we only install the editor + tree-sitter CLI.
   home.packages = [
     pkgs.neovim
     pkgs.tree-sitter
   ];
-  xdg.configFile."nvim" = {
-    source = selfPath "home/common/nvim/_files";
-    recursive = true;
-  };
+
+  # Config now lives at github:ahokinson/nvim (flake.nix's nvim input,
+  # fetched as a plain source tree - not a flake itself).
+  xdg.configFile."nvim".source = inputs.nvim;
+
   # Pre-populate nvim-treesitter's parser dir so the pinned languages are
   # already "installed" the moment this generation activates, instead of
   # nvim-treesitter compiling/fetching them (and erroring) on first launch.
