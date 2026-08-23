@@ -1,8 +1,7 @@
 # Single source of truth for the two pinned dock/panel apps, referenced by
-# modules/darwin/system (dock.persistent-apps, .app bundle names),
-# home/linux/plasma/panel.nix (Asahi only - iconTasks.launchers, full
-# .desktop ids), and home/linux/cosmic/panel.nix (framework13 - app-list
-# favorites, .desktop ids with the extension stripped). Plain data, not a
+# modules/darwin/system (dock.persistent-apps, .app bundle names) and
+# home/linux/cosmic/panel.nix (every COSMIC host - app-list favorites,
+# .desktop ids with the extension stripped). Plain data, not a
 # NixOS/home-manager module - each consumer `import`s it and builds its own
 # platform-specific id format from these two fields.
 #

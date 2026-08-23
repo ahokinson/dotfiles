@@ -12,7 +12,7 @@ in
   "extensions.formautofill.creditCards.enabled" = false;
   # Default/fallback fonts only - browser.display.use_document_fonts stays
   # at its default (1), so pages that specify their own fonts are unaffected.
-  # Matches the family strings ghostty and Plasma already use (fonts.nix).
+  # Matches the family strings ghostty and COSMIC already use (fonts.nix).
   "font.name.monospace.x-western" = sharedFonts.monoFamily;
   "font.name.sans-serif.x-western" = sharedFonts.generalFamily;
   "font.name.serif.x-western" = sharedFonts.generalFamily;

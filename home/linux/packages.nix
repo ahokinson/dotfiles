@@ -9,7 +9,7 @@
     # ghostty installed via programs.ghostty (home/common/ghostty) instead.
     #
     # TODO: reconcile against what's actually dnf-installed beyond the base
-    # Fedora KDE spin. On each Asahi machine, run:
+    # Fedora COSMIC install. On each Asahi machine, run:
     #   dnf repoquery --userinstalled --qf '%{name}\n' | sort
     # Anything with a nixpkgs equivalent moves into this list; anything
     # Asahi/kernel/firmware-specific that Nix can't provide gets a comment

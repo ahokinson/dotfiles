@@ -1,5 +1,6 @@
-# Managed desktop wallpaper for COSMIC, framework13-only — the same solid
-# Catppuccin Frappe base-color image used everywhere else in this repo.
+# Managed desktop wallpaper for COSMIC, shared by every COSMIC host (NixOS
+# and Asahi Fedora alike) — the same solid Catppuccin Frappe base-color image
+# used everywhere else in this repo.
 # cosmic-manager writes cosmic-bg's config declaratively (verified against
 # its modules/wallpapers.nix), the same plain-config-file mechanism
 # panel.nix and theme.nix use, so it applies during home-manager activation

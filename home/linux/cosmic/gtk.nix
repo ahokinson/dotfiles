@@ -1,8 +1,10 @@
 # Turns on home-manager's GTK module (a no-op otherwise) and owns GTK app
-# colors + the macOS window-button order via the WhiteSur theme.
-# COSMIC-scoped rather than shared with Asahi's catppuccin.nix: Plasma's
-# kde-gtk-config rewrites settings.ini itself at login, so home-manager
-# owning that file there would be a tug-of-war.
+# colors + the macOS window-button order via the WhiteSur theme, shared by
+# every COSMIC host. Layered on top of home/linux/catppuccin.nix's
+# icon/cursor theming rather than folded into it: this piece is COSMIC-
+# specific (button-layout portal wiring, the WhiteSur GTK4 unpack, the
+# captured COSMIC palette below), so it only applies where COSMIC actually
+# owns the session.
 { selfPath, pkgs, ... }:
 let
   sharedFonts = import (selfPath "home/common/fonts.nix") { inherit pkgs; };

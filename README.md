@@ -32,6 +32,11 @@ backup flag is required since a standalone `homeManagerConfiguration` has no
 `home.backupFileExtension` equivalent — both already covered by the commands
 above.
 
+COSMIC itself must be installed at the OS level via `dnf` first — this repo
+only manages `$HOME`, not Fedora's package set. Confirm the exact
+package/group name against what's actually available in Fedora Asahi
+Remix's repos before running the command above.
+
 ## Updating inputs
 
 `nix flake update` bumps every pinned input.

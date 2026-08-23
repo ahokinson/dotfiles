@@ -10,7 +10,7 @@ let
   isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
   # osConfig is a specialArg home-manager injects only when wired in as a
   # NixOS module - absent (default null) for the standalone Asahi profile,
-  # same test used in home/linux/plasma/panel.nix and friends.
+  # same test used in home/linux/cosmic/panel.nix and friends.
   isAsahi = !isDarwin && osConfig == null;
 
   ghosttyAsahiGl = pkgs.symlinkJoin {

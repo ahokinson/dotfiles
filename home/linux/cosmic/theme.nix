@@ -1,5 +1,6 @@
 # Dark mode + Catppuccin Frappe accent/background + fonts, via cosmic-manager
-# (wayland.desktopManager.cosmic.appearance). Framework13-only.
+# (wayland.desktopManager.cosmic.appearance). Shared by every COSMIC host,
+# NixOS and Asahi Fedora alike.
 #
 # accent and bg_color are hex->float conversions of colors already used
 # elsewhere in this repo (accent #8caaee, background #303446 — the

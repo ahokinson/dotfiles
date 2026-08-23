@@ -1,7 +1,8 @@
-# COSMIC's default panel/dock split replaces home/linux/plasma/panel.nix's
-# hand-built bottom dock; this only overrides what differs from stock: pinned-app
-# favorites (mirroring modules/darwin/system's dock.persistent-apps), panel
-# icon presentation, and dock/panel layout via configFile.
+# COSMIC's default panel/dock split, shared by every COSMIC host (NixOS and
+# Asahi Fedora alike); this only overrides what differs from stock:
+# pinned-app favorites (mirroring modules/darwin/system's
+# dock.persistent-apps), panel icon presentation, and dock/panel layout via
+# configFile.
 #
 # Deliberately doesn't touch wayland.desktopManager.cosmic.panels — setting
 # it replaces COSMIC's entire panel registry (verified against
@@ -11,13 +12,18 @@
 # when `panels` is set, so that hook is reproduced by hand below.
 #
 # Favorite ids are each app's .desktop filename with the extension stripped.
-{ selfPath, lib, pkgs, ... }:
+{ selfPath, lib, pkgs, osConfig ? null, ... }:
 let
   dockApps = import (selfPath "home/common/dock-apps.nix");
   stripDesktopSuffix = id: lib.removeSuffix ".desktop" id;
 
   ronOptional = value: { __type = "optional"; inherit value; };
   ronEnum = variant: { __type = "enum"; inherit variant; };
+
+  # osConfig is a specialArg home-manager injects only when wired in as a
+  # NixOS module - present for framework13-amd-ryzen, absent for the
+  # standalone Asahi profile (same test as home/linux/packages.nix).
+  isNixOS = osConfig != null;
 in
 {
   # cosmic-manager's own master switch (home-manager level) - distinct from
@@ -98,7 +104,9 @@ in
     run ${lib.getExe pkgs.killall} .cosmic-panel-wrapped || true
   '';
 
-  # Puts the NixOS logo where macOS puts the Apple logo. Shadows
+  # Puts the host's own logo where macOS puts the Apple logo — NixOS
+  # snowflake on framework13, Asahi Linux logo on the Asahi machines,
+  # matching Plasma's old kickoff-icon logic. Shadows
   # com.system76.CosmicAppLibrary, not the button's own icon name (the
   # button renders whatever app id it's passed). Written into both
   # WhiteSur-dark and hicolor: the active theme's own directories are
@@ -106,11 +114,14 @@ in
   # for anything resolving outside the active theme.
   xdg.dataFile =
     let
-      nixLogo = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+      logo =
+        if isNixOS
+        then "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg"
+        else selfPath "home/common/_files/asahi-apple.svg";
       iconName = "com.system76.CosmicAppLibrary.svg";
     in
     {
-      "icons/WhiteSur-dark/apps/scalable/${iconName}".source = nixLogo;
-      "icons/hicolor/scalable/apps/${iconName}".source = nixLogo;
+      "icons/WhiteSur-dark/apps/scalable/${iconName}".source = logo;
+      "icons/hicolor/scalable/apps/${iconName}".source = logo;
     };
 }
