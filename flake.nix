@@ -65,7 +65,7 @@
       # (home-manager owns only $HOME, so there's nothing host-specific to
       # configure) — exposed under two output names below, one per machine.
       # A standalone homeManagerConfiguration has no home.backupFileExtension
-      # option; the equivalent is the `-b <ext>` CLI flag (switch.d/args.zsh).
+      # option; the equivalent is the `-b <ext>` CLI flag (see README.md).
       asahiHome = home-manager.lib.homeManagerConfiguration {
         pkgs = mkPkgs "aarch64-linux";
         extraSpecialArgs = { inherit inputs selfPath; };
@@ -131,11 +131,15 @@
       };
 
       # --- Asahi Fedora (aarch64-linux) — standalone home-manager profile.
-      # Named per-machine, short forms of each machine's darwin hostname.
-      # switch.zsh maps the device-tree codename to a hostname (see
-      # switch.d/asahi.zsh's ASAHI_HW_MAP) and sets it via hostnamectl,
-      # since home-manager can't do that itself.
+      # Named per-machine, short forms of each machine's darwin hostname
+      # (see README.md for the apply command, including the standalone
+      # home-manager flags this needs that nixos-rebuild/darwin-rebuild
+      # don't).
+      # Apply with: NIX_CONFIG="experimental-features = nix-command flakes"
+      #   nix run github:nix-community/home-manager -- switch -b hm-backup
+      #   --flake ~/.dotfiles#bookpro14-m1-pro
       homeConfigurations."bookpro14-m1-pro" = asahiHome;
+      # Apply with: same as above, #studio-m1-max
       homeConfigurations."studio-m1-max" = asahiHome;
 
       # Expose for downstream compositors/hosts if needed.
