@@ -4,18 +4,26 @@ Unified Nix flake for NixOS (incl. Asahi/Apple Silicon) and macOS.
 
 ## Apply
 
-| Host | Kind | Command |
-|---|---|---|
-| `framework13-amd-ryzen` | NixOS | `sudo nixos-rebuild switch --flake ~/.dotfiles#framework13-amd-ryzen` |
-| `bookpro14-m1-pro` | Asahi NixOS | `sudo nixos-rebuild switch --flake ~/.dotfiles#bookpro14-m1-pro` |
-| `studio-m1-max` | Asahi NixOS | `sudo nixos-rebuild switch --flake ~/.dotfiles#studio-m1-max` |
-| `macbookpro14-m1-pro` | darwin | `darwin-rebuild switch --flake ~/.dotfiles#macbookpro14-m1-pro` |
-| `macbookpro16-m5` | darwin | `darwin-rebuild switch --flake ~/.dotfiles#macbookpro16-m5` |
-| `macstudio-m1-max` | darwin | `darwin-rebuild switch --flake ~/.dotfiles#macstudio-m1-max` |
+Each config is named after its hostname, so the rebuild tools pick the right
+one on their own:
 
-`nixos-rebuild`/`darwin-rebuild` also auto-select the right output by
-hostname when given a bare `--flake ~/.dotfiles` (no `#attr`) — the explicit
-form above is what's documented since it needs no prior setup.
+    sudo nixos-rebuild switch --flake ~/.dotfiles     # NixOS, incl. Asahi
+    sudo darwin-rebuild switch --flake ~/.dotfiles    # macOS
+
+Append `#<hostname>` to build a different machine's config than the one you're
+sitting at.
+
+## Hosts
+
+Four machines, six configs — the two Apple Silicon Macs dual-boot macOS and
+Asahi NixOS.
+
+| Machine        | macOS                 | Linux                   |
+| -------------- | --------------------- | ----------------------- |
+| Framework 13   | —                     | `framework13-amd-ryzen` |
+| MacBook Pro 14 | `macbookpro14-m1-pro` | `bookpro14-m1-pro`      |
+| Mac Studio     | `macstudio-m1-max`    | `studio-m1-max`         |
+| MacBook Pro 16 | `macbookpro16-m5`     | —                       |
 
 ### First activation on a new Mac
 
@@ -33,8 +41,7 @@ There's no already-booted OS to run `nixos-rebuild` against yet. Install via
 installer, build and boot that project's NixOS installer ISO
 (`nix build .#installer-bootstrap`), then partition and install. Copy the
 installer's generated `hardware-configuration.nix` into this repo's
-`hosts/<hostname>/` before the first `nixos-rebuild switch` from the table
-above.
+`hosts/<hostname>/` before the first `nixos-rebuild switch`.
 
 ## Updating inputs
 
