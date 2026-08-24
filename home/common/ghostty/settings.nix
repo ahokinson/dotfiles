@@ -1,9 +1,9 @@
 # Settings set exhaustively (mirrors the same treatment given to macOS
 # system.defaults and Zen), sourced from `ghostty +show-config --default
-# --docs` — not just the ones changed from stock. `palette`, `keybind`, and
-# `command-palette-entry` are excluded: palette is owned by theme.nix, and
-# keybind/command-palette-entry are additive in Ghostty's config format, so
-# leaving them undeclared already preserves the shipped defaults with no
+# --docs`, not just the ones changed from stock. `palette`, `keybind`, and
+# `command-palette-entry` are excluded: palette is owned by theme.nix.
+# keybind and command-palette-entry are additive in Ghostty's config format,
+# so leaving them undeclared already preserves the shipped defaults with no
 # drift risk.
 { pkgs, lib, selfPath, ... }:
 let
@@ -19,9 +19,9 @@ let
   };
 
   # Leaves the header bar carrying nothing but the traffic lights. Has to be
-  # CSS (gtk-titlebar = false removes the whole bar, controls included) and
-  # has to shrink rather than hide (GTK4 CSS supports neither display nor
-  # visibility). Keyed on the window controls' own GTK4 classes — the same
+  # CSS (gtk-titlebar = false removes the whole bar, controls included), and
+  # has to shrink instead of hide (GTK4 CSS supports neither display nor
+  # visibility). Keyed on the window controls' own GTK4 classes, the same
   # ones WhiteSur's own theme selects on.
   headerCss = pkgs.writeText "ghostty-header.css"
     (builtins.readFile (selfPath "home/common/ghostty/_files/header.css"));
@@ -33,9 +33,9 @@ in {
     macos-icon-screen-color = "232634";
 
     # macOS: "hidden" removes the titlebar entirely; title = " " below
-    # blanks the title as defense in depth. Linux/GTK: a header bar pared
-    # back to just the window controls (see window-decoration and
-    # gtk-custom-css in the !isDarwin block).
+    # blanks the title as defense in depth. Linux/GTK: window-decoration
+    # and gtk-custom-css below pare the header bar back to just the window
+    # controls.
     macos-titlebar-style = "hidden";
     title = " ";
 
@@ -55,8 +55,8 @@ in {
     font-shaping-break = "cursor";
     alpha-blending = "native";
     grapheme-width-method = "unicode";
-    # background/foreground deliberately NOT pinned here (unlike the rest
-    # of this block) — the shipped defaults would override whatever the
+    # background/foreground deliberately NOT pinned here, unlike the rest
+    # of this block. The shipped defaults would override whatever the
     # active theme sets, defeating Catppuccin on both platforms.
     background-image-opacity = 1;
     background-image-position = "center";
@@ -176,9 +176,9 @@ in {
     gtk-opengl-debug = false;
     gtk-single-instance = "detect";
     gtk-tabs-location = "top";
-    # Stays true: `false` removes the header bar outright, traffic lights
-    # and all, rather than reducing it to the window controls. Paring it
-    # down to just those is done via gtk-custom-css instead.
+    # Stays true. `false` removes the header bar outright, traffic lights
+    # and all, instead of reducing it to just the window controls. That
+    # paring-down happens via gtk-custom-css instead.
     gtk-titlebar = true;
     gtk-titlebar-hide-when-maximized = false;
     gtk-custom-css = "${headerCss}";

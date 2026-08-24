@@ -8,7 +8,7 @@
   services.desktopManager.cosmic.enable = true;
   services.displayManager.cosmic-greeter.enable = true;
 
-  # COSMIC doesn't enable fwupd by default (Plasma used to pull it in).
+  # COSMIC doesn't enable fwupd by default, so it's enabled explicitly here.
   # fwupd-refresh's upstream unit doesn't declare After=polkit.service, so a
   # refresh firing mid-switch (while polkit restarts) fails on "PolicyKit
   # daemon is not available" without this.

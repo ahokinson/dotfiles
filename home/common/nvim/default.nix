@@ -31,7 +31,7 @@ let
     "zig"
   ];
   # Each grammarPlugins.<lang> derivation contains just parser/<lang>.so;
-  # link them in explicitly by name rather than merging the derivations
+  # link them in explicitly by name instead of merging the derivations
   # wholesale, so the result is easy to audit file-by-file.
   nvimTreesitterParsers = pkgs.runCommand "nvim-treesitter-parsers" { } (
     "mkdir -p $out/parser\n"
@@ -45,7 +45,7 @@ in {
     pkgs.tree-sitter
   ];
 
-  # Config now lives at github:ahokinson/nvim (flake.nix's nvim input,
+  # Config lives at github:ahokinson/nvim (flake.nix's nvim input,
   # fetched as a plain source tree - not a flake itself).
   xdg.configFile."nvim".source = inputs.nvim;
 

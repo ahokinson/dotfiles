@@ -1,4 +1,4 @@
-# PLACEHOLDER — not a real generated hardware config. Unlike
+# PLACEHOLDER. Not a real generated hardware config. Unlike
 # framework13-amd-ryzen's (produced by nixos-generate-config on that
 # machine), this file can't be authored sight-unseen: it needs the actual
 # filesystem/UUIDs/kernel-modules layout from the real bare-metal install.

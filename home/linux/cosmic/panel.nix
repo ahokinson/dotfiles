@@ -4,11 +4,11 @@
 # dock.persistent-apps), panel icon presentation, and dock/panel layout via
 # configFile.
 #
-# Deliberately doesn't touch wayland.desktopManager.cosmic.panels — setting
-# it replaces COSMIC's entire panel registry (verified against
+# Deliberately doesn't touch wayland.desktopManager.cosmic.panels. Setting
+# it replaces COSMIC's entire panel registry (checked against
 # cosmic-manager's modules/panels.nix), silently dropping the stock top
 # panel. configFile writes individual keys instead, without touching the
-# registry; cosmic-manager only wires its restartCosmicPanel activation hook
+# registry. cosmic-manager only wires its restartCosmicPanel activation hook
 # when `panels` is set, so that hook is reproduced by hand below.
 #
 # Favorite ids are each app's .desktop filename with the extension stripped.
@@ -20,7 +20,7 @@ let
   ronOptional = value: { __type = "optional"; inherit value; };
   ronEnum = variant: { __type = "enum"; inherit variant; };
 
-  # Every host here is a NixOS module now, so osConfig is always set - the
+  # Every host here is a NixOS module, so osConfig is always set - the
   # logo instead keys off hardware.asahi.enable to tell Apple Silicon hosts
   # (bookpro14-m1-pro, studio-m1-max) apart from framework13-amd-ryzen.
   isApple = osConfig.hardware.asahi.enable or false;
@@ -42,7 +42,7 @@ in
     show_seconds = true;
   };
 
-  # Render the top panel's buttons as icons rather than words, so the
+  # Render the top panel's buttons as icons instead of words, so the
   # leftmost one reads as a logo the way macOS's Apple menu does.
   wayland.desktopManager.cosmic.applets."panel-button".settings.configs = {
     __type = "map";
@@ -104,9 +104,8 @@ in
     run ${lib.getExe pkgs.killall} .cosmic-panel-wrapped || true
   '';
 
-  # Puts the host's own logo where macOS puts the Apple logo — Asahi Linux
-  # logo on the Apple Silicon hosts, NixOS snowflake on framework13,
-  # matching Plasma's old kickoff-icon logic. Shadows
+  # Puts the host's own logo where macOS puts the Apple logo: Asahi Linux
+  # logo on the Apple Silicon hosts, NixOS snowflake on framework13. Shadows
   # com.system76.CosmicAppLibrary, not the button's own icon name (the
   # button renders whatever app id it's passed). Written into both
   # WhiteSur-dark and hicolor: the active theme's own directories are

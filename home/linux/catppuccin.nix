@@ -1,7 +1,5 @@
 # Catppuccin Frappe GTK theming + WhiteSur icons/cursors, shared by every
-# NixOS host. Qt/Kvantum theming (catppuccin-qt.nix) is separate: it points
-# Qt apps at Nix-built platform-theme/Kvantum plugins via env vars, which is
-# only ABI-safe when the whole Qt stack is Nix-built too.
+# NixOS host.
 {
   inputs,
   config,
@@ -23,9 +21,8 @@
     accent = "mauve";
 
     # gtk.icon off in favor of WhiteSur below (macOS-shaped icons/cursors on
-    # top of Catppuccin's GTK colors). cursors stays disabled — WhiteSur's
-    # cursor covers that instead. kvantum is left to catppuccin-qt.nix on
-    # hosts that import it.
+    # top of Catppuccin's GTK colors). cursors stays disabled: WhiteSur's
+    # cursor covers that instead.
     gtk.icon.enable = false;
 
     # delta and bat are themed in home/common (git/delta.nix, bat/default.nix);
@@ -34,9 +31,7 @@
     bat.enable = false;
   };
 
-  # Plain icon-theme/cursor-theme assets (SVGs, PNGs, an index.theme file),
-  # no compiled ABI-sensitive code, so safe to share with Asahi's
-  # foreign-distro Plasma unlike catppuccin-qt.nix's Kvantum plugins.
+  # Plain icon-theme/cursor-theme assets: SVGs, PNGs, an index.theme file.
   home.packages = with pkgs; [
     whitesur-icon-theme
     whitesur-cursors
@@ -47,9 +42,9 @@
     package = pkgs.whitesur-icon-theme;
   };
 
-  # home.pointerCursor rather than gtk.cursorTheme directly - home-manager's
+  # home.pointerCursor, not gtk.cursorTheme directly - home-manager's
   # cross-toolkit option (GTK, X resources, Wayland env vars). size 24
-  # rather than home-manager's default of 32, which renders noticeably
+  # instead of home-manager's default of 32, which renders noticeably
   # larger than macOS's pointer.
   home.pointerCursor = {
     enable = true;

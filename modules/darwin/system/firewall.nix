@@ -1,6 +1,6 @@
 { ... }: {
-  # blockAllIncoming stays false — true would also kill AirDrop/sharing;
-  # stealth mode still keeps the machine from responding to unsolicited
+  # blockAllIncoming stays false: true would also kill AirDrop/sharing.
+  # Stealth mode still keeps the machine from responding to unsolicited
   # probes. Signed software is let through automatically.
   networking.applicationFirewall = {
     enable = true;

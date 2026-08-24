@@ -1,5 +1,5 @@
 # podman on macOS runs containers inside a VM (unlike NixOS's native
-# rootless runtime, see modules/nixos/containers.nix), which needs a
+# rootless runtime), which needs a
 # one-time `podman machine init` + `start`. nix-darwin's system activation
 # can't do this - it runs as root, and the VM is per-user state - so this
 # runs as a home-manager activation hook instead (same constraint as

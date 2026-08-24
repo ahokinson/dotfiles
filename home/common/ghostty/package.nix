@@ -1,4 +1,4 @@
-# darwin uses the signed macOS binary directly — nixpkgs' pkgs.ghostty has
+# darwin uses the signed macOS binary directly. nixpkgs' pkgs.ghostty has
 # no darwin platform support (upstream lacks a Swift 6/xcodebuild-friendly
 # nixpkgs environment).
 { pkgs, ... }:

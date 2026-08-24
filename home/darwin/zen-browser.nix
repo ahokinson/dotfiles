@@ -11,13 +11,13 @@
     installation_mode = "force_installed";
   };
 
-  # One-time self-heal: earlier attempts at this declared
-  # programs.zen-browser.profiles, which makes home-manager fully own and
-  # regenerate profiles.ini from only the profiles it's told about — that
-  # orphaned the real profile from profiles.ini. Un-declaring the profile
-  # (current state) removes home-manager's stale symlink but doesn't restore
-  # what it backed up (via backupFileExtension) the first time it took over.
-  # If that backup exists and profiles.ini is missing, restore it.
+  # One-time self-heal: declaring programs.zen-browser.profiles makes
+  # home-manager fully own and regenerate profiles.ini from only the
+  # profiles it's told about, which orphaned the real profile from
+  # profiles.ini. Leaving that option undeclared removes home-manager's
+  # stale symlink but doesn't restore what it backed up (via
+  # backupFileExtension) the first time it took over. If that backup exists
+  # and profiles.ini is missing, restore it.
   home.activation.restoreZenProfilesIni = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     profilesIni="$HOME/Library/Application Support/zen/profiles.ini"
     backup="$HOME/Library/Application Support/zen/profiles.ini.hm-backup"

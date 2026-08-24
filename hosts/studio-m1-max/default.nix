@@ -1,8 +1,7 @@
-# Top-level NixOS host configuration — assembles the modular system config
+# Top-level NixOS host configuration. Assembles the modular system config
 # and wires home-manager (common profile) for user `anders`.
 # Hostname reflects the underlying hardware: Mac Studio, M1 Max, running
-# NixOS bare metal via nixos-apple-silicon (dual-boots macOS — see
-# hosts/macstudio-m1-max for that side).
+# NixOS bare metal via nixos-apple-silicon (dual-boots macOS).
 # Apply with: sudo nixos-rebuild switch --flake ~/.dotfiles#studio-m1-max
 { inputs, selfPath, pkgs, lib, ... }:
 {
@@ -32,7 +31,7 @@
   # (NetworkManager's default wpa_supplicant backend isn't supported here).
   networking.networkmanager.wifi.backend = "iwd";
 
-  # Not modules/nixos/boot.nix — that module assumes framework13's AMD/EFI
+  # Not modules/nixos/boot.nix: that module assumes framework13's AMD/EFI
   # setup (canTouchEfiVariables = true, a Plymouth theme never verified on
   # this hardware). nixos-apple-silicon's own install guide calls for
   # canTouchEfiVariables = false instead.

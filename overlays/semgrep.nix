@@ -1,6 +1,6 @@
 { final }: {
   # semgrep's pytest suite fails on aarch64-linux, unrelated to the shipped
-  # binary. Both doCheck and doInstallCheck must be disabled — the latter
+  # binary. Both doCheck and doInstallCheck must be disabled. The latter
   # derives its default from doCheck's value at construction time, before
   # this override runs.
   semgrep = final.python3.pkgs.toPythonApplication (

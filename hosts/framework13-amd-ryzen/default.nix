@@ -1,4 +1,4 @@
-# Top-level NixOS host configuration — assembles the modular system config
+# Top-level NixOS host configuration. Assembles the modular system config
 # and wires home-manager (common profile) for user `anders`.
 # Hostname reflects the underlying hardware: Framework Laptop 13 with AMD
 # Ryzen AI 7 350 (Ryzen AI 300 / "Strix Point" generation, A7 board version).

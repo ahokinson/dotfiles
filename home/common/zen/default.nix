@@ -1,10 +1,10 @@
 # Applies Zen settings/theme to whichever profile is the machine's actual
-# default, found at activation time via profiles.ini (never known in advance
-# — it's a random per-install salt). Deliberately bypasses home-manager's own
-# programs.zen-browser.profiles option: that option fully owns and
-# regenerates profiles.ini, which orphaned a real profile once already when
-# used to adopt an existing one. This only ever touches user.js and a
-# chrome/ subdirectory in the profile Zen already considers default.
+# default, found at activation time via profiles.ini. That's never known in
+# advance; it's a random per-install salt. Deliberately bypasses
+# home-manager's own programs.zen-browser.profiles option: that option fully
+# owns and regenerates profiles.ini, and orphaned a real profile once when
+# adopting an existing one. This only ever touches user.js and a chrome/
+# subdirectory in the profile Zen already considers default.
 { inputs, selfPath, config, lib, pkgs, ... }:
 let
   activation = import (selfPath "home/common/zen/activation.nix") { inherit pkgs config; };

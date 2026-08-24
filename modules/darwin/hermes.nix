@@ -2,10 +2,10 @@
 # flake (NousResearch/hermes-agent) only ships a NixOS systemd module, so
 # this hand-rolls a launchd agent running the same `hermes gateway` command
 # its systemd ExecStart uses (`pkgs.hermes` is that same package, aliased by
-# inputs.flake's overlay — see overlays/default.nix). Runs as a per-user
+# inputs.flake's overlay in overlays/default.nix). Runs as a per-user
 # LaunchAgent against the user's own ~/.hermes (already populated by
-# home/common/hermes/default.nix) rather than the NixOS module's isolated
-# system user/stateDir, since a personal Mac has no need for that isolation.
+# home/common/hermes/default.nix), not the NixOS module's isolated system
+# user/stateDir, since a personal Mac has no need for that isolation.
 { pkgs, ... }: {
   launchd.agents.hermes-agent = {
     serviceConfig = {

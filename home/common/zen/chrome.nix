@@ -3,9 +3,9 @@
 { pkgs, lib }:
 let
   # Zen draws these buttons itself and only consults GTK's -moz-gtk-csd-*
-  # values for placement/order, not appearance — so this has to be chrome
-  # CSS rather than the GTK theme (home/linux/cosmic/gtk.nix). Class names
-  # verified against the shipped browser/omni.ja.
+  # values for placement/order, not appearance. So this has to be chrome
+  # CSS, not the GTK theme (home/linux/cosmic/gtk.nix). Class names checked
+  # against the shipped browser/omni.ja.
   zenTrafficLights = ''
 
     .titlebar-buttonbox-container .titlebar-button {

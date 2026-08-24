@@ -4,7 +4,6 @@
   imports = [
     (selfPath "home/linux/catppuccin.nix")
     (selfPath "home/linux/packages.nix")
-    (selfPath "home/linux/wallpaper.nix")
     (selfPath "home/linux/zen-browser.nix")
   ];
 }

@@ -11,7 +11,7 @@
       inputs.home-manager.follows = "home-manager";
     };
 
-    # Plain source tree, not a flake - see home/common/cupcake/default.nix.
+    # Plain source tree, not a flake.
     cupcake.url = "github:ahokinson/cupcake";
     cupcake.flake = false;
 
@@ -35,7 +35,7 @@
 
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
-    # Plain source tree, not a flake - see home/common/nvim/default.nix.
+    # Plain source tree, not a flake.
     nvim.url = "github:ahokinson/nvim";
     nvim.flake = false;
 
@@ -47,9 +47,9 @@
 
   outputs = inputs@{ self, nixpkgs, nix-darwin, home-manager, ... }:
     let
-      # Joins a repo-root-relative subpath onto the flake's own source,
-      # e.g. `selfPath "hosts/foo"` — avoids `../../`-style relative imports
-      # that get fragile with directory nesting.
+      # Joins a repo-root-relative subpath onto the flake's own source, e.g.
+      # `selfPath "hosts/foo"`. Avoids `../../`-style relative imports, which
+      # get fragile as directories nest deeper.
       selfPath = subpath: self + "/${subpath}";
 
       overlays.default = import (selfPath "overlays/default.nix") inputs;
@@ -57,7 +57,7 @@
     {
       # --- NixOS (current box, x86_64-linux) ---
       # Framework Laptop 13, AMD Ryzen AI 7 350. Hostname:
-      # `framework13-amd-ryzen` — see hosts/framework13-amd-ryzen/default.nix.
+      # `framework13-amd-ryzen`.
       nixosConfigurations.framework13-amd-ryzen = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs selfPath; };
         modules = [
@@ -89,7 +89,7 @@
       };
 
       # MacBook Pro 16", M5. Hardware tweaks: modules/darwin/hardware-macbookpro16.nix
-      # (macOS-only — does not dual-boot Asahi.)
+      # (macOS-only, does not dual-boot Asahi.)
       darwinConfigurations.macbookpro16-m5 = nix-darwin.lib.darwinSystem {
         specialArgs = { inherit inputs selfPath; };
         modules = [
@@ -102,7 +102,7 @@
       # --- Asahi NixOS (aarch64-linux, bare metal on Apple Silicon) ---
       # Named per-machine, short forms of each machine's darwin hostname (the
       # same Macs dual-boot both). Hostnames: `bookpro14-m1-pro`,
-      # `studio-m1-max` — see hosts/<name>/default.nix.
+      # `studio-m1-max`.
       nixosConfigurations.bookpro14-m1-pro = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs selfPath; };
         modules = [

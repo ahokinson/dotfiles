@@ -1,10 +1,9 @@
-# Managed desktop wallpaper for COSMIC, shared by every NixOS host — the same
+# Managed desktop wallpaper for COSMIC, shared by every NixOS host. Same
 # solid Catppuccin Frappe base-color image used everywhere else in this repo.
-# cosmic-manager writes cosmic-bg's config declaratively (verified against
+# cosmic-manager writes cosmic-bg's config declaratively (checked against
 # its modules/wallpapers.nix), the same plain-config-file mechanism
 # panel.nix and theme.nix use, so it applies during home-manager activation
-# rather than needing the login-time script Plasma's own wallpaper handling
-# uses.
+# with no login-time script needed.
 { selfPath, ... }:
 let
   wallpaper = selfPath "home/common/_files/wallpaper-frappe-base.png";

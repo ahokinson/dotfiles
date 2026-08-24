@@ -4,7 +4,7 @@ let
     then "Library/Application Support/cupcake"
     else ".config/cupcake";
 
-  # Custom policies now live at github:ahokinson/cupcake (flake.nix's
+  # Custom policies live at github:ahokinson/cupcake (flake.nix's
   # cupcake input, fetched as a plain source tree).
   customPolicies = "${inputs.cupcake}/custom";
 in {

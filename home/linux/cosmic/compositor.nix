@@ -1,6 +1,6 @@
 # Trackpad "feel" toward macOS's, mapped from modules/darwin/system's
 # trackpad.* block (this repo's actual real-machine values, not macOS's
-# stock defaults — e.g. natural scrolling is off here) onto COSMIC's
+# stock defaults - e.g. natural scrolling is off here) onto COSMIC's
 # compositor input config. Shared by every COSMIC host; harmlessly unused on
 # studio-m1-max, which has no built-in trackpad.
 #

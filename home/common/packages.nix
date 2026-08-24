@@ -58,8 +58,7 @@ in
     pandoc
     pkg-config
     # macOS: containers run in a VM there; init/start is automated in
-    # home/darwin/podman.nix. NixOS gets a native rootless runtime instead,
-    # see modules/nixos/containers.nix.
+    # home/darwin/podman.nix. NixOS gets a native rootless runtime instead.
     podman
     portaudio
     procs

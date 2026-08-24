@@ -1,20 +1,20 @@
-# Turns on home-manager's GTK module (a no-op otherwise) and owns GTK app
-# colors + the macOS window-button order via the WhiteSur theme, shared by
-# every COSMIC host. Layered on top of home/linux/catppuccin.nix's
-# icon/cursor theming rather than folded into it: this piece is COSMIC-
-# specific (button-layout portal wiring, the WhiteSur GTK4 unpack, the
-# captured COSMIC palette below), so it only applies where COSMIC actually
+# Enables home-manager's GTK module (a no-op otherwise). Sets GTK app colors
+# and macOS-style window-button order via WhiteSur, for every COSMIC host.
+#
+# Separate from home/linux/catppuccin.nix's icon/cursor theming: this part
+# is COSMIC-specific (button-layout portal wiring, the WhiteSur GTK4 unpack,
+# the captured COSMIC palette below) and only applies where COSMIC actually
 # owns the session.
 { selfPath, pkgs, ... }:
 let
   sharedFonts = import (selfPath "home/common/fonts.nix") { inherit pkgs; };
 
-  # macOS window-button order — close, minimize, zoom — on the leading side.
+  # macOS window-button order (close, minimize, zoom) on the leading side.
   # The trailing colon is what puts them on the left.
   decorationLayout = "close,minimize,maximize:";
 
   # COSMIC's colors, kept as static data since apply_theme_global is off
-  # (theme.nix) and cosmic-settings-daemon no longer supplies them.
+  # (theme.nix), so cosmic-settings-daemon doesn't supply them dynamically.
   palette = builtins.readFile (selfPath "home/linux/cosmic/_files/gtk-palette.css");
 
   whitesurTheme = pkgs.whitesur-gtk-theme.override {
@@ -23,8 +23,8 @@ let
   };
   themeName = "WhiteSur-Dark";
 
-  # WhiteSur's gtk-4.0/gtk.css is a symlink to the GTK3 stylesheet —
-  # importing it into GTK4 pulls in CSS with no windowcontrols rules, so the
+  # WhiteSur's gtk-4.0/gtk.css is a symlink to the GTK3 stylesheet.
+  # Importing it into GTK4 pulls in CSS with no windowcontrols rules, so the
   # theme looks like it does nothing. Unpacking gtk.gresource instead (same
   # fix upstream's install.sh --libadwaita uses) gives a plain directory
   # whose gtk.css can be imported by file:// URL, with the PNG assets
@@ -43,7 +43,7 @@ let
       mkdir -p "$out/$(dirname "$rel")"
       gresource extract "$bundle" "$res" > "$out/$rel"
     done
-    # Fail the build rather than silently ship a stylesheet that styles
+    # Fail the build instead of silently shipping a stylesheet that styles
     # nothing.
     test -s $out/gtk.css
     grep -q windowcontrols $out/gtk.css
@@ -54,10 +54,10 @@ in
   gtk = {
     enable = true;
 
-    # gtk4.theme is what reaches libadwaita apps — home-manager's gtk4
+    # gtk4.theme is what reaches libadwaita apps. home-manager's gtk4
     # module writes an @import of the theme's own gtk.css at the top of
     # ~/.config/gtk-4.0/gtk.css, and user CSS is the only hook libadwaita
-    # respects. Set explicitly rather than inherited from gtk.theme, which
+    # respects. Set explicitly instead of inherited from gtk.theme, which
     # is deprecated as of stateVersion 26.05.
     theme = {
       name = themeName;
@@ -73,7 +73,7 @@ in
       size = sharedFonts.pointSize;
     };
 
-    # Fallback for any GTK app that reads settings.ini rather than the
+    # Fallback for any GTK app that reads settings.ini instead of the
     # portal (under COSMIC, dconf below wins for the ones that use it).
     gtk3.extraConfig = {
       "gtk-decoration-layout" = decorationLayout;
@@ -82,8 +82,8 @@ in
     gtk4.extraConfig."gtk-decoration-layout" = decorationLayout;
 
     # @import first, as GTK requires; the palette follows so it wins
-    # wherever WhiteSur refers to a color by name rather than a literal.
-    # COSMIC apps are unaffected — they draw headerbars through libcosmic,
+    # wherever WhiteSur refers to a color by name instead of a literal.
+    # COSMIC apps are unaffected: they draw headerbars through libcosmic,
     # not GTK.
     gtk4.extraCss = ''
       @import url("file://${whitesurGtk4}/gtk.css");
@@ -102,7 +102,7 @@ in
   # What actually moves the window buttons under COSMIC: GTK4 asks
   # org.freedesktop.portal.Settings for the button-layout, and a portal
   # answer overrides settings.ini, making the gtk*.extraConfig entries above
-  # inert on their own. COSMIC-native windows are unaffected — libcosmic has
+  # inert on their own. COSMIC-native windows are unaffected: libcosmic has
   # no button-layout setting at all.
   dconf.settings."org/gnome/desktop/wm/preferences".button-layout = decorationLayout;
 

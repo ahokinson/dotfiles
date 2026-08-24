@@ -15,7 +15,7 @@
   };
 
   # Determinate Nix uses GID 350 for nixbld, not nix-darwin's historical
-  # default of 30000 — must match the actual group or activation aborts.
+  # default of 30000. Must match the actual group or activation aborts.
   ids.gids.nixbld = 350;
 
   system.stateVersion = 4;

@@ -9,7 +9,7 @@
 { ... }: {
   system.activationScripts.postActivation.text = ''
     # Always-on desktop: never let the system sleep on AC (display can still
-    # sleep independently — this only affects full system sleep).
+    # sleep independently; this only affects full system sleep).
     /usr/bin/pmset -c sleep 0
   '';
 }

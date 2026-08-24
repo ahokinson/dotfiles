@@ -10,9 +10,9 @@
   # menu (e.g. for a rollback).
   boot.loader.timeout = 0;
 
-  # Flavour matches home/linux/catppuccin.nix. Set directly rather than
+  # Flavour matches home/linux/catppuccin.nix. Set directly instead of
   # through catppuccin/nix's own NixOS plymouth module, which is gated on a
-  # system-level catppuccin.enable this repo has never set.
+  # system-level catppuccin.enable this repo doesn't set.
   boot.plymouth = {
     enable = true;
     theme = "catppuccin-frappe";

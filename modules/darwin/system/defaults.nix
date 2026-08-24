@@ -3,12 +3,12 @@ let
   dockApps = import (selfPath "home/common/dock-apps.nix");
 in {
   # macOS user defaults, set exhaustively so all 3 Macs stay identical
-  # (except universalaccess.* — see modules/darwin/universalaccess.nix).
+  # (except universalaccess.*, which has its own module).
   system.defaults = {
     dock.autohide = true;
     dock.magnification = false;
-    # Finder is always pinned by macOS regardless of what's declared here —
-    # including it would risk a duplicate icon, so it's omitted.
+    # Finder is always pinned by macOS regardless of what's declared here.
+    # Including it would risk a duplicate icon, so it's omitted.
     dock.persistent-apps = with dockApps; [
       "/Users/anders/Applications/Home Manager Apps/${zen.darwinApp}"
       "/Users/anders/Applications/Home Manager Apps/${ghostty.darwinApp}"
@@ -77,7 +77,7 @@ in {
     # terminal/editor/CLI tooling.
     NSGlobalDomain.AppleInterfaceStyle = "Dark";
     NSGlobalDomain.AppleInterfaceStyleSwitchesAutomatically = false;
-    # Autocorrect/text-substitution/prediction off — interferes with
+    # Autocorrect/text-substitution/prediction off: interferes with
     # code/terminal/config text.
     NSGlobalDomain.NSAutomaticCapitalizationEnabled = false;
     NSGlobalDomain.NSAutomaticDashSubstitutionEnabled = false;

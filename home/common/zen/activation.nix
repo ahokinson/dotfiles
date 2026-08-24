@@ -8,8 +8,8 @@ let
   # Zen can spawn a brand-new empty profile on some launches, orphaning the
   # real one (installs.ini/profiles.ini end up with multiple per-install
   # Default= entries). Self-heals by repointing every entry at whichever
-  # profile's times.json "created" field is genuinely oldest — file size
-  # isn't reliable here since Firefox/Zen pre-allocates places.sqlite.
+  # profile's times.json "created" field is genuinely oldest. File size
+  # isn't reliable here, since Firefox/Zen pre-allocates places.sqlite.
   selfHealInstalls = pkgs.writeShellScript "zen-self-heal-installs" ''
     configDir="$1"
     installsIni="$configDir/installs.ini"

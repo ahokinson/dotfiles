@@ -2,9 +2,9 @@
 # (wayland.desktopManager.cosmic.appearance). Shared by every NixOS host.
 #
 # accent and bg_color are hex->float conversions of colors already used
-# elsewhere in this repo (accent #8caaee, background #303446 — the
-# wallpaper's base color), cross-checked against
-# catppuccin/cosmic-desktop's catppuccin-frappe-blue+round.ron.
+# elsewhere in this repo (accent #8caaee, background #303446, the
+# wallpaper's base color). Checked against catppuccin/cosmic-desktop's
+# catppuccin-frappe-blue+round.ron.
 { selfPath, pkgs, ... }:
 let
   sharedFonts = import (selfPath "home/common/fonts.nix") { inherit pkgs; };
@@ -42,20 +42,20 @@ in
       # Off, despite being the setting that extends COSMIC's theme to
       # non-COSMIC apps: with it on, cosmic-settings-daemon owns
       # ~/.config/gtk-{3,4}.0/gtk.css and reclaims it on every switch,
-      # fighting home-manager for the same file. The palette it used to
-      # generate is kept instead as _files/gtk-palette.css and applied via
-      # gtk.nix, so GTK apps keep COSMIC's colors either way — Qt apps are
+      # fighting home-manager for the same file. COSMIC's palette is instead
+      # checked in as static data at _files/gtk-palette.css and applied via
+      # gtk.nix, so GTK apps keep COSMIC's colors either way. Qt apps are
       # what's actually lost (kdeglobals/qt5ct/qt6ct), and nothing else
       # themes Qt on this host.
       apply_theme_global = false;
 
       # COSMIC's own toolkit defaults to the "Cosmic" icon theme,
-      # independent of GTK's — without this, COSMIC Files/Settings keep
+      # independent of GTK's. Without this, COSMIC Files/Settings keep
       # their stock icons while GTK apps use WhiteSur (home/linux/catppuccin.nix).
       icon_theme = "WhiteSur-dark";
 
       # Tightens COSMIC's own chrome (padding, row heights, header bars).
-      # Spacing only, not display scale — that's per-output state
+      # Spacing only, not display scale. That's per-output state
       # (~/.local/state/cosmic/com.system76.CosmicComp), not something
       # cosmic-manager's compositor module exposes.
       interface_density = { __type = "enum"; variant = "Compact"; };

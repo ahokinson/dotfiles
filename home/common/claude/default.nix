@@ -3,10 +3,10 @@
 
   home.file.".claude" = {
     # known_marketplaces.json is Claude Code's own runtime registry of
-    # installed marketplaces (absolute paths baked in, so it's inherently
-    # machine-specific) — deploying it collides with the real, independently
-    # -evolved copy Claude Code maintains on each machine and aborts
-    # activation. Not something to declaratively manage.
+    # installed marketplaces. Absolute paths are baked in, so it's
+    # machine-specific. Deploying it collides with the real copy Claude Code
+    # maintains on each machine and aborts activation - not something to
+    # manage declaratively.
     source = lib.cleanSourceWith {
       src = selfPath "home/common/claude/_files";
       filter = path: _type:
