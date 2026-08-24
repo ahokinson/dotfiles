@@ -1,6 +1,6 @@
-# COSMIC desktop (NixOS-level enablement; framework13 is the only NixOS
-# host — Asahi's COSMIC install is dnf-managed, outside this repo). The
-# COSMIC module already enables
+# COSMIC desktop (NixOS-level enablement), shared by every NixOS host
+# (framework13-amd-ryzen, bookpro14-m1-pro, studio-m1-max). The COSMIC
+# module already enables
 # graphical-desktop, dconf, polkit, rtkit, accounts-daemon, libinput, upower,
 # geoclue2, XDG portals, and mkDefaults Bluetooth/NetworkManager/GVFS/
 # gnome-keyring/power-profiles-daemon; xwayland.enable defaults to true.

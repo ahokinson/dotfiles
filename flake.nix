@@ -1,5 +1,5 @@
 {
-  description = "Unified Nix flake for NixOS, macOS (Apple Silicon), and Asahi Fedora.";
+  description = "Unified Nix flake for NixOS (incl. Asahi/Apple Silicon) and macOS.";
 
   inputs = {
     catppuccin.url = "github:catppuccin/nix";
@@ -28,6 +28,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nixos-apple-silicon = {
+      url = "github:nix-community/nixos-apple-silicon";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
     # Plain source tree, not a flake - see home/common/nvim/default.nix.
@@ -48,35 +53,6 @@
       selfPath = subpath: self + "/${subpath}";
 
       overlays.default = import (selfPath "overlays/default.nix") inputs;
-
-      mkPkgs = system: import nixpkgs {
-        inherit system;
-        overlays = [ overlays.default ];
-        config.allowUnfree = true;
-      };
-
-      # Both macs that dual-boot Asahi share one home-manager config
-      # (home-manager owns only $HOME, so there's nothing host-specific to
-      # configure) — exposed under two output names below, one per machine.
-      # A standalone homeManagerConfiguration has no home.backupFileExtension
-      # option; the equivalent is the `-b <ext>` CLI flag (see README.md).
-      asahiHome = home-manager.lib.homeManagerConfiguration {
-        pkgs = mkPkgs "aarch64-linux";
-        extraSpecialArgs = { inherit inputs selfPath; };
-        modules = [
-          {
-            home.username = "anders";
-            home.homeDirectory = "/home/anders";
-            home.stateVersion = "26.05";
-          }
-          (selfPath "home/common")
-          (selfPath "home/linux")
-          (selfPath "home/linux/cosmic")
-          inputs.cosmic-manager.homeManagerModules.cosmic-manager
-          inputs.zen-browser.homeModules.beta
-        ];
-      };
-
       in
     {
       # --- NixOS (current box, x86_64-linux) ---
@@ -123,17 +99,27 @@
         ];
       };
 
-      # --- Asahi Fedora (aarch64-linux) — standalone home-manager profile.
-      # Named per-machine, short forms of each machine's darwin hostname
-      # (see README.md for the apply command, including the standalone
-      # home-manager flags this needs that nixos-rebuild/darwin-rebuild
-      # don't).
-      # Apply with: NIX_CONFIG="experimental-features = nix-command flakes"
-      #   nix run github:nix-community/home-manager -- switch -b hm-backup
-      #   --flake ~/.dotfiles#bookpro14-m1-pro
-      homeConfigurations."bookpro14-m1-pro" = asahiHome;
-      # Apply with: same as above, #studio-m1-max
-      homeConfigurations."studio-m1-max" = asahiHome;
+      # --- Asahi NixOS (aarch64-linux, bare metal on Apple Silicon) ---
+      # Named per-machine, short forms of each machine's darwin hostname (the
+      # same Macs dual-boot both). Hostnames: `bookpro14-m1-pro`,
+      # `studio-m1-max` — see hosts/<name>/default.nix.
+      nixosConfigurations.bookpro14-m1-pro = nixpkgs.lib.nixosSystem {
+        specialArgs = { inherit inputs selfPath; };
+        modules = [
+          { nixpkgs.hostPlatform = "aarch64-linux"; }
+          { nixpkgs.overlays = [ overlays.default ]; }
+          (selfPath "hosts/bookpro14-m1-pro")
+        ];
+      };
+
+      nixosConfigurations.studio-m1-max = nixpkgs.lib.nixosSystem {
+        specialArgs = { inherit inputs selfPath; };
+        modules = [
+          { nixpkgs.hostPlatform = "aarch64-linux"; }
+          { nixpkgs.overlays = [ overlays.default ]; }
+          (selfPath "hosts/studio-m1-max")
+        ];
+      };
 
       # Expose for downstream compositors/hosts if needed.
       inherit overlays;

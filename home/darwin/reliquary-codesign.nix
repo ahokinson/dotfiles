@@ -2,8 +2,7 @@
 # identity is tied to the binary's content hash, so every version bump (new
 # /nix/store path) invalidates every "Always Allow" grant and it re-prompts
 # on every hook run. The build sandbox has no Keychain access, so signing
-# can't happen in the derivation (same constraint as
-# home/linux/desktop-file-trust.nix). Fix: copy the build out to
+# can't happen in the derivation. Fix: copy the build out to
 # ~/.local/bin (already first on $PATH, see home/common/zsh/options.nix) and
 # sign that copy with a local self-signed cert (one-time per machine, via
 # Keychain Access) — the identity then stays stable across upgrades.

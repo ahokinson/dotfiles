@@ -1,7 +1,6 @@
-# Qt/Kvantum theming - NixOS only, not imported by the Asahi flake output.
-# Only ABI-safe when the whole Plasma/Qt stack is Nix-built (true on NixOS);
-# on Asahi's Fedora-built Plasma this crashes every Qt process on load (see
-# catppuccin.nix).
+# Qt/Kvantum theming. Only ABI-safe when the whole Plasma/Qt stack is
+# Nix-built (see catppuccin.nix) — not currently imported by any host, kept
+# from the pre-COSMIC Plasma era in case a Qt-based desktop returns.
 { ... }:
 {
   # Qt plumbing: Plasma provides the platform theme; Kvantum provides the

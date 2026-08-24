@@ -1,9 +1,7 @@
-# Catppuccin Frappe GTK theming + WhiteSur icons/cursors for Linux (NixOS
-# and Asahi Fedora). Qt/Kvantum theming is NixOS-only (catppuccin-qt.nix):
-# it points Qt apps at Nix-built platform-theme/Kvantum plugins via env
-# vars, which is only ABI-safe when the whole Plasma/Qt stack is Nix-built
-# too — on Asahi's Fedora-built Plasma this crashed every Qt process on
-# load (confirmed on real hardware).
+# Catppuccin Frappe GTK theming + WhiteSur icons/cursors, shared by every
+# NixOS host. Qt/Kvantum theming (catppuccin-qt.nix) is separate: it points
+# Qt apps at Nix-built platform-theme/Kvantum plugins via env vars, which is
+# only ABI-safe when the whole Qt stack is Nix-built too.
 {
   inputs,
   config,

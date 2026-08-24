@@ -1,5 +1,5 @@
-# COSMIC's default panel/dock split, shared by every COSMIC host (NixOS and
-# Asahi Fedora alike); this only overrides what differs from stock:
+# COSMIC's default panel/dock split, shared by every NixOS host; this only
+# overrides what differs from stock:
 # pinned-app favorites (mirroring modules/darwin/system's
 # dock.persistent-apps), panel icon presentation, and dock/panel layout via
 # configFile.
@@ -20,10 +20,10 @@ let
   ronOptional = value: { __type = "optional"; inherit value; };
   ronEnum = variant: { __type = "enum"; inherit variant; };
 
-  # osConfig is a specialArg home-manager injects only when wired in as a
-  # NixOS module - present for framework13-amd-ryzen, absent for the
-  # standalone Asahi profile (same test as home/linux/packages.nix).
-  isNixOS = osConfig != null;
+  # Every host here is a NixOS module now, so osConfig is always set - the
+  # logo instead keys off hardware.asahi.enable to tell Apple Silicon hosts
+  # (bookpro14-m1-pro, studio-m1-max) apart from framework13-amd-ryzen.
+  isApple = osConfig.hardware.asahi.enable or false;
 in
 {
   # cosmic-manager's own master switch (home-manager level) - distinct from
@@ -104,8 +104,8 @@ in
     run ${lib.getExe pkgs.killall} .cosmic-panel-wrapped || true
   '';
 
-  # Puts the host's own logo where macOS puts the Apple logo — NixOS
-  # snowflake on framework13, Asahi Linux logo on the Asahi machines,
+  # Puts the host's own logo where macOS puts the Apple logo — Asahi Linux
+  # logo on the Apple Silicon hosts, NixOS snowflake on framework13,
   # matching Plasma's old kickoff-icon logic. Shadows
   # com.system76.CosmicAppLibrary, not the button's own icon name (the
   # button renders whatever app id it's passed). Written into both
@@ -115,9 +115,9 @@ in
   xdg.dataFile =
     let
       logo =
-        if isNixOS
-        then "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg"
-        else selfPath "home/common/_files/asahi-apple.svg";
+        if isApple
+        then selfPath "home/common/_files/asahi-apple.svg"
+        else "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
       iconName = "com.system76.CosmicAppLibrary.svg";
     in
     {
