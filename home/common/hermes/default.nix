@@ -2,7 +2,7 @@
   home.packages = [ pkgs.hermes ];
 
   home.file.".hermes" = {
-    source = selfPath "home/common/hermes/config-files";
+    source = selfPath "home/common/hermes/_files";
     recursive = true;
   };
 

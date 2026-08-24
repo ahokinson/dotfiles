@@ -37,6 +37,10 @@
     whitesur-cursors
   ];
 
+  # Lowercase "dark" is whitesur-icon-theme's own directory casing
+  # (share/icons/WhiteSur-dark/) - a different package from
+  # whitesur-gtk-theme's "WhiteSur-Dark" used in cosmic/gtk.nix, not an
+  # inconsistency to unify.
   gtk.iconTheme = {
     name = "WhiteSur-dark";
     package = pkgs.whitesur-icon-theme;

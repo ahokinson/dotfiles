@@ -2,14 +2,10 @@
 #   darwin-rebuild switch --flake ~/.dotfiles#macbookpro14-m1-pro
 { selfPath, ... }: {
   networking.hostName = "macbookpro14-m1-pro";
-  networking.computerName = "macbookpro14-m1-pro";
-  networking.localHostName = "macbookpro14-m1-pro";
 
   imports = [
-    (selfPath "modules/darwin/system")
+    (selfPath "hosts/darwin-common.nix")
     (selfPath "modules/darwin/universalaccess.nix")
-    (selfPath "modules/darwin/home-manager.nix")
     (selfPath "modules/darwin/hardware-macbookpro14.nix")
-    (selfPath "modules/darwin/hermes.nix")
   ];
 }

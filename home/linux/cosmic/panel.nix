@@ -17,8 +17,7 @@ let
   dockApps = import (selfPath "home/common/dock-apps.nix");
   stripDesktopSuffix = id: lib.removeSuffix ".desktop" id;
 
-  ronOptional = value: { __type = "optional"; inherit value; };
-  ronEnum = variant: { __type = "enum"; inherit variant; };
+  inherit (import (selfPath "home/linux/cosmic/ron.nix")) ronOptional ronEnum;
 
   # Every host here is a NixOS module, so osConfig is always set - the
   # logo instead keys off hardware.asahi.enable to tell Apple Silicon hosts

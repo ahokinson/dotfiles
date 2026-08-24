@@ -1,5 +1,7 @@
-{ ... }: {
-  time.timeZone = "America/New_York";
+{ lib, ... }: {
+  # mkDefault: the one setting here a future relocated/travel host is
+  # plausible to override.
+  time.timeZone = lib.mkDefault "America/New_York";
 
   i18n.defaultLocale = "en_US.UTF-8";
   i18n.extraLocaleSettings = {

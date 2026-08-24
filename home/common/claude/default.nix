@@ -1,4 +1,12 @@
-{ selfPath, pkgs, lib, config, ... }: {
+{ selfPath, pkgs, lib, config, ... }:
+let
+  # Real on-disk checkout path - deliberately NOT selfPath. selfPath
+  # resolves into the immutable Nix store copy of the flake; this needs a
+  # mutable path outside the store so mkOutOfStoreSymlink lets Claude
+  # Code's own runtime writes to settings.json survive rebuilds. Assumes
+  # the repo is checked out at ~/.dotfiles.
+  dotfilesRepo = "${config.home.homeDirectory}/.dotfiles";
+in {
   home.packages = [ pkgs.claude-code ];
 
   home.file.".claude" = {
@@ -18,7 +26,7 @@
 
   home.file.".claude/settings.json".source =
     config.lib.file.mkOutOfStoreSymlink
-      "${config.home.homeDirectory}/.dotfiles/home/common/claude/_files/settings.json";
+      "${dotfilesRepo}/home/common/claude/_files/settings.json";
 
   home.file.".claude/plugins/marketplaces/local/plugins/custom/docs" = {
     source = selfPath "home/common/_shared/docs";

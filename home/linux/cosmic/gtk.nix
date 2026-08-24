@@ -21,6 +21,11 @@ let
     altVariants = [ "normal" ];
     colorVariants = [ "dark" ];
   };
+  # Uppercase "Dark": whitesur-gtk-theme's own directory casing
+  # (share/themes/WhiteSur-Dark/), load-bearing below since runCommand
+  # builds a literal store path from it. A different package from
+  # whitesur-icon-theme's lowercase "WhiteSur-dark" used elsewhere
+  # (home/linux/catppuccin.nix, cosmic/theme.nix) - not a typo either way.
   themeName = "WhiteSur-Dark";
 
   # WhiteSur's gtk-4.0/gtk.css is a symlink to the GTK3 stylesheet.

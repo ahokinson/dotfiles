@@ -64,8 +64,10 @@ in
     procs
     proton-vpn
     prowler
+    psyche
     pv
     python3
+    reliquary
     ripgrep
     ruff
     rust-analyzer
@@ -80,6 +82,7 @@ in
     terraform
     testssl
     texliveBasic
+    tirith
     trivy
     trufflehog
     turso-cli

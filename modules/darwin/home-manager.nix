@@ -2,7 +2,7 @@
 # The userland (dotfiles, shell, packages) is identical across all macs.
 # Only system-level concerns (hostname, hardware) differ, handled per-host
 # in flake.nix.
-{ inputs, selfPath, ... }: {
+{ inputs, selfPath, username, ... }: {
   imports = [ inputs.home-manager.darwinModules.home-manager ];
 
   home-manager = {
@@ -13,16 +13,16 @@
     # (.zshrc, .gitconfig, etc). Back those up with this suffix instead of
     # hard-failing.
     backupFileExtension = "hm-backup";
-    users."anders" = {
+    users.${username} = {
       imports = [
         inputs.zen-browser.homeModules.beta
         (selfPath "home/common")
         (selfPath "home/darwin")
       ];
-      home.username = "anders";
-      home.homeDirectory = "/Users/anders";
+      home.username = username;
+      home.homeDirectory = "/Users/${username}";
       home.stateVersion = "26.05";
     };
-    extraSpecialArgs = { inherit inputs selfPath; };
+    extraSpecialArgs = { inherit inputs selfPath username; };
   };
 }

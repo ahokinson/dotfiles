@@ -52,74 +52,62 @@
       # get fragile as directories nest deeper.
       selfPath = subpath: self + "/${subpath}";
 
+      # Single source of truth for the account every host provisions and
+      # every home-manager profile targets, threaded through specialArgs the
+      # same way selfPath is.
+      username = "anders";
+
       overlays.default = import (selfPath "overlays/default.nix") inputs;
+
+      # Every nixosConfigurations/darwinConfigurations entry below is the
+      # same 3-line shape - hostPlatform, the shared overlay, one host
+      # import - differing only in which platform and which hosts/<dir>.
+      # Factored here so each host declaration is just its platform + path.
+      mkNixos = hostPlatform: hostDir: nixpkgs.lib.nixosSystem {
+        specialArgs = { inherit inputs selfPath username; };
+        modules = [
+          { nixpkgs.hostPlatform = hostPlatform; }
+          { nixpkgs.overlays = [ overlays.default ]; }
+          (selfPath "hosts/${hostDir}")
+        ];
+      };
+
+      mkDarwin = hostDir: nix-darwin.lib.darwinSystem {
+        specialArgs = { inherit inputs selfPath username; };
+        modules = [
+          { nixpkgs.hostPlatform = "aarch64-darwin"; }
+          { nixpkgs.overlays = [ overlays.default ]; }
+          (selfPath "hosts/${hostDir}")
+        ];
+      };
       in
     {
       # --- NixOS (current box, x86_64-linux) ---
       # Framework Laptop 13, AMD Ryzen AI 7 350. Hostname:
       # `framework13-amd-ryzen`.
-      nixosConfigurations.framework13-amd-ryzen = nixpkgs.lib.nixosSystem {
-        specialArgs = { inherit inputs selfPath; };
-        modules = [
-          { nixpkgs.hostPlatform = "x86_64-linux"; }
-          { nixpkgs.overlays = [ overlays.default ]; }
-          (selfPath "hosts/framework13-amd-ryzen")
-        ];
-      };
+      nixosConfigurations.framework13-amd-ryzen =
+        mkNixos "x86_64-linux" "framework13-amd-ryzen";
 
       # --- macOS (Apple Silicon, aarch64-darwin) ---
       # MacBook Pro 14", M1 Pro. Hardware tweaks: modules/darwin/hardware-macbookpro14.nix
-      darwinConfigurations.macbookpro14-m1-pro = nix-darwin.lib.darwinSystem {
-        specialArgs = { inherit inputs selfPath; };
-        modules = [
-          { nixpkgs.hostPlatform = "aarch64-darwin"; }
-          { nixpkgs.overlays = [ overlays.default ]; }
-          (selfPath "hosts/macbookpro14-m1-pro")
-        ];
-      };
+      darwinConfigurations.macbookpro14-m1-pro = mkDarwin "macbookpro14-m1-pro";
 
       # Mac Studio, M1 Max. Hardware tweaks: modules/darwin/hardware-macstudio.nix
-      darwinConfigurations.macstudio-m1-max = nix-darwin.lib.darwinSystem {
-        specialArgs = { inherit inputs selfPath; };
-        modules = [
-          { nixpkgs.hostPlatform = "aarch64-darwin"; }
-          { nixpkgs.overlays = [ overlays.default ]; }
-          (selfPath "hosts/macstudio-m1-max")
-        ];
-      };
+      darwinConfigurations.macstudio-m1-max = mkDarwin "macstudio-m1-max";
 
       # MacBook Pro 16", M5. Hardware tweaks: modules/darwin/hardware-macbookpro16.nix
       # (macOS-only, does not dual-boot Asahi.)
-      darwinConfigurations.macbookpro16-m5 = nix-darwin.lib.darwinSystem {
-        specialArgs = { inherit inputs selfPath; };
-        modules = [
-          { nixpkgs.hostPlatform = "aarch64-darwin"; }
-          { nixpkgs.overlays = [ overlays.default ]; }
-          (selfPath "hosts/macbookpro16-m5")
-        ];
-      };
+      darwinConfigurations.macbookpro16-m5 = mkDarwin "macbookpro16-m5";
 
       # --- Asahi NixOS (aarch64-linux, bare metal on Apple Silicon) ---
       # Named per-machine, short forms of each machine's darwin hostname (the
       # same Macs dual-boot both). Hostnames: `bookpro14-m1-pro`,
       # `studio-m1-max`.
-      nixosConfigurations.bookpro14-m1-pro = nixpkgs.lib.nixosSystem {
-        specialArgs = { inherit inputs selfPath; };
-        modules = [
-          { nixpkgs.hostPlatform = "aarch64-linux"; }
-          { nixpkgs.overlays = [ overlays.default ]; }
-          (selfPath "hosts/bookpro14-m1-pro")
-        ];
-      };
+      nixosConfigurations.bookpro14-m1-pro =
+        mkNixos "aarch64-linux" "bookpro14-m1-pro";
 
-      nixosConfigurations.studio-m1-max = nixpkgs.lib.nixosSystem {
-        specialArgs = { inherit inputs selfPath; };
-        modules = [
-          { nixpkgs.hostPlatform = "aarch64-linux"; }
-          { nixpkgs.overlays = [ overlays.default ]; }
-          (selfPath "hosts/studio-m1-max")
-        ];
-      };
+      nixosConfigurations.studio-m1-max =
+        mkNixos "aarch64-linux" "studio-m1-max";
 
       # Expose for downstream compositors/hosts if needed.
       inherit overlays;

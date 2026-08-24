@@ -6,20 +6,23 @@
 # LaunchAgent against the user's own ~/.hermes (already populated by
 # home/common/hermes/default.nix), not the NixOS module's isolated system
 # user/stateDir, since a personal Mac has no need for that isolation.
-{ pkgs, ... }: {
+{ pkgs, username, ... }:
+let
+  homeDir = "/Users/${username}";
+in {
   launchd.agents.hermes-agent = {
     serviceConfig = {
       ProgramArguments = [ "${pkgs.hermes}/bin/hermes" "gateway" ];
       EnvironmentVariables = {
-        HOME = "/Users/anders";
-        HERMES_HOME = "/Users/anders/.hermes";
+        HOME = homeDir;
+        HERMES_HOME = "${homeDir}/.hermes";
         HERMES_MANAGED = "true";
       };
-      WorkingDirectory = "/Users/anders";
+      WorkingDirectory = homeDir;
       RunAtLoad = true;
       KeepAlive = true;
-      StandardOutPath = "/Users/anders/Library/Logs/hermes-agent.log";
-      StandardErrorPath = "/Users/anders/Library/Logs/hermes-agent.log";
+      StandardOutPath = "${homeDir}/Library/Logs/hermes-agent.log";
+      StandardErrorPath = "${homeDir}/Library/Logs/hermes-agent.log";
     };
   };
 }

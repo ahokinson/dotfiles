@@ -1,7 +1,7 @@
-{ pkgs, ... }: {
+{ pkgs, username, ... }: {
   programs.zsh.enable = true;
 
-  users.users."anders" = {
+  users.users.${username} = {
     isNormalUser = true;
     description = "Anders";
     shell = pkgs.zsh;

@@ -11,37 +11,26 @@
 # off -> scroll_config.natural_scroll = false. Fields with no darwin
 # equivalent (button_map, scroll method/button/factor) are left at
 # libinput's own conventional values.
-{ ... }: {
+{ selfPath, ... }:
+let
+  inherit (import (selfPath "home/linux/cosmic/ron.nix")) ronOptional ronEnum;
+in
+{
   wayland.desktopManager.cosmic.compositor.input_touchpad = {
-    click_method = {
-      __type = "optional";
-      value = { __type = "enum"; variant = "Clickfinger"; };
+    click_method = ronOptional (ronEnum "Clickfinger");
+
+    tap_config = ronOptional {
+      enabled = false;
+      drag = false;
+      drag_lock = false;
+      button_map = ronOptional (ronEnum "LeftMiddleRight");
     };
 
-    tap_config = {
-      __type = "optional";
-      value = {
-        enabled = false;
-        drag = false;
-        drag_lock = false;
-        button_map = {
-          __type = "optional";
-          value = { __type = "enum"; variant = "LeftMiddleRight"; };
-        };
-      };
-    };
-
-    scroll_config = {
-      __type = "optional";
-      value = {
-        method = {
-          __type = "optional";
-          value = { __type = "enum"; variant = "TwoFinger"; };
-        };
-        natural_scroll = { __type = "optional"; value = false; };
-        scroll_button = { __type = "optional"; value = 2; };
-        scroll_factor = { __type = "optional"; value = 1.0; };
-      };
+    scroll_config = ronOptional {
+      method = ronOptional (ronEnum "TwoFinger");
+      natural_scroll = ronOptional false;
+      scroll_button = ronOptional 2;
+      scroll_factor = ronOptional 1.0;
     };
   };
 }

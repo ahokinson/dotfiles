@@ -10,12 +10,13 @@ let
   isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
   sharedFonts = import (selfPath "home/common/fonts.nix") { inherit pkgs; };
 
-  # The two Catppuccin Frappe colors the window chrome needs, matching the
-  # palette's own background/foreground (theme.nix, which repeats them for
-  # darwin).
-  frappe = {
-    base = "303446";
-    text = "c6d0f5";
+  # The two palette colors the window chrome needs, matching the palette's
+  # own background/foreground (theme.nix, which sets them for darwin via
+  # the same shared source).
+  palette = import (selfPath "home/common/palette.nix");
+  chrome = {
+    base = lib.removePrefix "#" palette.base;
+    text = lib.removePrefix "#" palette.text;
   };
 
   # Leaves the header bar carrying nothing but the traffic lights. Has to be
@@ -189,11 +190,11 @@ in {
 
     # window-theme = "ghostty" is the precondition for the titlebar colors
     # below being honoured at all - they are ignored under "auto". The two
-    # colors are Frappe base and text, matching the terminal's own
+    # colors are the palette's base and text, matching the terminal's own
     # background/foreground so the bar disappears into the window.
     window-theme = "ghostty";
-    window-titlebar-background = frappe.base;
-    window-titlebar-foreground = frappe.text;
+    window-titlebar-background = chrome.base;
+    window-titlebar-foreground = chrome.text;
     gtk-wide-tabs = true;
     quick-terminal-position = "top";
     gtk-quick-terminal-layer = "top";

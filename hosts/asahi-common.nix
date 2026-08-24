@@ -1,16 +1,13 @@
-# Top-level NixOS host configuration. Assembles the modular system config
-# and wires home-manager (common profile) for user `anders`.
-# Hostname reflects the underlying hardware: Framework Laptop 13 with AMD
-# Ryzen AI 7 350 (Ryzen AI 300 / "Strix Point" generation, A7 board version).
-# Apply with: nixos-rebuild switch --flake ~/.dotfiles#framework13-amd-ryzen
+# Shared by every Asahi NixOS host (bookpro14-m1-pro, studio-m1-max): the
+# modular system config, home-manager wiring, and Apple-Silicon-specific
+# overrides that are otherwise byte-for-byte identical between them. Each
+# host's own default.nix supplies just its hostname and hardware-config
+# import.
 { inputs, selfPath, username, ... }:
 {
-  networking.hostName = "framework13-amd-ryzen";
-
   imports = [
-    (selfPath "hosts/framework13-amd-ryzen/hardware-configuration.nix")
+    inputs.nixos-apple-silicon.nixosModules.apple-silicon-support
     (selfPath "modules/nixos/audio.nix")
-    (selfPath "modules/nixos/boot.nix")
     (selfPath "modules/nixos/containers.nix")
     (selfPath "modules/nixos/desktop-cosmic.nix")
     (selfPath "modules/nixos/hermes.nix")
@@ -25,6 +22,19 @@
     inputs.flake.inputs.hermes-agent.nixosModules.default
     inputs.home-manager.nixosModules.home-manager
   ];
+
+  hardware.asahi.enable = true;
+
+  # Broadcom Wi-Fi on Apple Silicon needs iwd, per nixos-apple-silicon's docs
+  # (NetworkManager's default wpa_supplicant backend isn't supported here).
+  networking.networkmanager.wifi.backend = "iwd";
+
+  # Not modules/nixos/boot.nix: that module assumes framework13's AMD/EFI
+  # setup (canTouchEfiVariables = true, a Plymouth theme never verified on
+  # this hardware). nixos-apple-silicon's own install guide calls for
+  # canTouchEfiVariables = false instead.
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = false;
 
   home-manager = {
     useGlobalPkgs = true;

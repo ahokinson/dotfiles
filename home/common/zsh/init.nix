@@ -3,7 +3,10 @@
 # the head of .zshrc, ahead of the NIX_PROFILES fpath loop and the oh-my-zsh
 # sourcing block). linux/darwin host overlays append via lib.mkAfter and
 # land after the OMZ block (mkAfter > default priority > mkBefore).
-{ lib, ... }: {
+{ lib, selfPath, ... }:
+let
+  palette = import (selfPath "home/common/palette.nix");
+in {
   programs.zsh.initContent = lib.mkMerge [
     (lib.mkBefore ''
       # Must be set before oh-my-zsh sources itself: its termsupport.zsh
@@ -35,16 +38,16 @@
 
       if command -v fzf &>/dev/null; then
         source <(fzf --zsh)
-        # Catppuccin Frappe palette for fzf (inline so it stays decoupled
-        # from the catppuccin HM module's fzf port, which requires
+        # Palette colors for fzf (inline so it stays decoupled from the
+        # catppuccin HM module's fzf port, which requires
         # programs.fzf.enable = true). Honors transparent terminal
         # backgrounds by omitting bg/bg+.
         export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS \
-          --color=fg:#c6d0f5,fg+:#c6d0f5,bg:#303446,bg+:#414559 \
-          --color=hl:#ca9ee6,hl+:#babbf1 \
-          --color=info:#838ba7,prompt:#ca9ee6,pointer:#f2d5cf \
-          --color=marker:#a6d189,spinner:#99d1db,header:#838ba7 \
-          --color=border:#414559,gutter:#292c3c,separator:#414559"
+          --color=fg:${palette.text},fg+:${palette.text},bg:${palette.base},bg+:${palette.surface0} \
+          --color=hl:${palette.mauve},hl+:${palette.lavender} \
+          --color=info:${palette.overlay1},prompt:${palette.mauve},pointer:${palette.rosewater} \
+          --color=marker:${palette.green},spinner:${palette.sky},header:${palette.overlay1} \
+          --color=border:${palette.surface0},gutter:${palette.mantle},separator:${palette.surface0}"
       fi
 
       if command -v tirith &>/dev/null; then

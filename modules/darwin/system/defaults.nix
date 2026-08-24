@@ -1,4 +1,4 @@
-{ config, selfPath, ... }:
+{ config, selfPath, username, ... }:
 let
   dockApps = import (selfPath "home/common/dock-apps.nix");
 in {
@@ -10,8 +10,8 @@ in {
     # Finder is always pinned by macOS regardless of what's declared here.
     # Including it would risk a duplicate icon, so it's omitted.
     dock.persistent-apps = with dockApps; [
-      "/Users/anders/Applications/Home Manager Apps/${zen.darwinApp}"
-      "/Users/anders/Applications/Home Manager Apps/${ghostty.darwinApp}"
+      "/Users/${username}/Applications/Home Manager Apps/${zen.darwinApp}"
+      "/Users/${username}/Applications/Home Manager Apps/${ghostty.darwinApp}"
     ];
     dock.wvous-br-corner = 4; # Desktop
     dock.wvous-tr-corner = 2; # Mission Control
@@ -110,7 +110,7 @@ in {
     NSGlobalDomain.AppleICUForce24HourTime = true;
     NSGlobalDomain._HIHideMenuBar = false;
 
-    screencapture.location = "/Users/anders/Pictures/Screenshots";
+    screencapture.location = "/Users/${username}/Pictures/Screenshots";
     screencapture.type = "png";
     screencapture.disable-shadow = false;
     screencapture.include-date = true;
