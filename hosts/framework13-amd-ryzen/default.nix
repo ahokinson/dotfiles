@@ -13,6 +13,12 @@
   networking.hostName = "framework13-amd-ryzen";
 
   imports = [
+    # Framework 13 with a Ryzen AI 300-series board. Brings fwupd for EC and
+    # BIOS firmware, fprintd for the fingerprint reader, the framework-laptop
+    # kmod (sysfs access to the embedded controller) and framework_tool,
+    # fstrim, and the snd_acp70 blacklist that works around the BIOS
+    # mis-reporting the ACP device as wired.
+    inputs.nixos-hardware.nixosModules.framework-amd-ai-300-series
     (selfPath "hosts/framework13-amd-ryzen/hardware-configuration.nix")
     (selfPath "modules/nixos/audio.nix")
     (selfPath "modules/nixos/boot.nix")
