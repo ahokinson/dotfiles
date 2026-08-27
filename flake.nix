@@ -51,7 +51,13 @@
     zen-browser.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = inputs@{ self, nixpkgs, nix-darwin, home-manager, ... }:
+  outputs =
+    inputs@{
+      self,
+      nixpkgs,
+      nix-darwin,
+      ...
+    }:
     let
       # Joins a repo-root-relative subpath onto the flake's own source, e.g.
       # `selfPath "hosts/foo"`. Avoids `../../`-style relative imports, which
@@ -69,53 +75,60 @@
       # same 3-line shape - hostPlatform, the shared overlay, one host
       # import - differing only in which platform and which hosts/<dir>.
       # Factored here so each host declaration is just its platform + path.
-      mkNixos = hostPlatform: hostDir: nixpkgs.lib.nixosSystem {
-        specialArgs = { inherit inputs selfPath username; };
-        modules = [
-          { nixpkgs.hostPlatform = hostPlatform; }
-          { nixpkgs.overlays = [ overlays.default ]; }
-          (selfPath "hosts/${hostDir}")
-        ];
-      };
+      mkNixos =
+        hostPlatform: hostDir:
+        nixpkgs.lib.nixosSystem {
+          specialArgs = { inherit inputs selfPath username; };
+          modules = [
+            { nixpkgs.hostPlatform = hostPlatform; }
+            { nixpkgs.overlays = [ overlays.default ]; }
+            (selfPath "hosts/${hostDir}")
+          ];
+        };
 
-      mkDarwin = hostDir: nix-darwin.lib.darwinSystem {
-        specialArgs = { inherit inputs selfPath username; };
-        modules = [
-          { nixpkgs.hostPlatform = "aarch64-darwin"; }
-          { nixpkgs.overlays = [ overlays.default ]; }
-          (selfPath "hosts/${hostDir}")
-        ];
-      };
+      mkDarwin =
+        hostDir:
+        nix-darwin.lib.darwinSystem {
+          specialArgs = { inherit inputs selfPath username; };
+          modules = [
+            { nixpkgs.hostPlatform = "aarch64-darwin"; }
+            { nixpkgs.overlays = [ overlays.default ]; }
+            (selfPath "hosts/${hostDir}")
+          ];
+        };
 
       # Each host pins its own platform, so this list exists purely for the
       # per-system outputs at the bottom (formatter, checks, devShells).
-      systems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" ];
-      eachSystem = f:
-        nixpkgs.lib.genAttrs systems (system: f nixpkgs.legacyPackages.${system});
+      systems = [
+        "x86_64-linux"
+        "aarch64-linux"
+        "aarch64-darwin"
+      ];
+      eachSystem = f: nixpkgs.lib.genAttrs systems (system: f nixpkgs.legacyPackages.${system});
 
-      treefmtEval = eachSystem (pkgs:
-        inputs.treefmt-nix.lib.evalModule pkgs (selfPath "treefmt.nix"));
+      treefmtEval = eachSystem (pkgs: inputs.treefmt-nix.lib.evalModule pkgs (selfPath "treefmt.nix"));
 
       # `nix develop` (or direnv, via .envrc) installs these as git hooks;
       # `nix flake check` runs them in a sandbox. ripsecrets rather than the
       # trufflehog hook because trufflehog's --only-verified pass reaches out
       # over the network to validate candidates, which the sandbox forbids.
-      gitHooks = eachSystem (pkgs: inputs.git-hooks.lib.${pkgs.system}.run {
-        src = self;
-        hooks = {
-          treefmt.enable = true;
-          treefmt.packageOverrides.treefmt =
-            treefmtEval.${pkgs.system}.config.build.wrapper;
-          ripsecrets.enable = true;
-        };
-      });
+      gitHooks = eachSystem (
+        pkgs:
+        inputs.git-hooks.lib.${pkgs.system}.run {
+          src = self;
+          hooks = {
+            treefmt.enable = true;
+            treefmt.packageOverrides.treefmt = treefmtEval.${pkgs.system}.config.build.wrapper;
+            ripsecrets.enable = true;
+          };
+        }
+      );
     in
     {
       # --- NixOS (current box, x86_64-linux) ---
       # Framework Laptop 13, AMD Ryzen AI 7 350. Hostname:
       # `framework13-amd-ryzen`.
-      nixosConfigurations.framework13-amd-ryzen =
-        mkNixos "x86_64-linux" "framework13-amd-ryzen";
+      nixosConfigurations.framework13-amd-ryzen = mkNixos "x86_64-linux" "framework13-amd-ryzen";
 
       # --- macOS (Apple Silicon, aarch64-darwin) ---
       # MacBook Pro 14", M1 Pro. Hardware tweaks: modules/darwin/hardware-macbookpro14.nix
@@ -132,11 +145,9 @@
       # Named per-machine, short forms of each machine's darwin hostname (the
       # same Macs dual-boot both). Hostnames: `bookpro14-m1-pro`,
       # `studio-m1-max`.
-      nixosConfigurations.bookpro14-m1-pro =
-        mkNixos "aarch64-linux" "bookpro14-m1-pro";
+      nixosConfigurations.bookpro14-m1-pro = mkNixos "aarch64-linux" "bookpro14-m1-pro";
 
-      nixosConfigurations.studio-m1-max =
-        mkNixos "aarch64-linux" "studio-m1-max";
+      nixosConfigurations.studio-m1-max = mkNixos "aarch64-linux" "studio-m1-max";
 
       # `nix fmt` - nixfmt, deadnix and statix over every .nix file. Config
       # lives in treefmt.nix.

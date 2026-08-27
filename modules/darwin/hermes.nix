@@ -9,10 +9,14 @@
 { pkgs, username, ... }:
 let
   homeDir = "/Users/${username}";
-in {
+in
+{
   launchd.agents.hermes-agent = {
     serviceConfig = {
-      ProgramArguments = [ "${pkgs.hermes}/bin/hermes" "gateway" ];
+      ProgramArguments = [
+        "${pkgs.hermes}/bin/hermes"
+        "gateway"
+      ];
       EnvironmentVariables = {
         HOME = homeDir;
         HERMES_HOME = "${homeDir}/.hermes";

@@ -12,7 +12,13 @@
 # when `panels` is set, so that hook is reproduced by hand below.
 #
 # Favorite ids are each app's .desktop filename with the extension stripped.
-{ selfPath, lib, pkgs, osConfig ? null, ... }:
+{
+  selfPath,
+  lib,
+  pkgs,
+  osConfig ? null,
+  ...
+}:
 let
   dockApps = import (selfPath "home/common/dock-apps.nix");
   stripDesktopSuffix = id: lib.removeSuffix ".desktop" id;
@@ -29,11 +35,10 @@ in
   # services.desktopManager.cosmic.enable (NixOS level).
   wayland.desktopManager.cosmic.enable = true;
 
-  wayland.desktopManager.cosmic.applets."app-list".settings.favorites =
-    with dockApps; [
-      (stripDesktopSuffix zen.linuxDesktopId)
-      (stripDesktopSuffix ghostty.linuxDesktopId)
-    ];
+  wayland.desktopManager.cosmic.applets."app-list".settings.favorites = with dockApps; [
+    (stripDesktopSuffix zen.linuxDesktopId)
+    (stripDesktopSuffix ghostty.linuxDesktopId)
+  ];
 
   # macOS menu-bar clock: weekday + month + day, 24-hour time with seconds.
   wayland.desktopManager.cosmic.applets."time".settings = {
@@ -113,9 +118,10 @@ in
   xdg.dataFile =
     let
       logo =
-        if isApple
-        then selfPath "home/common/_files/asahi-apple.svg"
-        else "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+        if isApple then
+          selfPath "home/common/_files/asahi-apple.svg"
+        else
+          "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
       iconName = "com.system76.CosmicAppLibrary.svg";
     in
     {

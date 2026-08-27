@@ -2,11 +2,17 @@
 # installs this theme and sets programs.ghostty.settings.theme itself;
 # declaring it here too would conflict on xdg.configFile. macOS doesn't
 # import that module, so the palette is declared inline here instead.
-{ pkgs, lib, selfPath, ... }:
+{
+  pkgs,
+  lib,
+  selfPath,
+  ...
+}:
 let
   palette = import (selfPath "home/common/palette.nix");
   hex = lib.removePrefix "#";
-in {
+in
+{
   programs.ghostty.themes = lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
     catppuccin-frappe = {
       palette = [

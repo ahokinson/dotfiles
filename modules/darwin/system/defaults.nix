@@ -1,7 +1,13 @@
-{ config, selfPath, username, ... }:
+{
+  config,
+  selfPath,
+  username,
+  ...
+}:
 let
   dockApps = import (selfPath "home/common/dock-apps.nix");
-in {
+in
+{
   # macOS user defaults, set exhaustively so all 3 Macs stay identical
   # (except universalaccess.*, which has its own module).
   system.defaults = {

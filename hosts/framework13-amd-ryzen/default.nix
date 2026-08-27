@@ -3,7 +3,12 @@
 # Hostname reflects the underlying hardware: Framework Laptop 13 with AMD
 # Ryzen AI 7 350 (Ryzen AI 300 / "Strix Point" generation, A7 board version).
 # Apply with: nixos-rebuild switch --flake ~/.dotfiles#framework13-amd-ryzen
-{ inputs, selfPath, username, ... }:
+{
+  inputs,
+  selfPath,
+  username,
+  ...
+}:
 {
   networking.hostName = "framework13-amd-ryzen";
 

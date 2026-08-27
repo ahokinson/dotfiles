@@ -1,4 +1,4 @@
-{ ... }: {
+_: {
   # blockAllIncoming stays false: true would also kill AirDrop/sharing.
   # Stealth mode still keeps the machine from responding to unsolicited
   # probes. Signed software is let through automatically.

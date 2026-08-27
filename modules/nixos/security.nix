@@ -1,6 +1,6 @@
 # System-wide hardening that doesn't belong to a single other concern (see
 # also modules/nixos/ssh.nix for SSH-specific hardening).
-{ ... }: {
+_: {
   # Restricts who can even invoke /usr/bin/sudo to the wheel group, rather
   # than relying solely on sudoers rules to gate privilege escalation.
   security.sudo.execWheelOnly = true;

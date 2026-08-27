@@ -1,13 +1,21 @@
-{ inputs, pkgs, lib, ... }:
+{
+  inputs,
+  pkgs,
+  lib,
+  ...
+}:
 let
-  destName = if pkgs.stdenv.hostPlatform.isDarwin
-    then "Library/Application Support/cupcake"
-    else ".config/cupcake";
+  destName =
+    if pkgs.stdenv.hostPlatform.isDarwin then
+      "Library/Application Support/cupcake"
+    else
+      ".config/cupcake";
 
   # Custom policies live at github:ahokinson/cupcake (flake.nix's
   # cupcake input, fetched as a plain source tree).
   customPolicies = "${inputs.cupcake}/custom";
-in {
+in
+{
   home.packages = [ pkgs.cupcake ];
 
   # One source, deployed to both harnesses. cupcakeGlobalInit below still

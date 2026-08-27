@@ -1,4 +1,9 @@
-{ pkgs, lib, selfPath, ... }:
+{
+  pkgs,
+  lib,
+  selfPath,
+  ...
+}:
 let
   sharedFonts = import (selfPath "home/common/fonts.nix") { inherit pkgs; };
   # macOS installs the fonts system-wide via fonts.packages
@@ -7,98 +12,100 @@ let
   isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
 in
 {
-  home.packages = with pkgs; lib.flatten [
-    acli
-    awscli2
-    btop
-    bun
-    cargo
-    clipleaks
-    clippy
-    cmake
-    cosign
-    crane
-    delta
-    delve
-    dive
-    duf
-    dust
-    f3
-    fd
-    ffmpeg
-    fish
-    fzf
-    gcc
-    gh
-    gitleaks
-    glab
-    go
-    go-task
-    golangci-lint
-    gosec
-    grype
-    hadolint
-    httpie
-    hyperfine
-    inetutils
-    jq
-    k9s
-    killall
-    kubernetes-helm
-    kubescape
-    lazydocker
-    lazygit
-    mediainfo
-    moreutils
-    (lib.optionals (!isDarwin) sharedFonts.packages)
-    ncdu
-    nmap
-    nodejs
-    nuclei
-    ollama
-    onefetch
-    open-policy-agent
-    osv-scanner
-    pandoc
-    pkg-config
-    # macOS: containers run in a VM there; init/start is automated in
-    # home/darwin/podman.nix. NixOS gets a native rootless runtime instead.
-    podman
-    portaudio
-    procs
-    proton-vpn
-    prowler
-    psyche
-    pv
-    python3
-    reliquary
-    ripgrep
-    rsync
-    ruff
-    rust-analyzer
-    rustc
-    rustfmt
-    scorecard
-    sd
-    semgrep
-    sox
-    sqld
-    stylua
-    syft
-    terraform
-    testssl
-    texliveBasic
-    tirith
-    tree
-    trivy
-    trufflehog
-    turso-cli
-    twitch-cli
-    unzip
-    uv
-    yq-go
-    zig
-  ];
+  home.packages =
+    with pkgs;
+    lib.flatten [
+      acli
+      awscli2
+      btop
+      bun
+      cargo
+      clipleaks
+      clippy
+      cmake
+      cosign
+      crane
+      delta
+      delve
+      dive
+      duf
+      dust
+      f3
+      fd
+      ffmpeg
+      fish
+      fzf
+      gcc
+      gh
+      gitleaks
+      glab
+      go
+      go-task
+      golangci-lint
+      gosec
+      grype
+      hadolint
+      httpie
+      hyperfine
+      inetutils
+      jq
+      k9s
+      killall
+      kubernetes-helm
+      kubescape
+      lazydocker
+      lazygit
+      mediainfo
+      moreutils
+      (lib.optionals (!isDarwin) sharedFonts.packages)
+      ncdu
+      nmap
+      nodejs
+      nuclei
+      ollama
+      onefetch
+      open-policy-agent
+      osv-scanner
+      pandoc
+      pkg-config
+      # macOS: containers run in a VM there; init/start is automated in
+      # home/darwin/podman.nix. NixOS gets a native rootless runtime instead.
+      podman
+      portaudio
+      procs
+      proton-vpn
+      prowler
+      psyche
+      pv
+      python3
+      reliquary
+      ripgrep
+      rsync
+      ruff
+      rust-analyzer
+      rustc
+      rustfmt
+      scorecard
+      sd
+      semgrep
+      sox
+      sqld
+      stylua
+      syft
+      terraform
+      testssl
+      texliveBasic
+      tirith
+      tree
+      trivy
+      trufflehog
+      turso-cli
+      twitch-cli
+      unzip
+      uv
+      yq-go
+      zig
+    ];
 
   fonts.fontconfig.enable = lib.mkIf (!isDarwin) true;
 }

@@ -23,10 +23,19 @@ in
       # entry. Values chosen to suit a single flat-color image, where
       # scaling/sampling/rotation are visually irrelevant.
       filter_by_theme = false;
-      filter_method = { __type = "enum"; variant = "Lanczos"; };
+      filter_method = {
+        __type = "enum";
+        variant = "Lanczos";
+      };
       rotation_frequency = 0;
-      sampling_method = { __type = "enum"; variant = "Alphanumeric"; };
-      scaling_mode = { __type = "enum"; variant = "Zoom"; };
+      sampling_method = {
+        __type = "enum";
+        variant = "Alphanumeric";
+      };
+      scaling_mode = {
+        __type = "enum";
+        variant = "Zoom";
+      };
     }
   ];
 }

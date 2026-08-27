@@ -5,7 +5,12 @@
 # keybind and command-palette-entry are additive in Ghostty's config format,
 # so leaving them undeclared already preserves the shipped defaults with no
 # drift risk.
-{ pkgs, lib, selfPath, ... }:
+{
+  pkgs,
+  lib,
+  selfPath,
+  ...
+}:
 let
   isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
   sharedFonts = import (selfPath "home/common/fonts.nix") { inherit pkgs; };
@@ -24,9 +29,11 @@ let
   # has to shrink instead of hide (GTK4 CSS supports neither display nor
   # visibility). Keyed on the window controls' own GTK4 classes, the same
   # ones WhiteSur's own theme selects on.
-  headerCss = pkgs.writeText "ghostty-header.css"
-    (builtins.readFile (selfPath "home/common/ghostty/_files/header.css"));
-in {
+  headerCss = pkgs.writeText "ghostty-header.css" (
+    builtins.readFile (selfPath "home/common/ghostty/_files/header.css")
+  );
+in
+{
   programs.ghostty.settings = {
     macos-icon = "custom-style";
     macos-icon-frame = "beige";
@@ -143,7 +150,8 @@ in {
     faint-opacity = 0.5;
     term = "xterm-ghostty";
     async-backend = "auto";
-  } // lib.optionalAttrs isDarwin {
+  }
+  // lib.optionalAttrs isDarwin {
     # On Linux the catppuccin module overrides `theme` with the
     # `light:…,dark:…` form, so only set it here on darwin.
     theme = "catppuccin-frappe";
@@ -163,7 +171,8 @@ in {
     macos-secure-input-indication = true;
     macos-applescript = true;
     macos-shortcuts = "ask";
-  } // lib.optionalAttrs (!isDarwin) {
+  }
+  // lib.optionalAttrs (!isDarwin) {
     # Linux counterpart to the macOS titlebar block above. "client" rather
     # than "auto": auto lets COSMIC draw a server-side titlebar, whose
     # buttons are pinned to the right with no setting to move them. A GTK

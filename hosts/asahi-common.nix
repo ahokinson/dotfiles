@@ -3,7 +3,12 @@
 # overrides that are otherwise byte-for-byte identical between them. Each
 # host's own default.nix supplies just its hostname and hardware-config
 # import.
-{ inputs, selfPath, username, ... }:
+{
+  inputs,
+  selfPath,
+  username,
+  ...
+}:
 {
   imports = [
     inputs.nixos-apple-silicon.nixosModules.apple-silicon-support

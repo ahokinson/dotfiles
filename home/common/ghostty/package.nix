@@ -4,6 +4,5 @@
 { pkgs, ... }:
 {
   programs.ghostty.package =
-    if pkgs.stdenv.hostPlatform.isDarwin then pkgs.ghostty-bin
-    else pkgs.ghostty;
+    if pkgs.stdenv.hostPlatform.isDarwin then pkgs.ghostty-bin else pkgs.ghostty;
 }

@@ -1,4 +1,4 @@
-{ selfPath, pkgs, ... }: {
+{ selfPath, ... }: {
   programs.tmux = {
     enable = true;
     aggressiveResize = true;

@@ -8,7 +8,7 @@
 # Settings toggles): keyboard backlight timeout, ProMotion refresh rate,
 # battery charge thresholds, lid/clamshell behavior. macOS doesn't expose
 # these declaratively.
-{ ... }: {
+_: {
   system.activationScripts.postActivation.text = ''
     # Disable wake-on-network-access while on battery to save power; leave
     # it enabled on AC (pmset's own default).

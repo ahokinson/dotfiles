@@ -2,9 +2,7 @@
 # NixOS host.
 {
   inputs,
-  config,
   pkgs,
-  lib,
   ...
 }:
 {

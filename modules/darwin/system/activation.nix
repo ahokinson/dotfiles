@@ -1,4 +1,4 @@
-{ ... }: {
+_: {
   # Things nix-darwin has no declarative option for, enforced imperatively on
   # every activation. `|| true` throughout: a work machine's MDM profile may
   # re-lock these, and a failed disable here shouldn't fail the whole

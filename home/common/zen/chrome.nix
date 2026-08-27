@@ -42,7 +42,8 @@ let
       background-color: #5b5f6d !important;
     }
   '';
-in {
+in
+{
   # The @import has to stay first: CSS ignores @import once other rules have
   # been seen.
   userChromeCss = pkgs.writeText "zen-userChrome.css" (

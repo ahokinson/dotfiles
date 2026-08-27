@@ -1,9 +1,10 @@
 { pkgs, config }:
 let
   configDir =
-    if pkgs.stdenv.hostPlatform.isDarwin
-    then "${config.home.homeDirectory}/Library/Application Support/zen"
-    else "${config.home.homeDirectory}/.zen";
+    if pkgs.stdenv.hostPlatform.isDarwin then
+      "${config.home.homeDirectory}/Library/Application Support/zen"
+    else
+      "${config.home.homeDirectory}/.zen";
 
   # Zen can spawn a brand-new empty profile on some launches, orphaning the
   # real one (installs.ini/profiles.ini end up with multiple per-install
@@ -65,6 +66,7 @@ let
       }
     ' "$1"
   '';
-in {
+in
+{
   inherit configDir selfHealInstalls findDefaultProfile;
 }

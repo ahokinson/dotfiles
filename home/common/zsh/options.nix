@@ -1,4 +1,4 @@
-{ ... }: {
+_: {
   programs.zsh = {
     enable = true;
     enableCompletion = true;
@@ -16,7 +16,9 @@
       expireDuplicatesFirst = true;
     };
 
-    shellAliases = { vim = "nvim"; };
+    shellAliases = {
+      vim = "nvim";
+    };
 
     # Sourced for every zsh invocation (interactive or not) - non-interactive
     # scripts need these too, unlike initContent which only lands in .zshrc.

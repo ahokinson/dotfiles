@@ -1,6 +1,11 @@
 # Thaw: menu-bar item hider/manager for macOS, fork of Ice. Prebuilt-only
 # package (nixpkgs can't build it from source), darwin-only.
-{ pkgs, lib, selfPath, ... }:
+{
+  pkgs,
+  lib,
+  selfPath,
+  ...
+}:
 let
   loginItem = import (selfPath "home/darwin/login-item.nix") { inherit lib; };
 in

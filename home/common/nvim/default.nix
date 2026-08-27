@@ -1,4 +1,9 @@
-{ inputs, pkgs, lib, ... }:
+{
+  inputs,
+  pkgs,
+  lib,
+  ...
+}:
 let
   # Keep in sync with the `parsers` list in ahokinson/nvim's
   # lua/custom/plugins/treesitter.lua. Any language added there but not here
@@ -39,7 +44,8 @@ let
       ln -s ${pkgs.vimPlugins.nvim-treesitter.grammarPlugins.${n}}/parser/${n}.so $out/parser/${n}.so
     '') treesitterParserNames
   );
-in {
+in
+{
   home.packages = [
     pkgs.neovim
     pkgs.tree-sitter

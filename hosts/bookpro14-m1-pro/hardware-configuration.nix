@@ -8,7 +8,7 @@
 # environment via the Asahi installer, build/boot the NixOS installer ISO
 # (`nix build .#installer-bootstrap` in that project's flake), partition and
 # install, then copy the generated hardware-configuration.nix here.
-{ ... }:
+_:
 {
   boot.initrd.availableKernelModules = [ ];
   boot.kernelModules = [ ];

@@ -34,26 +34,29 @@ let
   # fix upstream's install.sh --libadwaita uses) gives a plain directory
   # whose gtk.css can be imported by file:// URL, with the PNG assets
   # alongside it so the stylesheet's relative url()s still resolve.
-  whitesurGtk4 = pkgs.runCommand "whitesur-gtk4-${themeName}" {
-    # glib.dev, not glib.bin: gresource ships in the dev output.
-    nativeBuildInputs = [ pkgs.glib.dev ];
-  } ''
-    bundle=${whitesurTheme}/share/themes/${themeName}/gtk-4.0/gtk.gresource
-    mkdir -p $out
-    for res in $(gresource list "$bundle"); do
-      # Paths are /org/gnome/theme/{gtk.css,gtk-dark.css,assets/...}; keeping
-      # everything below "theme/" preserves the assets/ subdirectory the
-      # stylesheet's relative url()s point at.
-      rel=''${res##*/theme/}
-      mkdir -p "$out/$(dirname "$rel")"
-      gresource extract "$bundle" "$res" > "$out/$rel"
-    done
-    # Fail the build instead of silently shipping a stylesheet that styles
-    # nothing.
-    test -s $out/gtk.css
-    grep -q windowcontrols $out/gtk.css
-    test -s $out/windows-assets/titlebutton-close-dark.png
-  '';
+  whitesurGtk4 =
+    pkgs.runCommand "whitesur-gtk4-${themeName}"
+      {
+        # glib.dev, not glib.bin: gresource ships in the dev output.
+        nativeBuildInputs = [ pkgs.glib.dev ];
+      }
+      ''
+        bundle=${whitesurTheme}/share/themes/${themeName}/gtk-4.0/gtk.gresource
+        mkdir -p $out
+        for res in $(gresource list "$bundle"); do
+          # Paths are /org/gnome/theme/{gtk.css,gtk-dark.css,assets/...}; keeping
+          # everything below "theme/" preserves the assets/ subdirectory the
+          # stylesheet's relative url()s point at.
+          rel=''${res##*/theme/}
+          mkdir -p "$out/$(dirname "$rel")"
+          gresource extract "$bundle" "$res" > "$out/$rel"
+        done
+        # Fail the build instead of silently shipping a stylesheet that styles
+        # nothing.
+        test -s $out/gtk.css
+        grep -q windowcontrols $out/gtk.css
+        test -s $out/windows-assets/titlebutton-close-dark.png
+      '';
 in
 {
   gtk = {

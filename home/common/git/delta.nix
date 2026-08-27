@@ -1,7 +1,8 @@
 { selfPath, ... }:
 let
   palette = import (selfPath "home/common/palette.nix");
-in {
+in
+{
   programs.delta = {
     enable = true;
     enableGitIntegration = true;

@@ -6,7 +6,8 @@
 { lib, selfPath, ... }:
 let
   palette = import (selfPath "home/common/palette.nix");
-in {
+in
+{
   programs.zsh.initContent = lib.mkMerge [
     (lib.mkBefore ''
       # Must be set before oh-my-zsh sources itself: its termsupport.zsh

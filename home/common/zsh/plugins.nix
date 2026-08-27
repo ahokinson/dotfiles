@@ -16,11 +16,17 @@ let
     rev = "bf2c5393295fe82d74e3b4585baa483722653ab8";
     hash = "sha256-XPNciTSplIrmaB+2XU+Q7WwVPMrCqSU6LjbwWg5BmE8=";
   };
-in {
+in
+{
   programs.zsh.oh-my-zsh = {
     enable = true;
     theme = "powerlevel10k";
-    plugins = [ "git" "zsh-autosuggestions" "zsh-syntax-highlighting" "zsh-completions" ];
+    plugins = [
+      "git"
+      "zsh-autosuggestions"
+      "zsh-syntax-highlighting"
+      "zsh-completions"
+    ];
     # Custom dir under our own home-made symlink farm (populated below).
     custom = "$HOME/.config/zsh/omz-custom";
   };
@@ -28,8 +34,12 @@ in {
   # oh-my-zsh custom themes/plugins symlinked into a writable xdg dir.
   # OMZ's theme loader expects a single file custom/themes/<name>.zsh-theme,
   # and its plugin loader expects a directory containing <name>.plugin.zsh.
-  xdg.configFile."zsh/omz-custom/themes/powerlevel10k.zsh-theme".source = "${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
-  xdg.configFile."zsh/omz-custom/plugins/zsh-autosuggestions".source = "${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions";
-  xdg.configFile."zsh/omz-custom/plugins/zsh-syntax-highlighting".source = "${zsh-syntax-highlighting-src}";
+  xdg.configFile."zsh/omz-custom/themes/powerlevel10k.zsh-theme".source =
+    "${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
+  xdg.configFile."zsh/omz-custom/plugins/zsh-autosuggestions".source =
+    "${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions";
+  xdg.configFile."zsh/omz-custom/plugins/zsh-syntax-highlighting".source = "${
+    zsh-syntax-highlighting-src
+  }";
   xdg.configFile."zsh/omz-custom/plugins/zsh-completions".source = "${zsh-completions-src}";
 }

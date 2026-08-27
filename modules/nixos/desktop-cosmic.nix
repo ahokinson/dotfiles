@@ -4,7 +4,7 @@
 # graphical-desktop, dconf, polkit, rtkit, accounts-daemon, libinput, upower,
 # geoclue2, XDG portals, and mkDefaults Bluetooth/NetworkManager/GVFS/
 # gnome-keyring/power-profiles-daemon; xwayland.enable defaults to true.
-{ ... }: {
+_: {
   services.desktopManager.cosmic.enable = true;
   services.displayManager.cosmic-greeter.enable = true;
 

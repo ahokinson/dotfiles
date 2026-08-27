@@ -5,13 +5,21 @@
 # owns and regenerates profiles.ini, and orphaned a real profile once when
 # adopting an existing one. This only ever touches user.js and a chrome/
 # subdirectory in the profile Zen already considers default.
-{ inputs, selfPath, config, lib, pkgs, ... }:
+{
+  inputs,
+  selfPath,
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   activation = import (selfPath "home/common/zen/activation.nix") { inherit pkgs config; };
   userJs = import (selfPath "home/common/zen/prefs.nix") { inherit pkgs lib selfPath; };
   theme = import (selfPath "home/common/zen/theme.nix") { inherit inputs pkgs; };
   chrome = import (selfPath "home/common/zen/chrome.nix") { inherit pkgs lib; };
-in {
+in
+{
   home.activation.zenSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     zenConfigDir=${lib.escapeShellArg activation.configDir}
     run ${activation.selfHealInstalls} "$zenConfigDir"

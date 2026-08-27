@@ -1,4 +1,10 @@
-{ selfPath, pkgs, lib, config, ... }:
+{
+  selfPath,
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 let
   # Real on-disk checkout path - deliberately NOT selfPath. selfPath
   # resolves into the immutable Nix store copy of the flake; this needs a
@@ -6,7 +12,8 @@ let
   # Code's own runtime writes to settings.json survive rebuilds. Assumes
   # the repo is checked out at ~/.dotfiles.
   dotfilesRepo = "${config.home.homeDirectory}/.dotfiles";
-in {
+in
+{
   home.packages = [ pkgs.claude-code ];
 
   home.file.".claude" = {
@@ -17,7 +24,8 @@ in {
     # manage declaratively.
     source = lib.cleanSourceWith {
       src = selfPath "home/common/claude/_files";
-      filter = path: _type:
+      filter =
+        path: _type:
         !(lib.hasSuffix "/plugins/known_marketplaces.json" path)
         && !(lib.hasSuffix "/_files/settings.json" path);
     };
@@ -25,13 +33,14 @@ in {
   };
 
   home.file.".claude/settings.json".source =
-    config.lib.file.mkOutOfStoreSymlink
-      "${dotfilesRepo}/home/common/claude/_files/settings.json";
+    config.lib.file.mkOutOfStoreSymlink "${dotfilesRepo}/home/common/claude/_files/settings.json";
 
   home.file.".claude/plugins/marketplaces/local/plugins/custom/docs" = {
     source = selfPath "home/common/_shared/docs";
     recursive = true;
   };
-  home.file.".claude/plugins/marketplaces/local/plugins/custom/system.md".source = selfPath "home/common/_shared/system.md";
-  home.file.".claude/plugins/marketplaces/local/plugins/custom/SOUL.md".source = selfPath "home/common/_shared/SOUL.md";
+  home.file.".claude/plugins/marketplaces/local/plugins/custom/system.md".source =
+    selfPath "home/common/_shared/system.md";
+  home.file.".claude/plugins/marketplaces/local/plugins/custom/SOUL.md".source =
+    selfPath "home/common/_shared/SOUL.md";
 }

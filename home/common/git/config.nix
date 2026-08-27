@@ -1,4 +1,4 @@
-{ ... }: {
+_: {
   programs.git = {
     enable = true;
     settings = {
@@ -25,6 +25,11 @@
       branch.sort = "-committerdate";
       column.ui = "auto";
     };
-    includes = [{ path = "~/.gitconfig-work"; condition = "gitdir:~/.local/src/"; }];
+    includes = [
+      {
+        path = "~/.gitconfig-work";
+        condition = "gitdir:~/.local/src/";
+      }
+    ];
   };
 }

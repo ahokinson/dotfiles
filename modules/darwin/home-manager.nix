@@ -2,7 +2,13 @@
 # The userland (dotfiles, shell, packages) is identical across all macs.
 # Only system-level concerns (hostname, hardware) differ, handled per-host
 # in flake.nix.
-{ inputs, selfPath, username, ... }: {
+{
+  inputs,
+  selfPath,
+  username,
+  ...
+}:
+{
   imports = [ inputs.home-manager.darwinModules.home-manager ];
 
   home-manager = {

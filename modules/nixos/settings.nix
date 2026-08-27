@@ -1,5 +1,8 @@
 { lib, ... }: {
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
   # Cap build parallelism so the fans don't spin up.
   nix.settings.max-jobs = lib.mkDefault 2;
   nix.settings.cores = lib.mkDefault 2;

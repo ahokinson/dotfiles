@@ -16,7 +16,12 @@
     # shells never hit this, which is why it only shows up on activation.
     # vfkit and gvproxy need no such help: nixpkgs' podman wrapper already
     # bakes vfkit into its PATH and ships gvproxy in libexec.
-    export PATH="${lib.makeBinPath [ pkgs.podman pkgs.openssh ]}:$PATH"
+    export PATH="${
+      lib.makeBinPath [
+        pkgs.podman
+        pkgs.openssh
+      ]
+    }:$PATH"
     if ! podman machine inspect podman-machine-default &>/dev/null; then
       run podman machine init
     fi

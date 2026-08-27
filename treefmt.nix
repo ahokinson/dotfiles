@@ -6,7 +6,7 @@
 # home/common are vendored upstream assets and prompt documents, and
 # home/common/claude/_files/settings.json is an out-of-store symlink that
 # Claude Code rewrites at runtime - a formatter would fight both.
-{ ... }: {
+_: {
   projectRootFile = "flake.nix";
 
   programs.nixfmt.enable = true; # RFC 166 style
