@@ -23,7 +23,7 @@
     # own PATH), so there is exactly one pinned copy of each rather than a
     # second, independently drifting one.
     cerberus = {
-      url = "github:ahokinson/cerberus/v0.1.2";
+      url = "github:ahokinson/cerberus/v0.1.3";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
