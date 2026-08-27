@@ -30,11 +30,23 @@ jobs:
 
       # Host names come from the flake itself, so a seventh configuration
       # cannot silently escape CI.
+      #
+      # Asahi hosts are skipped by a property they declare, not by name, so a
+      # new non-Asahi host is still covered automatically. They can only
+      # evaluate on the real hardware: hardware.asahi.enable pulls in
+      # peripheral firmware extracted from that machine's macOS install, and
+      # their hardware-configuration.nix is a placeholder with no fileSystems
+      # until someone runs nixos-generate-config there.
       - name: Evaluate every host configuration
         run: |
           set -euo pipefail
           for kind in nixosConfigurations darwinConfigurations; do
             for name in $(nix eval --json ".#$kind" --apply builtins.attrNames | jq -r '.[]'); do
+              if [ "$(nix eval --json ".#$kind.$name" \
+                    --apply 'c: c.config.hardware.asahi.enable or false')" = "true" ]; then
+                echo "::notice::skipping $kind.$name (Asahi: needs on-machine firmware and a real hardware-configuration.nix)"
+                continue
+              fi
               echo "::group::$kind.$name"
               nix eval --raw ".#$kind.$name.config.system.build.toplevel.drvPath"
               echo
