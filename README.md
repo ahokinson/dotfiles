@@ -5,7 +5,14 @@ Unified Nix flake for NixOS (incl. Asahi/Apple Silicon) and macOS.
 ## Apply
 
 Each config is named after its hostname, so the rebuild tools pick the right
-one on their own:
+one on their own. `nh` sets `NH_FLAKE` to this repo, so it needs no `--flake`:
+
+    nh os switch          # NixOS, incl. Asahi
+    nh darwin switch      # macOS
+
+It wraps the native tools with a `nix-output-monitor` build tree and an `nvd`
+diff of what actually changed. Those tools still work directly, and are what
+you need on a machine where home-manager hasn't activated yet:
 
     sudo nixos-rebuild switch --flake ~/.dotfiles     # NixOS, incl. Asahi
     sudo darwin-rebuild switch --flake ~/.dotfiles    # macOS

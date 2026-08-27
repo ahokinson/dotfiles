@@ -59,9 +59,17 @@ in
       moreutils
       (lib.optionals (!isDarwin) sharedFonts.packages)
       ncdu
+      # nh itself comes from programs.nh (home/common/nh.nix); these are the
+      # standalone counterparts for use outside a rebuild.
+      nix-diff
+      nix-melt
+      nix-output-monitor
+      nix-tree
       nmap
       nodejs
       nuclei
+      nurl
+      nvd
       ollama
       onefetch
       open-policy-agent
