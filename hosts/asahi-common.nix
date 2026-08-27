@@ -24,7 +24,7 @@
     (selfPath "modules/nixos/settings.nix")
     (selfPath "modules/nixos/ssh.nix")
     (selfPath "modules/nixos/user.nix")
-    inputs.flake.inputs.hermes-agent.nixosModules.default
+    inputs.hermes-agent.nixosModules.default
     inputs.home-manager.nixosModules.home-manager
   ];
 

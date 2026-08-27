@@ -11,8 +11,30 @@
       inputs.home-manager.follows = "home-manager";
     };
 
-    flake.url = "github:ahokinson/flake";
-    flake.inputs.nixpkgs.follows = "nixpkgs";
+    # Own tools, each packaging itself. Tag-pinned on purpose: `nix flake
+    # update` will not move these, so a bump stays a deliberate one-line edit
+    # reviewed as a diff.
+    bloom = {
+      url = "github:ahokinson/bloom/v0.2.1";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # Also vends pkgs.tirith and pkgs.cupcake (the binaries it wraps onto its
+    # own PATH), so there is exactly one pinned copy of each rather than a
+    # second, independently drifting one.
+    cerberus = {
+      url = "github:ahokinson/cerberus/v0.1.2";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    clipleaks = {
+      url = "github:ahokinson/clipleaks/v0.1.2";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # Was reached through the old `flake` input. No `follows`: hermes-agent
+    # pins its own nixpkgs deliberately.
+    hermes-agent.url = "github:NousResearch/hermes-agent";
 
     git-hooks = {
       url = "github:cachix/git-hooks.nix";
@@ -46,6 +68,21 @@
 
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
+    pharos = {
+      url = "github:ahokinson/pharos/v0.1.2";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    psyche = {
+      url = "github:ahokinson/psyche/v0.1.1";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    reliquary = {
+      url = "github:ahokinson/reliquary/v0.1.2";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Plain source tree, not a flake.
     nvim.url = "github:ahokinson/nvim";
     nvim.flake = false;
@@ -55,7 +92,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Own input (not reached through ahokinson/flake) so we can use its
+    # Taken as an input rather than just a package so we can use its
     # home-manager module for proper macOS .app bundle installation.
     zen-browser.url = "github:0xc000022070/zen-browser-flake";
     zen-browser.inputs.nixpkgs.follows = "nixpkgs";
