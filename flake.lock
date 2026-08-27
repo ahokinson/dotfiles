@@ -49,11 +49,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1787809311,
-        "narHash": "sha256-q4dKXsXurN7pmBVSjK+6WzIl7xP7wy6LBh4Vnb+S2tg=",
+        "lastModified": 1787865637,
+        "narHash": "sha256-guYHqRS7t82DYNHqbRH1emRx+p1j5kOic968CbGZ/ls=",
         "owner": "ahokinson",
         "repo": "cerberus",
-        "rev": "a39d2b39824d7492f8dc51fdf32ffd425d11806b",
+        "rev": "505559704333b5f6c73d95c4f62362b5ba2e79bd",
         "type": "github"
       },
       "original": {

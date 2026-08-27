@@ -23,6 +23,12 @@ in
     recursive = true;
   };
 
+  # The risk head's tirith overlay, used only in repos with no
+  # .tirith/policy.yaml of their own. Nothing else provisions it, and
+  # without it the head is degraded and the gate denies every tool call.
+  home.file.".local/share/cerberus-tirith-overlay/.tirith/policy.yaml".source =
+    "${pkgs.cerberus}/share/cerberus/policies/tirith/policy.yaml";
+
   # cerberus owns this install path and pins the commit itself, so the
   # personal Rego set is a source rather than files from the store.
   # Registered once; `cerberus source sync --yes` applies updates by hand.
