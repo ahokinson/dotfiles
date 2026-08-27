@@ -79,7 +79,7 @@
     };
 
     reliquary = {
-      url = "github:ahokinson/reliquary/v0.1.2";
+      url = "github:ahokinson/reliquary/v0.1.4";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 

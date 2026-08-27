@@ -11,14 +11,16 @@ let
 
   ownTools =
     inputs.bloom.overlays.default final prev
-    // inputs.cerberus.overlays.default final prev   # cerberus + tirith + cupcake
+    // inputs.cerberus.overlays.default final prev # cerberus + tirith + cupcake
     // inputs.clipleaks.overlays.default final prev
     // inputs.pharos.overlays.default final prev
     // inputs.psyche.overlays.default final prev
     // inputs.reliquary.overlays.default final prev;
 in
 ownTools
-// { hermes = inputs.hermes-agent.packages.${system}.default; }
+// {
+  hermes = inputs.hermes-agent.packages.${system}.default;
+}
 // import ./open-policy-agent.nix { inherit prev; }
 // import ./scorecard.nix { inherit final prev; }
 // import ./semgrep.nix { inherit final; }
