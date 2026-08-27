@@ -33,8 +33,11 @@ in
   home.activation.cerberusPolicySource = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     if ! ${pkgs.cerberus}/bin/cerberus source list 2>/dev/null \
         | ${pkgs.gnugrep}/bin/grep -q '^personal[[:space:]]'; then
-      run ${pkgs.cerberus}/bin/cerberus source add \
-        personal https://github.com/ahokinson/cupcake.git || \
+      # cerberus shells out to git to clone the source; activation's PATH
+      # doesn't have it by default.
+      PATH="${pkgs.git}/bin:$PATH" \
+        run ${pkgs.cerberus}/bin/cerberus source add \
+          personal https://github.com/ahokinson/cupcake.git || \
         warnEcho "cerberus: registering the 'personal' policy source failed"
     fi
   '';
