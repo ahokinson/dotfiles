@@ -21,6 +21,7 @@ in
     delta
     delve
     dive
+    duf
     dust
     f3
     fd
@@ -42,12 +43,15 @@ in
     inetutils
     jq
     k9s
+    killall
     kubernetes-helm
     kubescape
     lazydocker
     lazygit
     mediainfo
+    moreutils
     (lib.optionals (!isDarwin) sharedFonts.packages)
+    ncdu
     nmap
     nodejs
     nuclei
@@ -69,11 +73,13 @@ in
     python3
     reliquary
     ripgrep
+    rsync
     ruff
     rust-analyzer
     rustc
     rustfmt
     scorecard
+    sd
     semgrep
     sox
     sqld
@@ -83,10 +89,12 @@ in
     testssl
     texliveBasic
     tirith
+    tree
     trivy
     trufflehog
     turso-cli
     twitch-cli
+    unzip
     uv
     yq-go
     zig

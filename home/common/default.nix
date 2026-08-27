@@ -7,6 +7,8 @@
     (selfPath "home/common/claude")
     (selfPath "home/common/codex")
     (selfPath "home/common/cupcake")
+    (selfPath "home/common/direnv")
+    (selfPath "home/common/eza")
     (selfPath "home/common/fastfetch")
     (selfPath "home/common/ghostty")
     (selfPath "home/common/git")
@@ -23,6 +25,7 @@
     (selfPath "home/common/tmux")
     (selfPath "home/common/yt-dlp")
     (selfPath "home/common/zen")
+    (selfPath "home/common/zoxide")
     (selfPath "home/common/zsh")
   ];
 }
