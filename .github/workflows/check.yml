@@ -1,0 +1,43 @@
+# Evaluation and lint only: no host is ever built here. Evaluating a
+# darwinConfigurations drvPath from Linux is fine - only realising it needs a
+# matching platform - so one ubuntu runner covers all six configurations
+# without spending macOS minutes.
+name: check
+
+on:
+  push:
+    branches: [develop]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: DeterminateSystems/nix-installer-action@main
+
+      # Builds checks.x86_64-linux (treefmt + pre-commit hooks) and evaluates
+      # nixosConfigurations. darwinConfigurations is not a standard flake
+      # output, so it is skipped here and covered by the loop below.
+      - name: nix flake check
+        run: nix flake check --show-trace
+
+      # Host names come from the flake itself, so a seventh configuration
+      # cannot silently escape CI.
+      - name: Evaluate every host configuration
+        run: |
+          set -euo pipefail
+          for kind in nixosConfigurations darwinConfigurations; do
+            for name in $(nix eval --json ".#$kind" --apply builtins.attrNames | jq -r '.[]'); do
+              echo "::group::$kind.$name"
+              nix eval --raw ".#$kind.$name.config.system.build.toplevel.drvPath"
+              echo
+              echo "::endgroup::"
+            done
+          done

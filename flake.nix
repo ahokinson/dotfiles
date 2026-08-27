@@ -11,12 +11,13 @@
       inputs.home-manager.follows = "home-manager";
     };
 
-    # Plain source tree, not a flake.
-    cupcake.url = "github:ahokinson/cupcake";
-    cupcake.flake = false;
-
     flake.url = "github:ahokinson/flake";
     flake.inputs.nixpkgs.follows = "nixpkgs";
+
+    git-hooks = {
+      url = "github:cachix/git-hooks.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -38,6 +39,11 @@
     # Plain source tree, not a flake.
     nvim.url = "github:ahokinson/nvim";
     nvim.flake = false;
+
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # Own input (not reached through ahokinson/flake) so we can use its
     # home-manager module for proper macOS .app bundle installation.
@@ -80,7 +86,30 @@
           (selfPath "hosts/${hostDir}")
         ];
       };
-      in
+
+      # Each host pins its own platform, so this list exists purely for the
+      # per-system outputs at the bottom (formatter, checks, devShells).
+      systems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" ];
+      eachSystem = f:
+        nixpkgs.lib.genAttrs systems (system: f nixpkgs.legacyPackages.${system});
+
+      treefmtEval = eachSystem (pkgs:
+        inputs.treefmt-nix.lib.evalModule pkgs (selfPath "treefmt.nix"));
+
+      # `nix develop` (or direnv, via .envrc) installs these as git hooks;
+      # `nix flake check` runs them in a sandbox. ripsecrets rather than the
+      # trufflehog hook because trufflehog's --only-verified pass reaches out
+      # over the network to validate candidates, which the sandbox forbids.
+      gitHooks = eachSystem (pkgs: inputs.git-hooks.lib.${pkgs.system}.run {
+        src = self;
+        hooks = {
+          treefmt.enable = true;
+          treefmt.packageOverrides.treefmt =
+            treefmtEval.${pkgs.system}.config.build.wrapper;
+          ripsecrets.enable = true;
+        };
+      });
+    in
     {
       # --- NixOS (current box, x86_64-linux) ---
       # Framework Laptop 13, AMD Ryzen AI 7 350. Hostname:
@@ -108,6 +137,24 @@
 
       nixosConfigurations.studio-m1-max =
         mkNixos "aarch64-linux" "studio-m1-max";
+
+      # `nix fmt` - nixfmt, deadnix and statix over every .nix file. Config
+      # lives in treefmt.nix.
+      formatter = eachSystem (pkgs: treefmtEval.${pkgs.system}.config.build.wrapper);
+
+      # `nix flake check` - what CI runs alongside evaluating every host.
+      checks = eachSystem (pkgs: {
+        formatting = treefmtEval.${pkgs.system}.config.build.check self;
+        pre-commit = gitHooks.${pkgs.system};
+      });
+
+      # `nix develop` installs the git hooks and puts the formatters on PATH.
+      devShells = eachSystem (pkgs: {
+        default = pkgs.mkShellNoCC {
+          inherit (gitHooks.${pkgs.system}) shellHook;
+          packages = gitHooks.${pkgs.system}.enabledPackages;
+        };
+      });
 
       # Expose for downstream compositors/hosts if needed.
       inherit overlays;

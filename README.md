@@ -46,3 +46,12 @@ installer's generated `hardware-configuration.nix` into this repo's
 ## Updating inputs
 
 `nix flake update` bumps every pinned input.
+
+## Development
+
+    nix fmt          # nixfmt, deadnix and statix over every .nix file
+    nix flake check  # formatting, secret scan, and every host evaluates
+    direnv allow     # once per checkout; installs the pre-commit hooks
+
+CI runs the same `nix flake check` plus an evaluation of all six host
+configurations on every push and pull request.
