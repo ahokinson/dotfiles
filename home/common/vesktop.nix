@@ -8,13 +8,19 @@ _: {
   programs.vesktop = {
     enable = true;
 
-    # Without this, Vesktop's BrowserWindow is created with frame:true and
-    # gets whatever native decoration the platform draws - COSMIC's own
-    # server-side chrome on Linux, unstyled and inconsistent with everything
-    # else here. customTitleBar:true (confirmed in Vesktop's own main.js:
-    # `frame: store.customTitleBar !== true`) makes it frame:false instead
-    # and draw Discord's own title bar in its web content, which the
-    # catppuccin.vesktop theme above already covers.
-    settings.customTitleBar = true;
+    # No titlebar, no window controls, full space for Discord - COSMIC's own
+    # keybinds cover what the controls used to (Super+Q/Alt+F4 close,
+    # Super+M maximize, Super+drag anywhere to move; nothing default for
+    # minimize).
+    #
+    # Two separate settings stores, confirmed in Vesktop's own main.js:
+    # `frame: store.customTitleBar !== true` (Vesktop's own settings.json -
+    # this option) drops the native frame in favor of a title bar Discord's
+    # web content draws itself; `frameless` (Vencord's settings.json, below)
+    # drops it with no replacement drawn at all. customTitleBar stays false
+    # so only frameless's frame:false takes effect.
+    settings.customTitleBar = false;
+
+    vencord.settings.frameless = true;
   };
 }
