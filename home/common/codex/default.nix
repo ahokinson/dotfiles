@@ -32,6 +32,10 @@ in
 {
   home.packages = [ pkgs.codex ];
 
+  # Keep hooks beside the runtime-mutated config.toml. Codex loads this file
+  # independently and asks for one-time `/hooks` trust after deployment.
+  home.file.".codex/hooks.json".source = ./hooks.json;
+
   home.activation.codexTheme = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     run ${codexTheme}
   '';
