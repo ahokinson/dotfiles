@@ -9,6 +9,17 @@
 let
   sharedFonts = import (selfPath "home/common/fonts.nix") { inherit pkgs; };
   inherit (import (selfPath "home/linux/cosmic/ron.nix")) ronOptional ronEnum;
+
+  # COSMIC takes a corner radius as one value per corner.
+  radius = n: {
+    __type = "tuple";
+    value = [
+      n
+      n
+      n
+      n
+    ];
+  };
 in
 {
   wayland.desktopManager.cosmic.appearance = {
@@ -29,6 +40,33 @@ in
           green = 0.203922;
           blue = 0.274510;
           alpha = 1.0;
+        };
+
+        # The dock's hover fill is not settable here. libcosmic draws applet
+        # icon buttons from the derived theme's text_button, whose hover is
+        # control_steps_array[5] at 0.2 alpha - a neutral step. ThemeBuilder,
+        # which is what this attrset writes, has no text_button field, and
+        # the only lever on that neutral is neutral_tint, which recolors
+        # every surface in the theme. So the shape below is the part worth
+        # changing; the fill stays grey.
+        #
+        # Shape of that highlight. Button::AppletIcon never sets its own
+        # radius, so it falls through to libcosmic's default of radius_xl -
+        # 160.0 out of the box, which rounds a dock-sized button into a blob.
+        # 8.0 makes it a crisp square. That is the fallback for every button
+        # style not picking its own radius, so this is deliberately a global
+        # change rather than a dock-only one.
+        #
+        # All six are listed because the option is a submodule: setting one
+        # radius instantiates it and leaves the rest undefined. The other five
+        # are COSMIC's stock values.
+        corner_radii = {
+          radius_0 = radius 0.0;
+          radius_xs = radius 4.0;
+          radius_s = radius 8.0;
+          radius_m = radius 16.0;
+          radius_l = radius 32.0;
+          radius_xl = radius 8.0;
         };
       };
     };
