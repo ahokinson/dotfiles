@@ -24,14 +24,6 @@ let
     text = lib.removePrefix "#" palette.text;
   };
 
-  # Leaves the header bar carrying nothing but the traffic lights. Has to be
-  # CSS (gtk-titlebar = false removes the whole bar, controls included), and
-  # has to shrink instead of hide (GTK4 CSS supports neither display nor
-  # visibility). Keyed on the window controls' own GTK4 classes, the same
-  # ones WhiteSur's own theme selects on.
-  headerCss = pkgs.writeText "ghostty-header.css" (
-    builtins.readFile (selfPath "home/common/ghostty/_files/header.css")
-  );
 in
 {
   programs.ghostty.settings = {
@@ -171,29 +163,20 @@ in
     macos-shortcuts = "ask";
   }
   // lib.optionalAttrs (!isDarwin) {
-    # Linux counterpart to the macOS titlebar block above. "client" rather
-    # than "auto": auto lets COSMIC draw a server-side titlebar, whose
-    # buttons are pinned to the right with no setting to move them. A GTK
-    # header bar instead honours gtk-decoration-layout, which
-    # home/linux/cosmic/gtk.nix sets to macOS's left-hand
-    # close/minimize/zoom order.
-    window-decoration = "client";
+    # No titlebar, no window controls, full space for the terminal - COSMIC's
+    # own keybinds cover what the controls used to (Super+Q/Alt+F4 close,
+    # Super+M maximize, Super+drag anywhere to move; nothing default for
+    # minimize). "none" removes the frame entirely, not just the titlebar
+    # (unlike gtk-titlebar = false, which used to leave rounded corners and a
+    # bare bar); gtk-decoration-layout/WhiteSur CSD are moot with no bar left
+    # to draw them on.
+    window-decoration = "none";
 
     linux-cgroup = "never";
     linux-cgroup-hard-fail = false;
     gtk-opengl-debug = false;
     gtk-single-instance = "detect";
     gtk-tabs-location = "top";
-    # Stays true. `false` removes the header bar outright, traffic lights
-    # and all, instead of reducing it to just the window controls. That
-    # paring-down happens via gtk-custom-css instead.
-    gtk-titlebar = true;
-    gtk-titlebar-hide-when-maximized = false;
-    gtk-custom-css = "${headerCss}";
-
-    # "flat" makes the bar continuous with the terminal below it instead of
-    # casting a shadow onto it, so the two read as one surface.
-    gtk-toolbar-style = "flat";
 
     # window-theme = "ghostty" is the precondition for the titlebar colors
     # below being honoured at all - they are ignored under "auto". The two
