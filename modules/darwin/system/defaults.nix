@@ -5,7 +5,11 @@
   ...
 }:
 let
-  dockApps = import (selfPath "home/common/dock-apps.nix");
+  # Pinned apps only - vesktop opts out (home/common/dock-apps.nix), so it's
+  # installed and icon-themed but not in the Dock.
+  pinnedApps = builtins.filter (app: app.pinned or true) (
+    builtins.attrValues (import (selfPath "home/common/dock-apps.nix"))
+  );
 in
 {
   # macOS user defaults, set exhaustively so all 3 Macs stay identical
@@ -15,10 +19,9 @@ in
     dock.magnification = false;
     # Finder is always pinned by macOS regardless of what's declared here.
     # Including it would risk a duplicate icon, so it's omitted.
-    dock.persistent-apps = with dockApps; [
-      "/Users/${username}/Applications/Home Manager Apps/${zen.darwinApp}"
-      "/Users/${username}/Applications/Home Manager Apps/${ghostty.darwinApp}"
-    ];
+    dock.persistent-apps = map (
+      app: "/Users/${username}/Applications/Home Manager Apps/${app.darwinApp}"
+    ) pinnedApps;
     dock.wvous-br-corner = 4; # Desktop
     dock.wvous-tr-corner = 2; # Mission Control
     dock.wvous-tl-corner = 13; # Lock Screen
