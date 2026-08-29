@@ -1,10 +1,10 @@
 # Settings set exhaustively (mirrors the same treatment given to macOS
 # system.defaults and Zen), sourced from `ghostty +show-config --default
 # --docs`, not just the ones changed from stock. `palette`, `keybind`, and
-# `command-palette-entry` are excluded: palette is owned by theme.nix.
-# keybind and command-palette-entry are additive in Ghostty's config format,
-# so leaving them undeclared already preserves the shipped defaults with no
-# drift risk.
+# `command-palette-entry` are excluded: palette is owned by catppuccin/nix's
+# ghostty module (home/common/catppuccin.nix). keybind and
+# command-palette-entry are additive in Ghostty's config format, so leaving
+# them undeclared already preserves the shipped defaults with no drift risk.
 {
   pkgs,
   lib,
@@ -15,9 +15,9 @@ let
   isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
   sharedFonts = import (selfPath "home/common/fonts.nix") { inherit pkgs; };
 
-  # The two palette colors the window chrome needs, matching the palette's
-  # own background/foreground (theme.nix, which sets them for darwin via
-  # the same shared source).
+  # The two palette colors the window chrome needs, matching the
+  # background/foreground catppuccin/nix's ghostty module sets from the
+  # same underlying Catppuccin Frappe palette.
   palette = import (selfPath "home/common/palette.nix");
   chrome = {
     base = lib.removePrefix "#" palette.base;
@@ -152,9 +152,7 @@ in
     async-backend = "auto";
   }
   // lib.optionalAttrs isDarwin {
-    # On Linux the catppuccin module overrides `theme` with the
-    # `light:…,dark:…` form, so only set it here on darwin.
-    theme = "catppuccin-frappe";
+    # theme itself is set by catppuccin/nix's ghostty module, cross-platform.
 
     # Option key acts as Alt, for terminal/vim-style word-jump bindings.
     macos-option-as-alt = true;

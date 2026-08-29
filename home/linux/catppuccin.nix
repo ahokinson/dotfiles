@@ -1,32 +1,21 @@
 # Catppuccin Frappe GTK theming + WhiteSur icons/cursors, shared by every
-# NixOS host.
+# NixOS host. The enable/flavor/accent toggle itself lives in
+# home/common/catppuccin.nix (cross-platform, and the module import can only
+# happen once); this file adds the Linux-only bits on top.
+{ pkgs, ... }:
 {
-  inputs,
-  pkgs,
-  ...
-}:
-{
-  imports = [
-    inputs.catppuccin.homeModules.catppuccin
-  ];
-
   catppuccin = {
-    enable = true;
     # Mirrors `enable` into `autoEnable` to silence catppuccin/nix's
-    # migration warning.
+    # migration warning. Linux-only: turning it on cross-platform would
+    # auto-theme every other catppuccin/nix-supported app this repo installs
+    # on darwin too, most of which already have their own hand-authored
+    # Frappe theme files.
     autoEnable = true;
-    flavor = "frappe";
-    accent = "mauve";
 
     # gtk.icon off in favor of WhiteSur below (macOS-shaped icons/cursors on
     # top of Catppuccin's GTK colors). cursors stays disabled: WhiteSur's
     # cursor covers that instead.
     gtk.icon.enable = false;
-
-    # delta and bat are themed in home/common (git/delta.nix, bat/default.nix);
-    # disable the module's ports here so they aren't double-themed on Linux.
-    delta.enable = false;
-    bat.enable = false;
   };
 
   # Plain cursor-theme assets: SVGs, PNGs, an index.theme file. The icon
