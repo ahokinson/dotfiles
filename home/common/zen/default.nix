@@ -17,7 +17,7 @@ let
   activation = import (selfPath "home/common/zen/activation.nix") { inherit pkgs config; };
   userJs = import (selfPath "home/common/zen/prefs.nix") { inherit pkgs lib selfPath; };
   theme = import (selfPath "home/common/zen/theme.nix") { inherit inputs pkgs; };
-  chrome = import (selfPath "home/common/zen/chrome.nix") { inherit pkgs lib; };
+  chrome = import (selfPath "home/common/zen/chrome.nix") { inherit pkgs; };
 in
 {
   home.activation.zenSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''

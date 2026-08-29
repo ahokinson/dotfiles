@@ -105,7 +105,7 @@ in
   "zen.view.compact.toolbar-hide-after-hover.duration" = 1000;
   "zen.view.enable-loading-indicator" = true;
   "zen.view.experimental-force-window-controls-left" = false;
-  "zen.view.experimental-no-window-controls" = false;
+  "zen.view.experimental-no-window-controls" = true;
   "zen.view.grey-out-inactive-windows" = false;
   "zen.view.hide-window-controls" = true;
   "zen.view.mac.show-three-dot-menu" = false;

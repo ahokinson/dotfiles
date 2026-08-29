@@ -1,54 +1,30 @@
-# macOS traffic lights for Zen's window controls, Linux only (macOS Zen gets
-# the real ones from the system).
-{ pkgs, lib }:
+# Zen's own window-controls buttonbox is hidden entirely via
+# zen.view.experimental-no-window-controls (home/common/zen/data.nix)
+# instead of styled here - this used to draw macOS-style traffic lights over
+# it by hand, retired along with ghostty's and signal's and vesktop's own
+# title bars.
+{ pkgs, ... }:
 let
-  # Zen draws these buttons itself and only consults GTK's -moz-gtk-csd-*
-  # values for placement/order, not appearance. So this has to be chrome
-  # CSS, not the GTK theme (home/linux/cosmic/gtk.nix). Class names checked
-  # against the shipped browser/omni.ja.
-  zenTrafficLights = ''
+  # zen.view.compact.show-sidebar-and-toolbar-on-hover stays on (it's the
+  # only pref for either), so the sidebar keeps its hover-to-peek. This
+  # forces just the toolbar's own expand rule back off. Checked against the
+  # shipped zen-styles/zen-compact-mode.css: #zen-appcontent-navbar-wrapper
+  # collapses to `height: var(--zen-element-separation)` at rest and expands
+  # to `height: var(--zen-toolbar-height-with-bookmarks)` when it or a
+  # descendant matches :is([zen-has-hover], [has-popup-menu],
+  # [zen-compact-mode-active]) - neither declaration is !important, so this
+  # unconditionally wins over every trigger state, hover included.
+  hideToolbarReveal = ''
 
-    .titlebar-buttonbox-container .titlebar-button {
-      appearance: none !important;
-      width: 12px !important;
-      height: 12px !important;
-      min-width: 12px !important;
-      min-height: 12px !important;
-      padding: 0 !important;
-      margin: 0 4px !important;
-      border-radius: 50% !important;
-    }
-
-    /* The glyphs are Zen's own icons; macOS shows bare circles at rest. */
-    .titlebar-buttonbox-container .titlebar-button > .toolbarbutton-icon {
-      display: none !important;
-    }
-
-    .titlebar-buttonbox-container .titlebar-close {
-      background-color: #ff5f57 !important;
-    }
-
-    .titlebar-buttonbox-container .titlebar-min {
-      background-color: #febc2e !important;
-    }
-
-    .titlebar-buttonbox-container .titlebar-max,
-    .titlebar-buttonbox-container .titlebar-restore {
-      background-color: #28c840 !important;
-    }
-
-    /* Unfocused windows lose the colour, same as macOS. */
-    .titlebar-buttonbox-container .titlebar-button:-moz-window-inactive {
-      background-color: #5b5f6d !important;
+    #zen-appcontent-navbar-wrapper {
+      height: var(--zen-element-separation) !important;
+      overflow: clip !important;
     }
   '';
 in
 {
-  # The @import has to stay first: CSS ignores @import once other rules have
-  # been seen.
   userChromeCss = pkgs.writeText "zen-userChrome.css" (
-    ''@import "catppuccin/userChrome.css";''
-    + lib.optionalString (!pkgs.stdenv.hostPlatform.isDarwin) zenTrafficLights
+    ''@import "catppuccin/userChrome.css";'' + hideToolbarReveal
   );
   userContentCss = pkgs.writeText "zen-userContent.css" ''@import "catppuccin/userContent.css";'';
 }
