@@ -25,4 +25,7 @@ ownTools
 // import ./open-policy-agent.nix { inherit prev; }
 // import ./scorecard.nix { inherit final prev; }
 // import ./semgrep.nix { inherit final; }
-// import ./signal.nix { inherit inputs final prev; }
+// import ./signal.nix {
+  inherit inputs final prev;
+  inherit (final) lib;
+}

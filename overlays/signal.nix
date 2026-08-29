@@ -23,6 +23,7 @@
   inputs,
   final,
   prev,
+  lib,
 }:
 let
   palette = import (inputs.self + "/home/common/palette.nix");
@@ -101,6 +102,33 @@ let
       "Applications/Signal.app/Contents/Resources/app.asar"
     else
       "share/signal-desktop/app.asar";
+
+  # Linux only: Signal never exposes a frame/titleBarStyle override (checked
+  # in bundles/main.js - titleBarStyle is isMacOS() ? "hidden" : "default",
+  # with no equivalent for frame itself), so getting rid of the native
+  # decoration means patching the option object frame is built from. Left
+  # alone on darwin, where "hidden" already gives real, native, consistent
+  # traffic lights for free.
+  #
+  # No titlebar, no window controls, full space - COSMIC's own keybinds
+  # cover what the controls used to (Super+Q/Alt+F4 close, Super+M maximize,
+  # Super+drag anywhere to move; nothing default for minimize). The
+  # `module-title-bar-drag-area` div Signal already renders unconditionally
+  # is unused by this (it's sized via a --title-bar-drag-area-height Signal
+  # only sets on macOS), but harmless at its default zero height.
+  #
+  # The count assertion mirrors overlays/cosmic-applets.nix - fail the build
+  # instead of silently patching nothing if upstream moves this literal.
+  linuxFramePatch = lib.optionalString (!final.stdenv.hostPlatform.isDarwin) ''
+    sites=$(grep -c 'minWidth:300,minHeight:200,autoHideMenuBar:!1,titleBarStyle:Jv,backgroundColor:d,' "$workDir/bundles/main.js")
+    if [ "$sites" != 1 ]; then
+      echo "signal overlay: expected 1 main-window options site, found $sites" >&2
+      exit 1
+    fi
+    sed -i \
+      's/minWidth:300,minHeight:200,autoHideMenuBar:!1,titleBarStyle:Jv,backgroundColor:d,/minWidth:300,minHeight:200,autoHideMenuBar:!1,frame:!1,titleBarStyle:Jv,backgroundColor:d,/' \
+      "$workDir/bundles/main.js"
+  '';
 in
 {
   # Built as a copy-and-patch over the already-built prev.signal-desktop
@@ -123,6 +151,7 @@ in
         workDir=$(mktemp -d)
         ${final.asar}/bin/asar extract "$out/${relAsarPath}" "$workDir"
         cat ${theme} >> "$workDir/stylesheets/manifest.css"
+        ${linuxFramePatch}
         rm "$out/${relAsarPath}"
         ${final.asar}/bin/asar pack "$workDir" "$out/${relAsarPath}"
         rm -rf "$workDir"
