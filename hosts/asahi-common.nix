@@ -13,6 +13,7 @@
   imports = [
     inputs.nixos-apple-silicon.nixosModules.apple-silicon-support
     (selfPath "modules/nixos/audio.nix")
+    (selfPath "modules/nixos/clamav.nix")
     (selfPath "modules/nixos/containers.nix")
     (selfPath "modules/nixos/desktop-cosmic.nix")
     (selfPath "modules/nixos/hermes.nix")

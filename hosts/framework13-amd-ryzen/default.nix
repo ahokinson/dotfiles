@@ -22,6 +22,7 @@
     (selfPath "hosts/framework13-amd-ryzen/hardware-configuration.nix")
     (selfPath "modules/nixos/audio.nix")
     (selfPath "modules/nixos/boot.nix")
+    (selfPath "modules/nixos/clamav.nix")
     (selfPath "modules/nixos/containers.nix")
     (selfPath "modules/nixos/desktop-cosmic.nix")
     (selfPath "modules/nixos/hermes.nix")
