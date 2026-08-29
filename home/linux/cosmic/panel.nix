@@ -16,29 +16,26 @@
   selfPath,
   lib,
   pkgs,
-  osConfig ? null,
   ...
 }:
 let
-  dockApps = import (selfPath "home/common/dock-apps.nix");
+  # Pinned apps only - vesktop opts out (home/common/dock-apps.nix), so it's
+  # installed and icon-themed but not in the app-list favorites.
+  pinnedApps = builtins.filter (app: app.pinned or true) (
+    builtins.attrValues (import (selfPath "home/common/dock-apps.nix"))
+  );
   stripDesktopSuffix = id: lib.removeSuffix ".desktop" id;
 
   inherit (import (selfPath "home/linux/cosmic/ron.nix")) ronOptional ronEnum;
-
-  # Every host here is a NixOS module, so osConfig is always set - the
-  # logo instead keys off hardware.asahi.enable to tell Apple Silicon hosts
-  # (bookpro14-m1-pro, studio-m1-max) apart from framework13-amd-ryzen.
-  isApple = osConfig.hardware.asahi.enable or false;
 in
 {
   # cosmic-manager's own master switch (home-manager level) - distinct from
   # services.desktopManager.cosmic.enable (NixOS level).
   wayland.desktopManager.cosmic.enable = true;
 
-  wayland.desktopManager.cosmic.applets."app-list".settings.favorites = with dockApps; [
-    (stripDesktopSuffix zen.linuxDesktopId)
-    (stripDesktopSuffix ghostty.linuxDesktopId)
-  ];
+  wayland.desktopManager.cosmic.applets."app-list".settings.favorites = map (
+    app: stripDesktopSuffix app.linuxDesktopId
+  ) pinnedApps;
 
   # macOS menu-bar clock: weekday + month + day, 24-hour time with seconds.
   wayland.desktopManager.cosmic.applets."time".settings = {
@@ -108,24 +105,7 @@ in
     run ${lib.getExe pkgs.killall} .cosmic-panel-wrapped || true
   '';
 
-  # Puts the host's own logo where macOS puts the Apple logo: Asahi Linux
-  # logo on the Apple Silicon hosts, NixOS snowflake on framework13. Shadows
-  # com.system76.CosmicAppLibrary, not the button's own icon name (the
-  # button renders whatever app id it's passed). Written into both
-  # WhiteSur-dark and hicolor: the active theme's own directories are
-  # searched first, so the WhiteSur-dark copy wins; hicolor is the fallback
-  # for anything resolving outside the active theme.
-  xdg.dataFile =
-    let
-      logo =
-        if isApple then
-          selfPath "home/common/_files/asahi-apple.svg"
-        else
-          "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
-      iconName = "com.system76.CosmicAppLibrary.svg";
-    in
-    {
-      "icons/WhiteSur-dark/apps/scalable/${iconName}".source = logo;
-      "icons/hicolor/scalable/apps/${iconName}".source = logo;
-    };
+  # The panel button's logo and the pinned apps' icons both come from
+  # home/linux/icons, which carries them in the active icon theme
+  # rather than shadowing files under ~/.local/share/icons.
 }

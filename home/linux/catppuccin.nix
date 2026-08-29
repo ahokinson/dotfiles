@@ -29,20 +29,11 @@
     bat.enable = false;
   };
 
-  # Plain icon-theme/cursor-theme assets: SVGs, PNGs, an index.theme file.
-  home.packages = with pkgs; [
-    whitesur-icon-theme
-    whitesur-cursors
-  ];
-
-  # Lowercase "dark" is whitesur-icon-theme's own directory casing
-  # (share/icons/WhiteSur-dark/) - a different package from
-  # whitesur-gtk-theme's "WhiteSur-Dark" used in cosmic/gtk.nix, not an
-  # inconsistency to unify.
-  gtk.iconTheme = {
-    name = "WhiteSur-dark";
-    package = pkgs.whitesur-icon-theme;
-  };
+  # Plain cursor-theme assets: SVGs, PNGs, an index.theme file. The icon
+  # theme is installed by home/linux/icons instead, which wraps
+  # WhiteSur-dark in a child theme carrying this repo's own app icons and
+  # selects that for both GTK and COSMIC.
+  home.packages = [ pkgs.whitesur-cursors ];
 
   # home.pointerCursor, not gtk.cursorTheme directly - home-manager's
   # cross-toolkit option (GTK, X resources, Wayland env vars). size 24

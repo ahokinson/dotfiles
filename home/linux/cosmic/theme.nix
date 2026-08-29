@@ -82,13 +82,8 @@ in
       # themes Qt on this host.
       apply_theme_global = false;
 
-      # COSMIC's own toolkit defaults to the "Cosmic" icon theme,
-      # independent of GTK's. Without this, COSMIC Files/Settings keep
-      # their stock icons while GTK apps use WhiteSur (home/linux/catppuccin.nix).
-      # Lowercase "dark": this is whitesur-icon-theme's own directory casing
-      # (share/icons/WhiteSur-dark/), a different package from
-      # whitesur-gtk-theme's "WhiteSur-Dark" used in gtk.nix - not a typo.
-      icon_theme = "WhiteSur-dark";
+      # icon_theme is set by home/linux/icons, which owns both this
+      # and GTK's equivalent so the two cannot drift apart.
 
       # Tightens COSMIC's own chrome (padding, row heights, header bars).
       # Spacing only, not display scale. That's per-output state

@@ -96,6 +96,7 @@ in
       scorecard
       sd
       semgrep
+      signal-desktop
       sox
       sqld
       stylua
@@ -111,6 +112,9 @@ in
       twitch-cli
       unzip
       uv
+      # vesktop itself comes from programs.vesktop (home/common/vesktop.nix)
+      # instead - that module installs its own package, and a second copy
+      # here would collide with it in the profile.
       yq-go
       zig
     ];

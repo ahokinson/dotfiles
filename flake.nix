@@ -87,6 +87,12 @@
     nvim.url = "github:ahokinson/nvim";
     nvim.flake = false;
 
+    # Also a plain source tree. Only its icons/ directory is used: monochrome
+    # single-path brand glyphs (CC0), recolored onto Frappe tiles by
+    # home/common/icons.nix.
+    simple-icons.url = "github:simple-icons/simple-icons";
+    simple-icons.flake = false;
+
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";

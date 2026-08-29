@@ -627,6 +627,7 @@
         "pharos": "pharos",
         "psyche": "psyche",
         "reliquary": "reliquary",
+        "simple-icons": "simple-icons",
         "treefmt-nix": "treefmt-nix",
         "zen-browser": "zen-browser"
       }
@@ -650,6 +651,22 @@
       "original": {
         "owner": "oxalica",
         "repo": "rust-overlay",
+        "type": "github"
+      }
+    },
+    "simple-icons": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1787812799,
+        "narHash": "sha256-IAm6K/MAM//pDo+vJUATnKSmEI5KJVI8/eojuRTAC7U=",
+        "owner": "simple-icons",
+        "repo": "simple-icons",
+        "rev": "1bd24ad0645f18ec68b17a087daa5649644bd303",
+        "type": "github"
+      },
+      "original": {
+        "owner": "simple-icons",
+        "repo": "simple-icons",
         "type": "github"
       }
     },
