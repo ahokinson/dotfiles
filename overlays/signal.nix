@@ -251,6 +251,47 @@ let
       's/minWidth:300,minHeight:200,autoHideMenuBar:!1,titleBarStyle:Jv,backgroundColor:d,/minWidth:300,minHeight:200,autoHideMenuBar:!1,frame:!1,titleBarStyle:Jv,backgroundColor:d,/' \
       "$workDir/bundles/main.js"
   '';
+
+  # Darwin only: the bundle records a SHA-256 of the asar's header in
+  # Info.plist (ElectronAsarIntegrity), so rewriting the archive leaves that
+  # hash describing an archive that no longer exists. Linux builds carry no
+  # such field, which is why only macOS is exposed to this. Inert on
+  # electron_43 - its enable_embedded_asar_integrity_validation fuse is off -
+  # but the day that fuse flips, an app that boots to "integrity check failed"
+  # and nothing else is a miserable thing to debug.
+  #
+  # Via plistlib rather than sed: Info.plist may be in binary format. The
+  # KeyError if upstream ever drops the key is deliberate - stop the build
+  # rather than ship integrity metadata that means nothing.
+  refreshAsarIntegrity =
+    let
+      script = final.writeText "signal-refresh-asar-integrity.py" ''
+        import hashlib, plistlib, struct, sys
+
+        plist_path, asar_path = sys.argv[1], sys.argv[2]
+        with open(asar_path, "rb") as f:
+            header_len = struct.unpack("<I", f.read(16)[12:16])[0]
+            digest = hashlib.sha256(f.read(header_len)).hexdigest()
+
+        raw = open(plist_path, "rb").read()
+        fmt = plistlib.FMT_BINARY if raw[:8] == b"bplist00" else plistlib.FMT_XML
+        plist = plistlib.loads(raw)
+
+        entry = plist["ElectronAsarIntegrity"]["Resources/app.asar"]
+        assert entry["algorithm"] == "SHA256", entry["algorithm"]
+        if entry["hash"] == digest:
+            raise SystemExit("signal overlay: asar header unchanged, patch did not apply")
+        entry["hash"] = digest
+
+        with open(plist_path, "wb") as f:
+            plistlib.dump(plist, f, fmt=fmt)
+      '';
+    in
+    lib.optionalString final.stdenv.hostPlatform.isDarwin ''
+      ${final.python3}/bin/python3 ${script} \
+        "$out/Applications/Signal.app/Contents/Info.plist" \
+        "$out/${relAsarPath}"
+    '';
 in
 {
   # Built as a copy-and-patch over the already-built prev.signal-desktop
@@ -275,9 +316,27 @@ in
         ${assertLegacySelectors}
         cat ${theme} >> "$workDir/stylesheets/manifest.css"
         ${linuxFramePatch}
-        rm "$out/${relAsarPath}"
-        ${final.asar}/bin/asar pack "$workDir" "$out/${relAsarPath}"
+        # electron-builder keeps every native module out of the archive, in a
+        # sibling app.asar.unpacked, because Electron cannot dlopen a .node
+        # from inside an asar. `asar extract` materialises those back into the
+        # tree, so packing without --unpack silently re-absorbs all of them:
+        # the archive doubles, app.asar.unpacked is left orphaned, and macOS
+        # dies before Signal opens its own log. Every entry upstream unpacks is
+        # a .node, and asar's globs are matchBase, so this reproduces the set.
+        # Counted rather than assumed, same as the two assertions above.
+        asarDir=$(dirname "$out/${relAsarPath}")
+        nativesBefore=$(find "$asarDir/app.asar.unpacked" -name '*.node' | wc -l)
+
+        rm -rf "$out/${relAsarPath}" "$asarDir/app.asar.unpacked"
+        ${final.asar}/bin/asar pack "$workDir" "$out/${relAsarPath}" --unpack '*.node'
         rm -rf "$workDir"
+
+        nativesAfter=$(find "$asarDir/app.asar.unpacked" -name '*.node' | wc -l)
+        if [ "$nativesBefore" != "$nativesAfter" ]; then
+          echo "signal overlay: unpacked natives went $nativesBefore -> $nativesAfter" >&2
+          exit 1
+        fi
+        ${refreshAsarIntegrity}
 
         # bin/signal-desktop's makeWrapper script has prev.signal-desktop's own
         # store path baked into it (as the electron --add-flags target on
