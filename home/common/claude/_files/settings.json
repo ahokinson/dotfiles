@@ -4,6 +4,11 @@
   },
   "model": "opus[1m]",
   "enableAllProjectMcpServers": false,
+  "statusLine": {
+    "type": "command",
+    "command": "pharos statusline scrape",
+    "refreshInterval": 15
+  },
   "hooks": {
     "PreToolUse": [
       {
