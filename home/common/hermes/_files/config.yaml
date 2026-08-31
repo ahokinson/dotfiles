@@ -436,6 +436,17 @@ approvals:
   destructive_slash_confirm: false
 command_allowlist: []
 hooks_auto_accept: false
+hooks:
+  on_session_start:
+    - command: ~/.hermes/agent-hooks/pharos
+  pre_llm_call:
+    - command: ~/.hermes/agent-hooks/pharos
+  pre_tool_call:
+    - command: ~/.hermes/agent-hooks/pharos
+  post_tool_call:
+    - command: ~/.hermes/agent-hooks/pharos
+  on_session_end:
+    - command: ~/.hermes/agent-hooks/pharos
 security:
   allow_private_urls: false
   redact_secrets: true

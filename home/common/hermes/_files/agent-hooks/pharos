@@ -1,0 +1,19 @@
+#!/bin/sh
+# Bridge Hermes shell-hook JSON into Pharos's tmux activity and card render.
+# Hermes runs hooks fail-open; this script does the same if tmux is absent.
+set -eu
+
+payload=$(cat)
+event=$(printf '%s' "$payload" | sed -n 's/.*"hook_event_name"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p')
+
+case "$event" in
+  pre_tool_call) pharos tmux dispatch tool --tool=hermes ;;
+  post_tool_call|pre_llm_call) pharos tmux dispatch think --tool=hermes ;;
+  on_session_start|on_session_end) pharos tmux dispatch off --tool=hermes ;;
+esac
+
+case "$event" in
+  post_tool_call|on_session_start|on_session_end)
+    printf '%s' "$payload" | pharos tmux render --tool=hermes
+    ;;
+esac
