@@ -32,6 +32,12 @@
 
   hardware.asahi.enable = true;
 
+  # Rebuilds on these hosts need --impure. The Apple peripheral firmware is
+  # read from vendorfw/firmware.cpio on the ESP, an absolute path outside the
+  # flake, which pure eval refuses. Pinning it to a /nix/store path instead
+  # does not help - pure eval rejects absolute store paths too. Without
+  # --impure the build fails on the peripheral-firmware assertion.
+
   # Broadcom Wi-Fi on Apple Silicon needs iwd, per nixos-apple-silicon's docs
   # (NetworkManager's default wpa_supplicant backend isn't supported here).
   networking.networkmanager.wifi.backend = "iwd";

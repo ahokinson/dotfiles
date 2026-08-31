@@ -2,7 +2,7 @@
 # hardware: MacBook Pro 14", M1 Pro, running NixOS bare metal via
 # nixos-apple-silicon (dual-boots macOS). Shared Asahi config lives in
 # hosts/asahi-common.nix.
-# Apply with: sudo nixos-rebuild switch --flake ~/.dotfiles#bookpro14-m1-pro
+# Apply with: sudo nixos-rebuild switch --flake ~/.dotfiles#bookpro14-m1-pro --impure
 { selfPath, ... }:
 {
   networking.hostName = "bookpro14-m1-pro";
