@@ -1,0 +1,132 @@
+#!/usr/bin/env zsh
+# One controller per tmux session. It owns only panes tagged
+# @pharos_sidecard, so an idle agent can never close a user-created pane.
+#
+# A card is bound to one agent pane and outlives that agent's turns: going
+# idle is a hold, not a teardown, and the card is never re-targeted while its
+# source is still working. Two pane options make that possible, both written
+# by `pharos tmux render`: @pharos_ai marks a pane as an agent pane for good,
+# and @pharos_pid names the agent process behind it. Polling that pid is what
+# ends a card at the right moment — including on a crash or a kill -9, where
+# no hook gets the chance to fire.
+#
+# Every bail below is invisible to tmux, so each one records its reason here
+# instead. Reasons are written on change only: the loop runs five times a
+# second and would otherwise fill the log with the same line.
+
+log=${TMUX_TMPDIR:-/tmp}/pharos-controller.log
+note() { printf '%s %s\n' "$(date +%H:%M:%S)" "$1" >>"$log" }
+
+last_reason=""
+reason() {
+  [[ $1 == $last_reason ]] && return
+  last_reason=$1
+  note "$1"
+}
+
+session_id=$1
+# A tmux session id looks like "$1", so an unquoted #{session_id} in the
+# caller's run-shell is eaten by the shell as a positional parameter and
+# arrives empty. Callers must pass #{q:session_id}.
+if [[ -z $session_id ]]; then
+  note "no session id; inert (caller must pass #{q:session_id})"
+  exit 0
+fi
+
+pharos_bin=${PHAROS_BIN:-pharos}
+
+# Older Pharos binaries reject this command, so remain inert instead of
+# repeatedly creating an empty pane during a staggered deployment.
+if ! "$pharos_bin" tmux pane >/dev/null 2>&1; then
+  note "probe failed (bin=$pharos_bin); inert"
+  exit 0
+fi
+
+token=$$
+tmux set-option -t "$session_id" @pharos_controller "$token"
+note "start session=$session_id token=$token"
+
+# An agent whose pid pharos could not resolve counts as live. That happens
+# when the pane's own command is the agent, and there the pane never outlives
+# it anyway — the source-pane check below is the honest signal in that shape.
+agent_alive() {
+  [[ -z $1 ]] && return 0
+  kill -0 "$1" 2>/dev/null
+}
+
+typeset -A pane_window pane_agent card_source card_in_window
+
+while [[ "$(tmux show-options -v -t "$session_id" @pharos_controller 2>/dev/null)" == $token ]]; do
+  # One listing for the whole session, not just the current window: cards
+  # now outlive turns, so one sitting in a background window still has to be
+  # reaped when its agent goes away.
+  panes=$(tmux list-panes -s -t "$session_id" \
+    -F '#{window_id}|#{pane_id}|#{pane_active}|#{@pharos_ai}|#{@pharos_pid}|#{@pharos_sidecard}|#{@pharos_sidecard_source}' \
+    2>/dev/null)
+  if [[ -z $panes ]]; then
+    note "exit: session $session_id is gone"
+    exit 0
+  fi
+
+  window_id=$(tmux display-message -p -t "$session_id" '#{window_id}' 2>/dev/null)
+  client_width=$(tmux display-message -p -t "$session_id" '#{client_width}' 2>/dev/null)
+
+  pane_window=() pane_agent=() card_source=() card_in_window=()
+  agents=()
+  active_agent=""
+  while IFS='|' read -r window pane active ai pid card source; do
+    [[ -z $pane ]] && continue
+    pane_window[$pane]=$window
+    pane_agent[$pane]=$pid
+    if [[ $card == 1 ]]; then
+      card_source[$pane]=$source
+      card_in_window[$window]=$pane
+      continue
+    fi
+    # Only panes in the current window are spawn candidates; the rest of the
+    # listing exists for reaping.
+    [[ $ai == 1 && $window == $window_id ]] || continue
+    agent_alive "$pid" || continue
+    agents+=$pane
+    [[ $active == 1 ]] && active_agent=$pane
+  done <<< "$panes"
+
+  for card in ${(k)card_source}; do
+    source=${card_source[$card]}
+    doomed=""
+    if (( ${client_width:-0} < 100 )); then
+      doomed="client_width=${client_width:-?} below 100"
+    elif [[ -z $source || -z ${pane_window[$source]} ]]; then
+      doomed="source ${source:-?} is gone"
+    elif ! agent_alive "${pane_agent[$source]}"; then
+      doomed="agent ${pane_agent[$source]} exited"
+    fi
+    if [[ -n $doomed ]]; then
+      tmux kill-pane -t "$card"
+      note "kill panel=$card ($doomed)"
+      unset "card_in_window[${pane_window[$card]}]"
+    fi
+  done
+
+  panel=${card_in_window[$window_id]}
+  source_pane=${active_agent:-${agents[1]}}
+  if [[ -n $panel ]]; then
+    # Sticky: a card keeps its source until that agent exits, so switching
+    # panes never costs a teardown and rebuild.
+    reason "hold: panel=$panel source=${card_source[$panel]} agent=${pane_agent[${card_source[$panel]}]:-unresolved}"
+  elif [[ -z $source_pane ]]; then
+    reason "idle: no live agent pane in $window_id"
+  elif (( ${client_width:-0} < 100 )); then
+    reason "suppressed: client_width=${client_width:-?} below 100"
+  else
+    reason "active: source=$source_pane"
+    panel=$(tmux split-window -h -l 30 -d -t "$source_pane" -P -F '#{pane_id}' "exec $pharos_bin tmux pane sidecard $source_pane")
+    tmux set-option -p -t "$panel" @pharos_sidecard 1
+    tmux set-option -p -t "$panel" @pharos_sidecard_source "$source_pane"
+    note "spawn panel=$panel source=$source_pane"
+  fi
+
+  sleep 0.2
+done
+
+note "exit: controller token replaced for $session_id"

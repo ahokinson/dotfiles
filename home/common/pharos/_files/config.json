@@ -1,5 +1,8 @@
 {
   "plugins": ["~/.config/pharos/guards.ts"],
+  "metricStyle": {
+    "tools": { "hideZero": true }
+  },
   "fieldOrder": [
     "diff",
     "tools",
@@ -10,5 +13,35 @@
     "guards",
     "model",
     "rate"
-  ]
+  ],
+  "templates": {
+    "sidecard": {
+      "format": "ansi",
+      "renderer": "opentui",
+      "lines": [
+        "{{#harness}}{{{harness}}}{{#profile}} · {{{profile}}}{{/profile}}{{/harness}}",
+        "5h limit\t{{#rate5}}{{{rate5}}}{{/rate5}}{{^rate5}}—{{/rate5}}",
+        "7d limit\t{{#rate7}}{{{rate7}}}{{/rate7}}{{^rate7}}—{{/rate7}}",
+        "",
+        "Approval\t{{#approval}}{{{approval}}}{{/approval}}{{^approval}}—{{/approval}}",
+        "Sandbox\t{{#sandbox}}{{{sandbox}}}{{/sandbox}}{{^sandbox}}—{{/sandbox}}",
+        "Guards\t{{#guards}}{{{guards}}}{{/guards}}{{^guards}}—{{/guards}}",
+        "",
+        "Model\t{{#modelName}}{{{modelName}}}{{/modelName}}{{#ctxWindow}} · {{{ctxWindow}}}{{/ctxWindow}}",
+        "Thinking\t{{#agent}}{{{agent}}}{{/agent}}{{^agent}}—{{/agent}}",
+        "",
+        "Remote\t{{#origin}}{{{origin}}}{{/origin}}{{^origin}}—{{/origin}}",
+        "Branch\t{{#branch}}{{{branch}}}{{/branch}}{{^branch}}—{{/branch}}",
+        "Tree\t{{#worktree}}{{{worktree}}}{{/worktree}}{{^worktree}}—{{/worktree}}",
+        "Changes\t{{#worktreeDiff}}{{{worktreeDiff}}}{{/worktreeDiff}}{{^worktreeDiff}}—{{/worktreeDiff}}",
+        "",
+        "Context\t{{#contextCard}}{{{contextCard}}}{{/contextCard}}",
+        "Tokens\t{{#tokens}}{{{tokens}}}{{/tokens}}{{^tokens}}—{{/tokens}}",
+        "Tools\t{{#tools}}{{{tools}}}{{/tools}}{{^tools}}—{{/tools}}",
+        "Errors\t{{#toolErrors}}{{{toolErrors}}}{{/toolErrors}}{{^toolErrors}}—{{/toolErrors}}",
+        "Diff\t{{#diff}}{{{diff}}}{{/diff}}{{^diff}}—{{/diff}}",
+        "Cost\t{{#cost}}{{{cost}}}{{/cost}}{{^cost}}—{{/cost}}"
+      ]
+    }
+  }
 }
