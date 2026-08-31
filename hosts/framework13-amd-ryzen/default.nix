@@ -58,5 +58,10 @@
     extraSpecialArgs = { inherit inputs selfPath; };
   };
 
+  # Without this plymouth comes up on the EFI framebuffer through simpledrm and
+  # gets resized a second later when amdgpu takes the panel over. Loading the
+  # driver in the initrd means the splash is drawn once, at the native mode.
+  boot.initrd.kernelModules = [ "amdgpu" ];
+
   system.stateVersion = "26.05";
 }
