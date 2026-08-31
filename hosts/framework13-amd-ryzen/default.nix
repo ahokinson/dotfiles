@@ -32,6 +32,7 @@
     (selfPath "modules/nixos/printing.nix")
     (selfPath "modules/nixos/security.nix")
     (selfPath "modules/nixos/settings.nix")
+    (selfPath "modules/nixos/splash.nix")
     (selfPath "modules/nixos/ssh.nix")
     (selfPath "modules/nixos/user.nix")
     inputs.hermes-agent.nixosModules.default

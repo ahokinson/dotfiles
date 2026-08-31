@@ -23,6 +23,7 @@
     (selfPath "modules/nixos/printing.nix")
     (selfPath "modules/nixos/security.nix")
     (selfPath "modules/nixos/settings.nix")
+    (selfPath "modules/nixos/splash.nix")
     (selfPath "modules/nixos/ssh.nix")
     (selfPath "modules/nixos/user.nix")
     inputs.hermes-agent.nixosModules.default
@@ -35,10 +36,11 @@
   # (NetworkManager's default wpa_supplicant backend isn't supported here).
   networking.networkmanager.wifi.backend = "iwd";
 
-  # Not modules/nixos/boot.nix: that module assumes framework13's AMD/EFI
-  # setup (canTouchEfiVariables = true, a Plymouth theme never verified on
-  # this hardware). nixos-apple-silicon's own install guide calls for
-  # canTouchEfiVariables = false instead.
+  # Not modules/nixos/boot.nix: that module sets canTouchEfiVariables = true,
+  # where nixos-apple-silicon's own install guide calls for false. The splash
+  # it used to carry now lives in modules/nixos/splash.nix, imported above -
+  # untested on Apple Silicon so far, since neither host is installed yet and
+  # CI skips them.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = false;
 
