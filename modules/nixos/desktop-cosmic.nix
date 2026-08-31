@@ -4,9 +4,23 @@
 # graphical-desktop, dconf, polkit, rtkit, accounts-daemon, libinput, upower,
 # geoclue2, XDG portals, and mkDefaults Bluetooth/NetworkManager/GVFS/
 # gnome-keyring/power-profiles-daemon; xwayland.enable defaults to true.
-_: {
+{ pkgs, ... }: {
   services.desktopManager.cosmic.enable = true;
   services.displayManager.cosmic-greeter.enable = true;
+
+  # Bundled apps the COSMIC module installs that duplicate something better
+  # already on the box. networkmanagerapplet is the module's own: its
+  # nm-connection-editor overlaps Settings' network pages and its nm-applet
+  # overlaps the panel applet. Excluding anything from the module's corePkgs
+  # list instead would break the session.
+  environment.cosmic.excludePackages = with pkgs; [
+    cosmic-edit # nvim
+    cosmic-monitor # btop
+    cosmic-player
+    cosmic-reader
+    cosmic-term # ghostty
+    networkmanagerapplet
+  ];
 
   # COSMIC doesn't enable fwupd by default, so it's enabled explicitly here.
   # fwupd-refresh's upstream unit doesn't declare After=polkit.service, so a
