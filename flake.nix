@@ -32,14 +32,16 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Was reached through the old `flake` input. No `follows`: hermes-agent
-    # pins its own nixpkgs deliberately.
-    hermes-agent.url = "github:NousResearch/hermes-agent";
-
     git-hooks = {
       url = "github:cachix/git-hooks.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # Was reached through the old `flake` input. No `follows`: hermes-agent
+    # pins its own nixpkgs deliberately. Tag-pinned for the same reason as the
+    # tools above: its default branch is shared development, so an unpinned URL
+    # left `nix flake update` landing on whatever commit was on top that day.
+    hermes-agent.url = "github:NousResearch/hermes-agent/v2026.8.27";
 
     home-manager = {
       url = "github:nix-community/home-manager";
