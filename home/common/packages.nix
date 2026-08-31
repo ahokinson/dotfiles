@@ -86,6 +86,7 @@ in
       psyche
       pv
       python3
+      qpdf
       reliquary
       ripgrep
       rsync
