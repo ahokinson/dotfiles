@@ -13,6 +13,7 @@
   imports = [
     inputs.nixos-apple-silicon.nixosModules.apple-silicon-support
     (selfPath "modules/nixos/audio.nix")
+    (selfPath "modules/nixos/boot.nix")
     (selfPath "modules/nixos/clamav.nix")
     (selfPath "modules/nixos/containers.nix")
     (selfPath "modules/nixos/desktop-cosmic.nix")
@@ -42,13 +43,14 @@
   # (NetworkManager's default wpa_supplicant backend isn't supported here).
   networking.networkmanager.wifi.backend = "iwd";
 
-  # Not modules/nixos/boot.nix: that module sets canTouchEfiVariables = true,
-  # where nixos-apple-silicon's own install guide calls for false. The splash
-  # it used to carry now lives in modules/nixos/splash.nix, imported above -
-  # untested on Apple Silicon so far, since neither host is installed yet and
-  # CI skips them.
-  boot.loader.systemd-boot.enable = true;
+  # The one thing these hosts take differently from modules/nixos/boot.nix,
+  # imported above: nixos-apple-silicon's own install guide calls for false
+  # where that module defaults to true. A plain definition beats its mkDefault.
   boot.loader.efi.canTouchEfiVariables = false;
+
+  # The splash that module used to carry lives in modules/nixos/splash.nix,
+  # imported above too. Confirmed working on bookpro14-m1-pro; still
+  # unverified on studio-m1-max, which isn't installed yet.
 
   home-manager = {
     useGlobalPkgs = true;
