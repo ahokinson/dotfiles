@@ -2,7 +2,7 @@ _: {
   programs.zsh = {
     enable = true;
     enableCompletion = true;
-    # Loaded as OMZ plugins instead (plugins.nix), to avoid double-sourcing.
+    # Loaded as OMZ plugins instead (plugins.nix); this would double-source.
     autosuggestion.enable = false;
     syntaxHighlighting.enable = false;
 
@@ -20,8 +20,7 @@ _: {
       vim = "nvim";
     };
 
-    # Sourced for every zsh invocation (interactive or not) - non-interactive
-    # scripts need these too, unlike initContent which only lands in .zshrc.
+    # Sourced for non-interactive shells too, unlike initContent.
     envExtra = ''
       export PATH="$HOME/.local/bin:$PATH"
       export XDG_CONFIG_HOME="$HOME/.config"

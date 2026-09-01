@@ -6,9 +6,8 @@
 }:
 let
   sharedFonts = import (selfPath "home/common/fonts.nix") { inherit pkgs; };
-  # macOS installs the fonts system-wide via fonts.packages
-  # (modules/darwin/system), and fontconfig is inert for native macOS apps,
-  # so the home-level install/fontconfig is Linux-only to avoid duplicating them.
+  # macOS installs the fonts system-wide (modules/darwin/system) and ignores
+  # fontconfig, so the home-level install is Linux-only.
   isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
 in
 {
@@ -59,8 +58,7 @@ in
       moreutils
       (lib.optionals (!isDarwin) sharedFonts.packages)
       ncdu
-      # nh itself comes from programs.nh (home/common/nh.nix); these are the
-      # standalone counterparts for use outside a rebuild.
+      # nh itself comes from programs.nh (home/common/nh.nix).
       nix-diff
       nix-melt
       nix-output-monitor
@@ -76,8 +74,8 @@ in
       osv-scanner
       pandoc
       pkg-config
-      # macOS: containers run in a VM there; init/start is automated in
-      # home/darwin/podman.nix. NixOS gets a native rootless runtime instead.
+      # The macOS VM is set up in home/darwin/podman.nix; NixOS runs it
+      # natively and rootless.
       podman
       portaudio
       procs
@@ -113,9 +111,8 @@ in
       twitch-cli
       unzip
       uv
-      # vesktop itself comes from programs.vesktop (home/common/vesktop.nix)
-      # instead - that module installs its own package, and a second copy
-      # here would collide with it in the profile.
+      # No vesktop: programs.vesktop installs its own, and a second copy
+      # collides in the profile.
       yq-go
       zig
     ];

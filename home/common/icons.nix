@@ -1,13 +1,9 @@
-# Catppuccin-flavored icons for the pinned dock/panel apps, generated rather
-# than vendored: each app's glyph comes from simple-icons and is recolored
-# onto a rounded Frappe tile. The colors are read from palette.nix, the same
-# source ghostty/delta/fzf use, so retuning the palette moves the icons with
-# it and nothing binary lands in the repo.
+# Dock and panel icons, generated: a simple-icons glyph recolored onto a
+# rounded Frappe tile from palette.nix.
 #
-# Only the glyph outline is taken from upstream. simple-icons ships exactly
-# one <path> per file against a 0 0 24 24 viewBox, which is what lets the
-# extraction below be a string match instead of an XML parse. mkIcon throws
-# rather than emitting a blank tile if a file ever stops matching that shape.
+# simple-icons ships exactly one <path> per file against a 0 0 24 24 viewBox,
+# which is what lets the extraction below be a string match rather than an XML
+# parse. mkIcon throws if a file stops matching that shape.
 {
   inputs,
   pkgs,
@@ -16,20 +12,15 @@
 let
   palette = import (selfPath "home/common/palette.nix");
 
-  # Fraction of the tile the glyph occupies; the remainder is split evenly as
-  # padding, keeping the mark clear of the rounded corners.
+  # Fraction of the tile the glyph occupies; the rest is even padding.
   glyphScale = 0.56;
   inset = 24 * (1 - glyphScale) / 2;
 
-  # 24 * 0.225, the corner radius proportion macOS uses on its own app icons -
-  # the look WhiteSur is here to imitate everywhere else.
+  # 24 * 0.225, the corner radius proportion macOS uses on its app icons.
   cornerRadius = 5.4;
 
-  # The tile carries the app's hue and the mark sits on it in white, so the
-  # icon keeps a visible body against COSMIC's dark panel. Deliberately not
-  # from palette.nix: Frappe has no white, and its lightest color (rosewater)
-  # is both barely lighter than text and warm enough to sink into the peach
-  # tile.
+  # Not from palette.nix: Frappe has no white, and rosewater sinks into the
+  # peach tile.
   glyphColor = "#ffffff";
 in
 {

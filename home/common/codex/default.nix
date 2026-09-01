@@ -1,12 +1,6 @@
-# Codex's config.toml mixes static prefs (model, model_reasoning_effort) with
-# state Codex itself appends at runtime ([projects."/path"] trust_level
-# entries, written whenever a workspace is trusted in a session).
-# Declaratively symlinking the whole file the way home/common/claude or
-# home/common/opencode do would make it read-only and break that
-# trust-persistence, so instead this only patches in the [tui] theme key -
-# same read/rewrite/atomic-replace approach as home/common/zen/activation.nix's
-# selfHealInstalls, which has the same "touch one field of an otherwise
-# unmanaged, runtime-mutated file" shape.
+# Codex appends per-workspace trust_level entries to config.toml at runtime,
+# so symlinking the file read-only would break trust persistence. This patches
+# in the [tui] theme key instead and leaves the rest alone.
 { pkgs, lib, ... }:
 let
   codexTheme = pkgs.writeShellScript "codex-theme" ''
@@ -32,8 +26,8 @@ in
 {
   home.packages = [ pkgs.codex ];
 
-  # Keep hooks beside the runtime-mutated config.toml. Codex loads this file
-  # independently and asks for one-time `/hooks` trust after deployment.
+  # Loaded independently of config.toml; asks for one-time `/hooks` trust
+  # after deployment.
   home.file.".codex/hooks.json".source = ./hooks.json;
 
   home.activation.codexTheme = lib.hm.dag.entryAfter [ "writeBoundary" ] ''

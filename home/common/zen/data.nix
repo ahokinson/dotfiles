@@ -1,5 +1,4 @@
-# Zen browser preferences applied identically on every machine, sourced from
-# zen-browser/desktop's shipped prefs/zen/*.yaml with a handful of overrides.
+# From zen-browser/desktop's shipped prefs/zen/*.yaml, with overrides.
 { pkgs, selfPath, ... }:
 let
   sharedFonts = import (selfPath "home/common/fonts.nix") { inherit pkgs; };
@@ -10,9 +9,8 @@ in
   "dom.security.https_only_mode" = true;
   "extensions.formautofill.addresses.enabled" = false;
   "extensions.formautofill.creditCards.enabled" = false;
-  # Default/fallback fonts only - browser.display.use_document_fonts stays
-  # at its default (1), so pages that specify their own fonts are unaffected.
-  # Matches the family strings ghostty and COSMIC already use (fonts.nix).
+  # Fallbacks only: use_document_fonts stays at 1, so pages that name their
+  # own fonts are unaffected. Same families as ghostty and COSMIC (fonts.nix).
   "font.name.monospace.x-western" = sharedFonts.monoFamily;
   "font.name.sans-serif.x-western" = sharedFonts.generalFamily;
   "font.name.serif.x-western" = sharedFonts.generalFamily;
@@ -138,8 +136,8 @@ in
   "zen.workspaces.swipe-actions.delta-multiplier" = 100;
   "zen.workspaces.switch-animation-duration" = 200;
   "zen.workspaces.wrap-around-navigation" = true;
-  # Theme-required prefs (normally auto-added by the catppuccin preset
-  # module, added manually here since we bypass that module entirely).
+  # Required by the theme; normally added by the catppuccin preset module,
+  # which this bypasses.
   "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
   "ui.systemUsesDarkTheme" = 1;
   "zen.view.window.scheme" = 0;

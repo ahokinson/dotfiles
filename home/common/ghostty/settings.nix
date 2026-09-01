@@ -1,10 +1,7 @@
-# Settings set exhaustively (mirrors the same treatment given to macOS
-# system.defaults and Zen), sourced from `ghostty +show-config --default
-# --docs`, not just the ones changed from stock. `palette`, `keybind`, and
-# `command-palette-entry` are excluded: palette is owned by catppuccin/nix's
-# ghostty module (home/common/catppuccin.nix). keybind and
-# command-palette-entry are additive in Ghostty's config format, so leaving
-# them undeclared already preserves the shipped defaults with no drift risk.
+# Set exhaustively from `ghostty +show-config --default --docs`, stock values
+# included. Excluded: palette, owned by catppuccin/nix's ghostty module; and
+# keybind and command-palette-entry, which are additive in Ghostty's config
+# format and so cannot drift while undeclared.
 {
   pkgs,
   lib,
@@ -15,9 +12,8 @@ let
   isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
   sharedFonts = import (selfPath "home/common/fonts.nix") { inherit pkgs; };
 
-  # The two palette colors the window chrome needs, matching the
-  # background/foreground catppuccin/nix's ghostty module sets from the
-  # same underlying Catppuccin Frappe palette.
+  # The two colors the window chrome needs, matching what catppuccin/nix's
+  # ghostty module sets as background and foreground.
   palette = import (selfPath "home/common/palette.nix");
   chrome = {
     base = lib.removePrefix "#" palette.base;
@@ -32,10 +28,8 @@ in
     macos-icon-ghost-color = "737994";
     macos-icon-screen-color = "232634";
 
-    # macOS: "hidden" removes the titlebar entirely; title = " " below
-    # blanks the title as defense in depth. Linux/GTK: window-decoration
-    # and gtk-custom-css below pare the header bar back to just the window
-    # controls.
+    # "hidden" removes the titlebar; the blank title below is belt and
+    # braces. The Linux equivalent is window-decoration further down.
     macos-titlebar-style = "hidden";
     title = " ";
 
@@ -55,9 +49,8 @@ in
     font-shaping-break = "cursor";
     alpha-blending = "native";
     grapheme-width-method = "unicode";
-    # background/foreground deliberately NOT pinned here, unlike the rest
-    # of this block. The shipped defaults would override whatever the
-    # active theme sets, defeating Catppuccin on both platforms.
+    # background/foreground are the exception: pinning their shipped
+    # defaults would override the active theme.
     background-image-opacity = 1;
     background-image-position = "center";
     background-image-fit = "contain";
@@ -128,8 +121,7 @@ in
     initial-window = true;
     undo-timeout = "5s";
     shell-integration = "detect";
-    # no-title: shell integration dynamically setting the window title
-    # would override the static blank `title = " "` above.
+    # no-title: shell integration would otherwise override the blank title.
     shell-integration-features = "cursor,no-sudo,no-title,no-ssh-env,no-ssh-terminfo,path";
     osc-color-report-format = "16-bit";
     vt-kam-allowed = false;
@@ -144,12 +136,9 @@ in
     async-backend = "auto";
   }
   // lib.optionalAttrs isDarwin {
-    # theme itself is set by catppuccin/nix's ghostty module, cross-platform.
-
-    # Option key acts as Alt, for terminal/vim-style word-jump bindings.
+    # Option acts as Alt, for word-jump bindings.
     macos-option-as-alt = true;
-    # Managed by nix (ghostty-bin); disable Sparkle's own auto-update to
-    # avoid the binary drifting out from under the nix-pinned version.
+    # ghostty-bin is nix-pinned; Sparkle would update the binary underneath it.
     auto-update = "off";
 
     macos-non-native-fullscreen = false;
@@ -163,13 +152,9 @@ in
     macos-shortcuts = "ask";
   }
   // lib.optionalAttrs (!isDarwin) {
-    # No titlebar, no window controls, full space for the terminal - COSMIC's
-    # own keybinds cover what the controls used to (Super+Q/Alt+F4 close,
-    # Super+M maximize, Super+drag anywhere to move; nothing default for
-    # minimize). "none" removes the frame entirely, not just the titlebar
-    # (unlike gtk-titlebar = false, which used to leave rounded corners and a
-    # bare bar); gtk-decoration-layout/WhiteSur CSD are moot with no bar left
-    # to draw them on.
+    # No titlebar or window controls; COSMIC keybinds replace them
+    # (home/linux/cosmic/shortcuts.nix). "none" drops the whole frame, unlike
+    # gtk-titlebar = false, which leaves rounded corners and a bare bar.
     window-decoration = "none";
 
     linux-cgroup = "never";
@@ -178,10 +163,8 @@ in
     gtk-single-instance = "detect";
     gtk-tabs-location = "top";
 
-    # window-theme = "ghostty" is the precondition for the titlebar colors
-    # below being honoured at all - they are ignored under "auto". The two
-    # colors are the palette's base and text, matching the terminal's own
-    # background/foreground so the bar disappears into the window.
+    # The titlebar colors below are ignored under "auto"; this is what makes
+    # them apply.
     window-theme = "ghostty";
     window-titlebar-background = chrome.base;
     window-titlebar-foreground = chrome.text;

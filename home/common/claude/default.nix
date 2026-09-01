@@ -6,22 +6,18 @@
   ...
 }:
 let
-  # Real on-disk checkout path - deliberately NOT selfPath. selfPath
-  # resolves into the immutable Nix store copy of the flake; this needs a
-  # mutable path outside the store so mkOutOfStoreSymlink lets Claude
-  # Code's own runtime writes to settings.json survive rebuilds. Assumes
-  # the repo is checked out at ~/.dotfiles.
+  # Not selfPath: that resolves into the store, and mkOutOfStoreSymlink below
+  # needs a mutable path for Claude Code's runtime writes to settings.json to
+  # survive. Assumes the checkout is at ~/.dotfiles.
   dotfilesRepo = "${config.home.homeDirectory}/.dotfiles";
 in
 {
   home.packages = [ pkgs.claude-code ];
 
   home.file.".claude" = {
-    # known_marketplaces.json is Claude Code's own runtime registry of
-    # installed marketplaces. Absolute paths are baked in, so it's
-    # machine-specific. Deploying it collides with the real copy Claude Code
-    # maintains on each machine and aborts activation - not something to
-    # manage declaratively.
+    # known_marketplaces.json has absolute paths baked in and is rewritten
+    # per machine, so deploying it collides with the real copy and aborts
+    # activation.
     source = lib.cleanSourceWith {
       src = selfPath "home/common/claude/_files";
       filter =

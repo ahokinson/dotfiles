@@ -1,7 +1,5 @@
-# Upstream OMZ-style repo roots ship `<name>.plugin.zsh` at the repo root,
-# which is what oh-my-zsh's `is_plugin` check requires. The nixpkgs
-# repackagings strip that entry file, so this fetches the upstream sources
-# directly and symlinks them into the OMZ custom dir.
+# oh-my-zsh's `is_plugin` check requires `<name>.plugin.zsh` at the repo
+# root, and the nixpkgs repackagings strip it. Hence the upstream sources.
 { pkgs, ... }:
 let
   zsh-syntax-highlighting-src = pkgs.fetchFromGitHub {
@@ -27,13 +25,12 @@ in
       "zsh-syntax-highlighting"
       "zsh-completions"
     ];
-    # Custom dir under our own home-made symlink farm (populated below).
+    # The symlink farm populated below.
     custom = "$HOME/.config/zsh/omz-custom";
   };
 
-  # oh-my-zsh custom themes/plugins symlinked into a writable xdg dir.
-  # OMZ's theme loader expects a single file custom/themes/<name>.zsh-theme,
-  # and its plugin loader expects a directory containing <name>.plugin.zsh.
+  # OMZ's theme loader wants a single custom/themes/<name>.zsh-theme file;
+  # its plugin loader wants a directory holding <name>.plugin.zsh.
   xdg.configFile."zsh/omz-custom/themes/powerlevel10k.zsh-theme".source =
     "${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
   xdg.configFile."zsh/omz-custom/plugins/zsh-autosuggestions".source =

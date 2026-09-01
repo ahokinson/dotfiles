@@ -6,11 +6,9 @@ let
     else
       "${config.home.homeDirectory}/.zen";
 
-  # Zen can spawn a brand-new empty profile on some launches, orphaning the
-  # real one (installs.ini/profiles.ini end up with multiple per-install
-  # Default= entries). Self-heals by repointing every entry at whichever
-  # profile's times.json "created" field is genuinely oldest. File size
-  # isn't reliable here, since Firefox/Zen pre-allocates places.sqlite.
+  # Zen sometimes spawns an empty profile and orphans the real one, leaving
+  # multiple Default= entries. Repoints them all at the oldest times.json
+  # "created". Not file size: Zen pre-allocates places.sqlite.
   selfHealInstalls = pkgs.writeShellScript "zen-self-heal-installs" ''
     configDir="$1"
     installsIni="$configDir/installs.ini"
@@ -48,9 +46,8 @@ let
     fi
   '';
 
-  # Prefers the per-install default-profile pointer ([InstallXXX] Default=)
-  # over the legacy [ProfileN] Default=1 flag, which can point at a stale
-  # profile when a machine has more than one.
+  # [InstallXXX] Default= wins over the legacy [ProfileN] Default=1, which
+  # can point at a stale profile when there is more than one.
   findDefaultProfile = pkgs.writeShellScript "zen-find-default-profile" ''
     ${pkgs.gawk}/bin/awk '
       BEGIN { defaultpath=""; installpath=""; insec="" }

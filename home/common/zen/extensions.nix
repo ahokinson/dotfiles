@@ -1,7 +1,6 @@
-# Force-installs extensions via distribution/policies.json, independent of
-# any profile. Only imported where inputs.zen-browser.homeModules.beta is
-# present (home/darwin/zen-browser.nix, home/linux/zen-browser.nix). The
-# option doesn't exist under NixOS's plain nixpkgs zen-browser package.
+# Force-installed via distribution/policies.json, so profile-independent.
+# Needs inputs.zen-browser.homeModules.beta; the option does not exist on the
+# plain nixpkgs zen-browser package.
 _: {
   programs.zen-browser.policies.ExtensionSettings =
     builtins.mapAttrs

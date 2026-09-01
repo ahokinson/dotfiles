@@ -1,7 +1,5 @@
-# ghostty config via the home-manager `programs.ghostty` module. Package
-# selection is platform-specific (package.nix); the Catppuccin theme itself
-# comes from catppuccin/nix's own ghostty module (home/common/catppuccin.nix
-# enables it cross-platform), not from anything in this directory.
+# The package is chosen per platform in package.nix; the Catppuccin theme
+# comes from catppuccin/nix's ghostty module, not from this directory.
 {
   imports = [
     ./package.nix

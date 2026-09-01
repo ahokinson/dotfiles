@@ -1,13 +1,6 @@
-# Shared hex palette for the Nix-side consumers that used to hardcode
-# these colors independently: git/delta.nix, ghostty/theme.nix +
-# settings.nix, zsh/init.nix's fzf colors, and (cross-referenced only in a
-# comment, since it needs a hex->float conversion) home/linux/cosmic/theme.nix.
-#
-# Not wired into bat/btop/k9s/hermes/opencode's theme files: those are
-# vendored ports of the same colors in foreign formats (tmTheme XML, a
-# custom .theme format, YAML, JSON) maintained as static assets. Re-
-# templating them from this attrset would be high-effort, easy to typo an
-# obscure UI-role key, for no functional benefit - left untouched.
+# Catppuccin Frappe, for the Nix-side consumers: git/delta.nix, ghostty,
+# zsh/init.nix's fzf colors. The vendored theme files (bat, btop, k9s,
+# hermes, opencode) carry their own copies in foreign formats.
 {
   rosewater = "#f2d5cf";
   flamingo = "#eebebe";

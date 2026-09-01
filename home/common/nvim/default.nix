@@ -6,9 +6,8 @@
 }:
 let
   # Keep in sync with the `parsers` list in ahokinson/nvim's
-  # lua/custom/plugins/treesitter.lua. Any language added there but not here
-  # just falls back to nvim-treesitter's own runtime install (via the
-  # tree-sitter CLI + gcc below) on first use.
+  # lua/custom/plugins/treesitter.lua. A language listed there but not here
+  # falls back to nvim-treesitter's runtime install on first use.
   treesitterParserNames = [
     "bash"
     "c"
@@ -35,9 +34,8 @@ let
     "yaml"
     "zig"
   ];
-  # Each grammarPlugins.<lang> derivation contains just parser/<lang>.so;
-  # link them in explicitly by name instead of merging the derivations
-  # wholesale, so the result is easy to audit file-by-file.
+  # Each grammarPlugins.<lang> holds just parser/<lang>.so, linked in by name
+  # so the result stays auditable file-by-file.
   nvimTreesitterParsers = pkgs.runCommand "nvim-treesitter-parsers" { } (
     "mkdir -p $out/parser\n"
     + lib.concatMapStrings (n: ''
@@ -51,15 +49,12 @@ in
     pkgs.tree-sitter
   ];
 
-  # Config lives at github:ahokinson/nvim (flake.nix's nvim input,
-  # fetched as a plain source tree - not a flake itself).
+  # github:ahokinson/nvim, taken as a plain source tree, not a flake.
   xdg.configFile."nvim".source = inputs.nvim;
 
-  # Pre-populate nvim-treesitter's parser dir so the pinned languages are
-  # already "installed" the moment this generation activates, instead of
-  # nvim-treesitter compiling/fetching them (and erroring) on first launch.
-  # recursive = true keeps the directory itself writable so nvim-treesitter
-  # can still install anything not covered here.
+  # Pre-populates nvim-treesitter's parser dir, so it never has to compile
+  # or fetch on first launch. recursive = true keeps the directory writable
+  # for anything not pinned here.
   xdg.dataFile."nvim/site/parser" = {
     source = "${nvimTreesitterParsers}/parser";
     recursive = true;

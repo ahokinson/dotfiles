@@ -1,10 +1,8 @@
-# bat, themed with Catppuccin Frappe on every platform. Also provides the
-# theme in bat's cache that delta reads for `syntax-theme = "Catppuccin Frappe"`.
+# Also builds the cached theme delta reads as `syntax-theme`.
 #
-# bat identifies a theme by the file's basename, so the file is named
-# "Catppuccin Frappe.tmTheme" (no accent) even though the theme's internal name
-# is "Catppuccin Frappé" - that basename is what `config.theme` and delta
-# reference.
+# bat identifies a theme by the file's basename, so the file is "Catppuccin
+# Frappe.tmTheme" with no accent, even though the theme's internal name has
+# one. That basename is what config.theme and delta reference.
 { selfPath, ... }: {
   programs.bat = {
     enable = true;

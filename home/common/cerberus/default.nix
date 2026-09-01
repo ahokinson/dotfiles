@@ -10,31 +10,28 @@ in
   home.packages = [ pkgs.cerberus ];
 
   # An empty rules dir is a degraded head, and a degraded head makes
-  # `cerberus gate` deny every guarded tool call. Deploying the package's
-  # own copies keeps them in lockstep with the binary without running
-  # `cerberus init`, which would rewrite the read-only ~/.claude/settings.json.
+  # `cerberus gate` deny every guarded call. Deployed from the package rather
+  # than by `cerberus init`, which rewrites the read-only settings.json.
   home.file.".config/cerberus/rules".source = "${pkgs.cerberus}/share/cerberus/rules";
 
-  # recursive = true so home-manager creates a real directory and symlinks
-  # each .rego: a plain source = would make custom/cerberus a read-only store
-  # symlink, and `cerberus source sync` installs into sources/ beneath it.
+  # recursive = true for a real directory: a plain source = makes
+  # custom/cerberus a read-only store symlink, and `cerberus source sync`
+  # installs into sources/ beneath it.
   home.file."${cupcakeStore}/policies/claude/custom/cerberus" = {
     source = "${pkgs.cerberus}/share/cerberus/policies/cupcake";
     recursive = true;
   };
 
-  # No deployment for the risk head's tirith overlay: cerberus >=0.1.3
-  # self-heals it from its own embedded copy whenever health/guard finds it
-  # missing or unreadable, so nothing here needs to provision it.
+  # The risk head's tirith overlay needs no deployment: cerberus >=0.1.3
+  # self-heals it from its embedded copy.
 
-  # cerberus owns this install path and pins the commit itself, so the
-  # personal Rego set is a source rather than files from the store.
-  # Registered once; `cerberus source sync --yes` applies updates by hand.
+  # cerberus owns this path and pins the commit, so the personal Rego set is
+  # a source, not store files. Registered once; updates are applied by hand
+  # with `cerberus source sync --yes`.
   home.activation.cerberusPolicySource = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     if ! ${pkgs.cerberus}/bin/cerberus source list 2>/dev/null \
         | ${pkgs.gnugrep}/bin/grep -q '^personal[[:space:]]'; then
-      # cerberus shells out to git to clone the source; activation's PATH
-      # doesn't have it by default.
+      # cerberus shells out to git, which activation's PATH lacks.
       PATH="${pkgs.git}/bin:$PATH" \
         run ${pkgs.cerberus}/bin/cerberus source add \
           personal https://github.com/ahokinson/cupcake.git || \

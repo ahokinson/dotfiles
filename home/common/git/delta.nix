@@ -6,9 +6,8 @@ in
   programs.delta = {
     enable = true;
     enableGitIntegration = true;
-    # Palette inlined (ported from catppuccin/delta's
-    # `[delta "catppuccin-frappe"]` block) so it applies on every platform;
-    # `syntax-theme` resolves against the bat theme in home/common/bat.
+    # Ported from catppuccin/delta's `[delta "catppuccin-frappe"]` block.
+    # syntax-theme resolves against the bat theme in home/common/bat.
     options = {
       syntax-theme = "Catppuccin Frappe";
       dark = true;
@@ -25,8 +24,7 @@ in
       line-numbers-plus-style = "bold ${palette.green}";
       line-numbers-right-style = palette.overlay0;
       line-numbers-zero-style = palette.overlay0;
-      # Blended-with-syntax variants (deleted/added-line backgrounds and
-      # their diff-map legend), not plain palette colors - kept as literals.
+      # Blended with syntax, not plain palette colors, so kept as literals.
       minus-emph-style = "bold syntax #704f5c";
       minus-style = "syntax #544452";
       plus-emph-style = "bold syntax #596b5e";
