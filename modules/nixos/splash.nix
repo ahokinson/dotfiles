@@ -1,7 +1,7 @@
 # Boot splash: a white Nix snowflake on black with a thin progress bar under
-# it, the layout macOS boots with. Kept out of boot.nix so the Asahi hosts can
-# take the splash without also taking that module's Framework EFI assumptions.
-# Imported by hosts/framework13-amd-ryzen and hosts/asahi-common.nix.
+# it, the layout macOS boots with. Kept separate from boot.nix because the
+# splash is a look and that module is a bootloader; both are imported by
+# hosts/framework13-amd-ryzen and hosts/asahi-common.nix.
 {
   config,
   lib,
@@ -14,10 +14,12 @@ let
   # that reads themePackages, which this file defines.
   plymouth = config.boot.plymouth.package;
 
-  # Plymouth draws images at a fixed pixel size, so this is a pixel decision
-  # and not a relative one: 180px is ~12% of the Framework's 2256x1504 panel
-  # height, the proportion macOS gives its own boot mark.
-  logoSize = 180;
+  # Plymouth draws images at a fixed pixel size, so the mark is sized per
+  # machine rather than in relative units. 180px on the Framework's 2256x1504
+  # panel is ~12% of its height, the proportion macOS gives its own boot mark;
+  # that ratio is what carries across to a differently sized panel.
+  logoFraction = 180.0 / 1504.0;
+  logoSize = builtins.floor (config.local.splash.panelHeightPx * logoFraction + 0.5);
 
   # Rendered from the scalable source. Leaving boot.plymouth.logo unset gets a
   # 48x48 raster instead - sized for GDM, and visibly soft on a boot screen.
@@ -116,53 +118,71 @@ let
   '';
 in
 {
-  boot.plymouth = {
-    enable = true;
-    theme = "nix";
-    themePackages = [ theme ];
-    # Also replaces the 48x48 logo.png that themes compiled against
-    # PLYMOUTH_LOGO_FILE fall back to.
-    inherit logo;
+  # The repo's one custom option. Every other module here is plain config,
+  # but the logo size has to come from the host and there is no stock NixOS
+  # option carrying a panel resolution. Namespaced under `local` so it cannot
+  # collide with anything upstream adds.
+  options.local.splash.panelHeightPx = lib.mkOption {
+    type = lib.types.ints.positive;
+    default = 1504;
+    example = 1890;
+    description = ''
+      Vertical resolution, in pixels, of the display plymouth draws on. The
+      Nix mark is sized as a fixed fraction of it, so a taller panel gets a
+      proportionally larger logo instead of a small one adrift in black.
+      Defaults to framework13-amd-ryzen's 2256x1504 panel.
+    '';
   };
 
-  # No "splash" here - the plymouth module appends it. No "loglevel=" either:
-  # consoleLogLevel below appends its own further right on the command line,
-  # and the last one wins. vt.global_cursor_default=0 hides the console cursor
-  # if anything does expose it; boot.shell_on_fail keeps a rescue shell
-  # reachable despite the silence.
-  boot.kernelParams = [
-    "quiet"
-    "rd.systemd.show_status=false"
-    "rd.udev.log_level=3"
-    "udev.log_priority=3"
-    "vt.global_cursor_default=0"
-    "boot.shell_on_fail"
-  ];
+  config = {
+    boot.plymouth = {
+      enable = true;
+      theme = "nix";
+      themePackages = [ theme ];
+      # Also replaces the 48x48 logo.png that themes compiled against
+      # PLYMOUTH_LOGO_FILE fall back to.
+      inherit logo;
+    };
 
-  boot.consoleLogLevel = 0;
-  boot.initrd.verbose = false;
-
-  # Upstream orders plymouth-quit after nothing that draws, so the splash comes
-  # down seconds before greetd puts a greeter on the panel and the bare console
-  # shows through. Reversing the two, and leaving the last frame on the
-  # framebuffer, gives cosmic-comp something to cut from. Every host importing
-  # this module runs greetd, via desktop-cosmic.nix.
-  #
-  # greeterManagesPlymouth is the greetd module's own switch for dropping its
-  # After=plymouth-quit-wait; overriding systemd.services.greetd.after cannot
-  # do it, since that ordering comes from the module's unitConfig and would
-  # only be appended to.
-  services.greetd.greeterManagesPlymouth = true;
-
-  systemd.services.plymouth-quit = {
-    after = [ "greetd.service" ];
-    # Keeping upstream's "-" prefix: plymouth quit exits non-zero when no
-    # plymouthd is running, which is every activation after boot.
-    serviceConfig.ExecStart = [
-      ""
-      "-${plymouth}/bin/plymouth quit --retain-splash"
+    # No "splash" here - the plymouth module appends it. No "loglevel=" either:
+    # consoleLogLevel below appends its own further right on the command line,
+    # and the last one wins. vt.global_cursor_default=0 hides the console cursor
+    # if anything does expose it; boot.shell_on_fail keeps a rescue shell
+    # reachable despite the silence.
+    boot.kernelParams = [
+      "quiet"
+      "rd.systemd.show_status=false"
+      "rd.udev.log_level=3"
+      "udev.log_priority=3"
+      "vt.global_cursor_default=0"
+      "boot.shell_on_fail"
     ];
-  };
 
-  systemd.services.plymouth-quit-wait.after = [ "greetd.service" ];
+    boot.consoleLogLevel = 0;
+    boot.initrd.verbose = false;
+
+    # Upstream orders plymouth-quit after nothing that draws, so the splash comes
+    # down seconds before greetd puts a greeter on the panel and the bare console
+    # shows through. Reversing the two, and leaving the last frame on the
+    # framebuffer, gives cosmic-comp something to cut from. Every host importing
+    # this module runs greetd, via desktop-cosmic.nix.
+    #
+    # greeterManagesPlymouth is the greetd module's own switch for dropping its
+    # After=plymouth-quit-wait; overriding systemd.services.greetd.after cannot
+    # do it, since that ordering comes from the module's unitConfig and would
+    # only be appended to.
+    services.greetd.greeterManagesPlymouth = true;
+
+    systemd.services.plymouth-quit = {
+      after = [ "greetd.service" ];
+      # Keeping upstream's "-" prefix: plymouth quit exits non-zero when no
+      # plymouthd is running, which is every activation after boot.
+      serviceConfig.ExecStart = [
+        ""
+        "-${plymouth}/bin/plymouth quit --retain-splash"
+      ];
+    };
+
+    systemd.services.plymouth-quit-wait.after = [ "greetd.service" ];
+  };
 }
