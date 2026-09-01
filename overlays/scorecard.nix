@@ -1,8 +1,7 @@
 { final, prev }: {
-  # scorecard's non-Linux vendorHash is stale/wrong, breaking the
-  # fixed-output goModules fetch. Patches the built FOD's outputHash
-  # directly to the hash the build itself reports as correct; re-verify on
-  # scorecard version bumps.
+  # scorecard's non-Linux vendorHash is wrong, breaking the goModules fetch.
+  # Patches the FOD's outputHash to what the build itself reports. Re-verify
+  # on version bumps.
   scorecard =
     if final.stdenv.hostPlatform.isLinux then
       prev.scorecard

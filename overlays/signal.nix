@@ -1,34 +1,25 @@
-# Signal Desktop has no theme support, official or otherwise; every known
-# way to reskin it patches its packaged app.asar's stylesheet by hand. This
-# does the same, generating the override CSS from palette.nix instead of
-# vendoring somebody else's stale theme.
+# Signal has no theme support, so reskinning it means patching the stylesheet
+# inside its packaged app.asar. The override CSS is generated from
+# palette.nix.
 #
-# Hand-authored against Signal Desktop 8.24.0's real stylesheets (extracted
-# from the built package via `asar extract`, not guessed). Its modern chrome
-# - nav rail, sidebar, message bubbles, dialogs, buttons, focus rings - reads
-# color from a fixed set of `--axo-color-*` custom properties defined once in
-# :root (stylesheets/tailwind.css). Overriding those re-themes everything
-# that consumes them.
+# Written against Signal Desktop 8.24.0's stylesheets. Its chrome reads color
+# from the `--axo-color-*` custom properties defined once in :root
+# (stylesheets/tailwind.css), so overriding those re-themes everything.
 #
-# Two token families run opposite to upstream. The `*-oncolor` set (and the
-# `fill-onmessage-outgoing-*` fills) is white there because it sits on a
-# saturated brand blue; every accent in this palette is a light pastel, so
-# those go dark instead. The `*-inverted` set and the dim materials are the
-# mirror case - upstream draws them dark-on-light in its dark theme, so they
-# stay light here to keep the now-dark oncolor labels readable.
+# Two token families invert. `*-oncolor` (and the
+# `fill-onmessage-outgoing-*` fills) is white upstream because it sits on a
+# saturated brand blue; every accent here is a light pastel, so it goes dark.
+# `*-inverted` and the dim materials are the mirror case, and stay light so
+# the now-dark oncolor labels stay readable. The `fill-*` neutrals are hover
+# and selection lifts, not accents, and stay translucent so they read the
+# same over the base, a card or a dialog material.
 #
-# The `fill-*` neutrals are hover, selection, and control-track lifts, not
-# accents: upstream defines them as translucent white, and they stay
-# translucent here so they read the same over the base, a card, or a dialog
-# material.
-#
-# This block is plain, unlayered CSS on purpose: Signal defines the above
-# inside `@layer theme{ :root,:host{...} }` (Tailwind's cascade layer), and
-# per the CSS cascade-layers spec, an unlayered rule beats a layered rule of
-# the same importance regardless of specificity or source order. `!important`
-# is still needed: tailwind.css loads after manifest.css and redefines the
-# same tokens unlayered under `@media (prefers-contrast: more)`, and the
-# legacy block below fights real `.dark-theme` rules on specificity.
+# Unlayered CSS on purpose: Signal defines these inside
+# `@layer theme{ :root,:host{...} }`, and an unlayered rule beats a layered
+# one regardless of specificity. `!important` is still needed, because
+# tailwind.css redefines the same tokens unlayered under
+# `@media (prefers-contrast: more)` and the legacy block below fights real
+# `.dark-theme` rules.
 {
   inputs,
   final,
@@ -196,8 +187,7 @@ let
     }
   '';
 
-  # A renamed class makes the legacy block above quietly stop applying, so
-  # fail the build instead - same reasoning as linuxFramePatch's count check.
+  # A renamed class would make the legacy block above stop applying silently.
   legacySelectors = [
     "module-message__reactions__reaction"
     "module-message__reactions__reaction__count--is-me"
@@ -216,31 +206,21 @@ let
     done
   '';
 
-  # $out/share/signal-desktop/app.asar on Linux,
-  # $out/Applications/Signal.app/Contents/Resources/app.asar on darwin -
-  # electron-builder's standard unpacked-resources layout either way.
+  # electron-builder's standard layout on both platforms.
   relAsarPath =
     if final.stdenv.hostPlatform.isDarwin then
       "Applications/Signal.app/Contents/Resources/app.asar"
     else
       "share/signal-desktop/app.asar";
 
-  # Linux only: Signal never exposes a frame/titleBarStyle override (checked
-  # in bundles/main.js - titleBarStyle is isMacOS() ? "hidden" : "default",
-  # with no equivalent for frame itself), so getting rid of the native
-  # decoration means patching the option object frame is built from. Left
-  # alone on darwin, where "hidden" already gives real, native, consistent
-  # traffic lights for free.
+  # Linux only. Signal exposes no frame override in bundles/main.js, so
+  # dropping the native decoration means patching the option object frame is
+  # built from. darwin keeps its own titleBarStyle = "hidden".
   #
-  # No titlebar, no window controls, full space - COSMIC's own keybinds
-  # cover what the controls used to (Super+Q/Alt+F4 close, Super+M maximize,
-  # Super+drag anywhere to move; nothing default for minimize). The
-  # `module-title-bar-drag-area` div Signal already renders unconditionally
-  # is unused by this (it's sized via a --title-bar-drag-area-height Signal
-  # only sets on macOS), but harmless at its default zero height.
+  # No titlebar or window controls; COSMIC keybinds replace them
+  # (home/linux/cosmic/shortcuts.nix).
   #
-  # The count assertion mirrors overlays/cosmic-applets.nix - fail the build
-  # instead of silently patching nothing if upstream moves this literal.
+  # The count is asserted so the build fails if upstream moves this literal.
   linuxFramePatch = lib.optionalString (!final.stdenv.hostPlatform.isDarwin) ''
     sites=$(grep -c 'minWidth:300,minHeight:200,autoHideMenuBar:!1,titleBarStyle:Jv,backgroundColor:d,' "$workDir/bundles/main.js")
     if [ "$sites" != 1 ]; then
@@ -252,17 +232,14 @@ let
       "$workDir/bundles/main.js"
   '';
 
-  # Darwin only: the bundle records a SHA-256 of the asar's header in
-  # Info.plist (ElectronAsarIntegrity), so rewriting the archive leaves that
-  # hash describing an archive that no longer exists. Linux builds carry no
-  # such field, which is why only macOS is exposed to this. Inert on
-  # electron_43 - its enable_embedded_asar_integrity_validation fuse is off -
-  # but the day that fuse flips, an app that boots to "integrity check failed"
-  # and nothing else is a miserable thing to debug.
+  # Darwin only: Info.plist records a SHA-256 of the asar header
+  # (ElectronAsarIntegrity), so rewriting the archive leaves that hash
+  # describing something that no longer exists. Linux has no such field.
+  # Inert on electron_43, whose enable_embedded_asar_integrity_validation
+  # fuse is off, but a flipped fuse would break the app with no useful error.
   #
-  # Via plistlib rather than sed: Info.plist may be in binary format. The
-  # KeyError if upstream ever drops the key is deliberate - stop the build
-  # rather than ship integrity metadata that means nothing.
+  # plistlib, not sed: Info.plist may be binary. The KeyError if upstream
+  # drops the key is deliberate.
   refreshAsarIntegrity =
     let
       script = final.writeText "signal-refresh-asar-integrity.py" ''
@@ -294,13 +271,10 @@ let
     '';
 in
 {
-  # Built as a copy-and-patch over the already-built prev.signal-desktop
-  # rather than prev.signal-desktop.overrideAttrs: overrideAttrs changes the
-  # derivation that produces app.asar in the first place, which reruns
-  # Signal's own pnpm/electron-builder build from scratch (there being no
-  # substitute for a hash nobody else has built) for what is otherwise a
-  # single post-hoc file edit. This instead takes the finished, cache-
-  # substituted output and only redoes the asar.
+  # A copy-and-patch over the built prev.signal-desktop, not overrideAttrs:
+  # that would change the derivation producing app.asar, so nothing
+  # substitutes and Signal's whole pnpm/electron-builder build reruns for one
+  # post-hoc file edit.
   signal-desktop =
     final.runCommand "signal-desktop-${prev.signal-desktop.version}"
       {
@@ -316,14 +290,13 @@ in
         ${assertLegacySelectors}
         cat ${theme} >> "$workDir/stylesheets/manifest.css"
         ${linuxFramePatch}
-        # electron-builder keeps every native module out of the archive, in a
-        # sibling app.asar.unpacked, because Electron cannot dlopen a .node
-        # from inside an asar. `asar extract` materialises those back into the
-        # tree, so packing without --unpack silently re-absorbs all of them:
-        # the archive doubles, app.asar.unpacked is left orphaned, and macOS
-        # dies before Signal opens its own log. Every entry upstream unpacks is
-        # a .node, and asar's globs are matchBase, so this reproduces the set.
-        # Counted rather than assumed, same as the two assertions above.
+        # Electron cannot dlopen a .node from inside an asar, so
+        # electron-builder keeps the native modules in a sibling
+        # app.asar.unpacked. `asar extract` materialises them back into the
+        # tree, so packing without --unpack re-absorbs every one: the archive
+        # doubles, app.asar.unpacked is orphaned, and Signal fails to start.
+        # Every entry upstream unpacks is a .node and asar's globs are
+        # matchBase, so this reproduces the set. The count is asserted.
         asarDir=$(dirname "$out/${relAsarPath}")
         nativesBefore=$(find "$asarDir/app.asar.unpacked" -name '*.node' | wc -l)
 
@@ -338,11 +311,9 @@ in
         fi
         ${refreshAsarIntegrity}
 
-        # bin/signal-desktop's makeWrapper script has prev.signal-desktop's own
-        # store path baked into it (as the electron --add-flags target on
-        # Linux, as the wrapped Signal.app binary on darwin) - without this it
-        # would keep launching the original, unpatched copy we cp -r'd from,
-        # never touching the app.asar just rewritten above.
+        # bin/signal-desktop's makeWrapper script has prev.signal-desktop's
+        # store path baked in, so without this it keeps launching the
+        # unpatched copy and never sees the app.asar rewritten above.
         sed -i "s|${prev.signal-desktop}|$out|g" "$out/bin/signal-desktop"
       '';
 }

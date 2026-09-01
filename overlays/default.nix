@@ -1,10 +1,7 @@
-# claude-code, codex, and opencode are plain nixpkgs packages - used directly
-# as pkgs.claude-code / pkgs.codex / pkgs.opencode, not listed here.
-#
-# Each of the six own tools packages itself now. cerberus additionally vends
-# tirith and cupcake — the two binaries it wraps onto its own PATH — so there
-# is exactly one pinned copy of each here rather than a second, independently
-# drifting one.
+# claude-code, codex and opencode come straight from nixpkgs, so they are not
+# listed here. Each of the six own tools packages itself; cerberus also vends
+# tirith and cupcake, the two binaries it wraps onto its PATH, so there is
+# one pinned copy of each rather than two that can drift.
 inputs: final: prev:
 let
   system = final.stdenv.hostPlatform.system;

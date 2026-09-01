@@ -1,19 +1,16 @@
 { prev }:
 {
-  # cosmic-app-list shows the app's name in a tooltip on every dock hover,
-  # with no way to turn it off: it calls applet_tooltip unconditionally at all
-  # four dock-item call sites, and COSMIC exposes no setting for tooltips
-  # anywhere (com.system76.CosmicTk has six keys, none of them this).
+  # cosmic-app-list calls applet_tooltip unconditionally at all four
+  # dock-item call sites, and COSMIC exposes no setting to turn the hover
+  # tooltips off.
   #
-  # applet_tooltip's only guard is its has_popup argument. libcosmic builds
-  # the tooltip popup inside `(!has_popup).then_some(..)` and reads the flag
-  # nowhere else, so passing true leaves the dock item's widget untouched and
-  # simply never spawns the popup.
+  # applet_tooltip's only guard is has_popup: libcosmic builds the popup
+  # inside `(!has_popup).then_some(..)` and reads the flag nowhere else, so
+  # passing true leaves the widget alone and never spawns the popup.
   #
-  # `self.popup.is_some(),` - with the trailing comma - occurs only as that
-  # argument. The file's other uses of self.popup.is_some() are `if`
-  # conditions, which have no comma after them. The count is asserted so this
-  # fails the build rather than silently patching nothing if upstream moves.
+  # The trailing comma is what makes the match unique: the file's other uses
+  # of self.popup.is_some() are `if` conditions, with no comma. The count is
+  # asserted so the build fails if upstream moves this.
   cosmic-applets = prev.cosmic-applets.overrideAttrs (old: {
     postPatch = (old.postPatch or "") + ''
       sites=$(grep -c 'self\.popup\.is_some(),' cosmic-app-list/src/app.rs)
