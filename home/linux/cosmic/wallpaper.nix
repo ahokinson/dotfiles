@@ -1,9 +1,6 @@
-# Managed desktop wallpaper for COSMIC, shared by every NixOS host. Same
-# solid Catppuccin Frappe base-color image used everywhere else in this repo.
-# cosmic-manager writes cosmic-bg's config declaratively (checked against
-# its modules/wallpapers.nix), the same plain-config-file mechanism
-# panel.nix and theme.nix use, so it applies during home-manager activation
-# with no login-time script needed.
+# The same solid Frappe base-color image the Macs use. cosmic-manager writes
+# cosmic-bg's config directly, so it applies at activation with no login-time
+# script.
 { selfPath, ... }:
 let
   wallpaper = selfPath "home/common/_files/wallpaper-frappe-base.png";
@@ -18,10 +15,9 @@ in
         value = [ wallpaper ];
       };
 
-      # None of these fields have a real default in cosmic-manager's
-      # wallpapers submodule, so all are mandatory once this list has an
-      # entry. Values chosen to suit a single flat-color image, where
-      # scaling/sampling/rotation are visually irrelevant.
+      # No field here has a default in cosmic-manager's wallpapers submodule,
+      # so all are mandatory once the list is non-empty. Scaling, sampling and
+      # rotation are moot for a flat-color image.
       filter_by_theme = false;
       filter_method = {
         __type = "enum";

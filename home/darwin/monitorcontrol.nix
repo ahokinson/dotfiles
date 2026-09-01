@@ -1,5 +1,5 @@
-# MonitorControl: menu-bar utility for external-display brightness/volume via
-# DDC. Prebuilt-only package (nixpkgs can't build it from source), darwin-only.
+# External-display brightness and volume over DDC. Prebuilt only; nixpkgs
+# cannot build it from source.
 {
   pkgs,
   lib,

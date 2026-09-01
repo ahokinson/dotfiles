@@ -1,13 +1,9 @@
-# Custom keybinds layered on top of COSMIC's own defaults (data/keybindings.ron
-# in cosmic-comp's source), shared by every COSMIC host.
+# Layered on COSMIC's defaults (data/keybindings.ron in cosmic-comp).
 #
-# Close (Super+Q, Alt+F4), Maximize (Super+M), and moving a window
-# (Super+drag anywhere on it, independent of any title bar) are already
-# bound by default - only Minimize has no default, added here. This matters
-# now that ghostty/signal/vesktop (home/common/ghostty/settings.nix,
-# overlays/signal.nix, home/common/vesktop.nix) all run without a title bar
-# or window controls, relying on these keybinds for everything a traffic
-# light used to do.
+# ghostty, signal and vesktop all run with no title bar or window controls,
+# so these keybinds are the only way to close, maximize, move or minimize
+# them. COSMIC already binds Close (Super+Q, Alt+F4), Maximize (Super+M) and
+# move (Super+drag anywhere); only Minimize has no default, added here.
 { selfPath, ... }:
 let
   inherit (import (selfPath "home/linux/cosmic/ron.nix")) ronEnum;

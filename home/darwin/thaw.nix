@@ -1,5 +1,5 @@
-# Thaw: menu-bar item hider/manager for macOS, fork of Ice. Prebuilt-only
-# package (nixpkgs can't build it from source), darwin-only.
+# Menu-bar item manager, a fork of Ice. Prebuilt only; nixpkgs cannot build
+# it from source.
 {
   pkgs,
   lib,

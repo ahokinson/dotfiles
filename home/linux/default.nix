@@ -1,5 +1,4 @@
-# Linux-only home config. Imported by every NixOS host's home-manager
-# section (framework13-amd-ryzen, bookpro14-m1-pro, studio-m1-max).
+# Linux-only home config, imported by every NixOS host.
 { selfPath, ... }: {
   imports = [
     (selfPath "home/linux/applications.nix")

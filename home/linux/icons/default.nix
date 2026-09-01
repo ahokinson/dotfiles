@@ -1,23 +1,13 @@
-# WhiteSur-dark with this repo's Catppuccin icons layered on top, built as a
-# real child theme and made the active one. Owns both toolkits' notion of
-# which icon theme is in use: GTK's (gtk.iconTheme) and COSMIC's own
-# (appearance.toolkit.icon_theme), which are separate settings that have to
-# agree.
+# A real child theme of WhiteSur-dark carrying this repo's app icons, and the
+# selected theme for both toolkits: GTK's gtk.iconTheme and COSMIC's
+# appearance.toolkit.icon_theme are separate settings that have to agree.
 #
-# Deliberately not done by dropping files into
-# ~/.local/share/icons/WhiteSur-dark, which is the obvious approach and does
-# not work under COSMIC. Its resolver (cosmic-freedesktop-icons, the fork
-# libcosmic uses) builds its search list as $XDG_DATA_DIRS, then
-# $XDG_DATA_HOME, then $HOME/.icons - $XDG_DATA_DIRS first, the reverse of
-# both the icon-theme spec and GTK. The Nix profile is on $XDG_DATA_DIRS, so
-# the WhiteSur-dark installed there answers first for every name it already
-# ships and a home-directory copy is never reached. WhiteSur ships all three
-# pinned apps, so all three lost; only the app-library logo won, and only
-# because WhiteSur has no icon by that name to answer with.
-#
-# Inheriting instead of shadowing removes the ordering question entirely:
-# this theme is the one selected, its own icons are found in it, and
-# everything it does not define falls through to WhiteSur-dark by Inherits.
+# Shadowing files into ~/.local/share/icons/WhiteSur-dark is the obvious
+# approach and does not work: cosmic-freedesktop-icons searches
+# $XDG_DATA_DIRS before $XDG_DATA_HOME, the reverse of the icon-theme spec
+# and GTK, and the Nix profile is on $XDG_DATA_DIRS. Every name WhiteSur
+# already ships answers from there first. Inheriting sidesteps the ordering:
+# this theme is selected, and Inherits covers what it does not define.
 {
   inputs,
   selfPath,
@@ -32,26 +22,22 @@ let
 
   themeName = "WhiteSur-dark-catppuccin";
 
-  # Every host here is a NixOS module, so osConfig is always set - the logo
-  # keys off hardware.asahi.enable to tell the Apple Silicon hosts
-  # (bookpro14-m1-pro, studio-m1-max) apart from framework13-amd-ryzen.
+  # osConfig is always set here, so hardware.asahi.enable can distinguish the
+  # Apple Silicon hosts from framework13-amd-ryzen.
   isApple = osConfig.hardware.asahi.enable or false;
 
-  # Goes where macOS puts the Apple logo. Shadows com.system76.CosmicAppLibrary
-  # rather than the panel button's own icon name, since the button renders
-  # whatever app id it is passed.
+  # Shadows com.system76.CosmicAppLibrary rather than the panel button's own
+  # icon name: the button renders whatever app id it is passed.
   logo =
     if isApple then
       selfPath "home/common/_files/asahi-apple.svg"
     else
       "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
 
-  # apps@2x/scalable is listed under both keys on purpose. ScaledDirectories
-  # is where the spec wants a Scale=2 directory, but implementations that
-  # only read Directories would then never see it - and skipping it is not an
-  # option here, since WhiteSur declares its own apps@2x/scalable and a HiDPI
-  # output resolves that ahead of apps/scalable. Same SVG in both; it is
-  # vector either way.
+  # apps@2x/scalable is under both keys on purpose: the spec wants a Scale=2
+  # directory in ScaledDirectories, but implementations reading only
+  # Directories would never see it. It cannot be skipped either, since
+  # WhiteSur declares its own and HiDPI resolves that ahead of apps/scalable.
   indexTheme = pkgs.writeText "index.theme" ''
     [Icon Theme]
     Name=${themeName}
@@ -102,11 +88,10 @@ in
     inherit package;
   };
 
-  # COSMIC's own toolkit defaults to the "Cosmic" icon theme, independent of
-  # GTK's. Without this, COSMIC Files/Settings keep their stock icons while
-  # GTK apps use the theme above.
+  # COSMIC's toolkit defaults to the "Cosmic" theme independently of GTK, so
+  # without this its own apps keep their stock icons.
   wayland.desktopManager.cosmic.appearance.toolkit.icon_theme = themeName;
 
-  # The parent theme has to stay installed for Inherits to resolve.
+  # The parent theme must stay installed for Inherits to resolve.
   home.packages = [ pkgs.whitesur-icon-theme ];
 }

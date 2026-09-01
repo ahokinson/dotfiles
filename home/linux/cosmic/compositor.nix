@@ -1,16 +1,13 @@
-# Trackpad "feel" toward macOS's, mapped from modules/darwin/system's
-# trackpad.* block (this repo's actual real-machine values, not macOS's
-# stock defaults - e.g. natural scrolling is off here) onto COSMIC's
-# compositor input config. Shared by every COSMIC host; harmlessly unused on
-# studio-m1-max, which has no built-in trackpad.
+# Trackpad feel mapped from modules/darwin/system's trackpad.* block, which
+# holds this repo's real values rather than macOS's stock ones. Unused on
+# studio-m1-max, which has no trackpad.
 #
-# The two systems' trackpad models don't map 1:1 (macOS's AppleTrackpad
-# prefs vs. libinput's click_method/tap_config/scroll_config), so this is an
-# approximation of intent: tap-to-click off -> tap_config.enabled = false;
-# two-finger right-click -> click_method = Clickfinger; natural scrolling
-# off -> scroll_config.natural_scroll = false. Fields with no darwin
-# equivalent (button_map, scroll method/button/factor) are left at
-# libinput's own conventional values.
+# AppleTrackpad prefs and libinput's click_method/tap_config/scroll_config do
+# not map 1:1, so this approximates: tap-to-click off -> tap_config.enabled
+# false; two-finger right-click -> click_method Clickfinger; natural scrolling
+# off -> scroll_config.natural_scroll false. button_map and the scroll
+# method/button/factor fields have no darwin equivalent and stay at libinput's
+# values.
 { selfPath, ... }:
 let
   inherit (import (selfPath "home/linux/cosmic/ron.nix")) ronOptional ronEnum;

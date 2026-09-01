@@ -1,6 +1,5 @@
-# cosmic-manager encodes Rust's `Option`/enum types over RON as tagged
-# attrsets. These two shapes recur across the cosmic/* modules, so they're
-# named here instead of hand-inlined at every call site.
+# cosmic-manager encodes Rust `Option` and enum types over RON as tagged
+# attrsets. These two shapes recur across the cosmic/* modules.
 {
   ronOptional = value: {
     __type = "optional";

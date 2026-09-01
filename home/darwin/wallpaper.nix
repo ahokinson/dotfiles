@@ -1,9 +1,7 @@
-# Managed desktop wallpaper: a solid Catppuccin Frappe base-color (#303446)
-# image, matching the dark theme used across terminal/editor/CLI tooling.
-# nix-darwin has no declarative desktop-picture option, so this sets it via
-# `osascript` in a home-manager activation hook, which runs as the logged-in
-# user (unlike nix-darwin's system activation scripts, which run as root and
-# wouldn't affect the user's Finder/Dock session state).
+# A solid Frappe base-color (#303446) image. No declarative desktop-picture
+# option exists, so this is osascript in a home-manager hook, which runs as
+# the logged-in user; nix-darwin's activation runs as root and would not
+# reach the Finder session.
 {
   selfPath,
   config,

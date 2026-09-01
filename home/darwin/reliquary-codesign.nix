@@ -1,12 +1,10 @@
-# reliquary is Nix-built and unsigned. On Apple Silicon its Keychain-ACL
-# identity is tied to the binary's content hash, so every version bump (a
-# new /nix/store path) invalidates every "Always Allow" grant and it
-# re-prompts on every hook run. The build sandbox has no Keychain access, so
-# signing can't happen in the derivation. Fix: copy the build out to
-# ~/.local/bin (already first on $PATH) and sign that copy with a local
-# self-signed cert, provisioned below on first activation. The identity then
-# stays stable across upgrades. Never fatal: a failure here costs Keychain
-# prompts, not the rest of the activation.
+# reliquary is unsigned, and on Apple Silicon its Keychain-ACL identity is
+# tied to the binary's content hash, so every version bump invalidates each
+# "Always Allow" grant. The build sandbox has no Keychain access, so signing
+# cannot happen in the derivation. Instead the build is copied to ~/.local/bin
+# (already first on PATH) and signed there with a local self-signed cert,
+# provisioned on first activation, which keeps the identity stable across
+# upgrades. Never fatal: a failure here costs prompts, not the activation.
 { pkgs, lib, ... }:
 let
   identity = "reliquary-dev";
