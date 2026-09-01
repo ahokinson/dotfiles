@@ -1,75 +1,40 @@
 # Shared by every Asahi NixOS host (bookpro14-m1-pro, studio-m1-max): the
-# modular system config, home-manager wiring, and Apple-Silicon-specific
-# overrides that are otherwise byte-for-byte identical between them. Each
-# host's own default.nix supplies just its hostname and hardware-config
-# import.
-{
-  inputs,
-  selfPath,
-  username,
-  ...
-}:
+# Apple-Silicon-specific overrides on top of hosts/nixos-common.nix, which
+# carries everything these share with framework13-amd-ryzen. Each host's own
+# default.nix supplies just its hostname and hardware-config import.
+{ inputs, selfPath, ... }:
 {
   imports = [
     inputs.nixos-apple-silicon.nixosModules.apple-silicon-support
-    (selfPath "modules/nixos/audio.nix")
-    (selfPath "modules/nixos/boot.nix")
-    (selfPath "modules/nixos/clamav.nix")
-    (selfPath "modules/nixos/containers.nix")
-    (selfPath "modules/nixos/desktop-cosmic.nix")
-    (selfPath "modules/nixos/hermes.nix")
-    (selfPath "modules/nixos/locale.nix")
-    (selfPath "modules/nixos/networking.nix")
-    (selfPath "modules/nixos/packages.nix")
-    (selfPath "modules/nixos/printing.nix")
-    (selfPath "modules/nixos/security.nix")
-    (selfPath "modules/nixos/settings.nix")
-    (selfPath "modules/nixos/splash.nix")
-    (selfPath "modules/nixos/ssh.nix")
-    (selfPath "modules/nixos/user.nix")
-    inputs.hermes-agent.nixosModules.default
-    inputs.home-manager.nixosModules.home-manager
+    (selfPath "hosts/nixos-common.nix")
   ];
 
   hardware.asahi.enable = true;
 
-  # Rebuilds on these hosts need --impure. The Apple peripheral firmware is
-  # read from vendorfw/firmware.cpio on the ESP, an absolute path outside the
-  # flake, which pure eval refuses. Pinning it to a /nix/store path instead
-  # does not help - pure eval rejects absolute store paths too. Without
-  # --impure the build fails on the peripheral-firmware assertion.
+  # Rebuilds on these hosts need --impure, permanently - this is not a TODO.
+  # hardware.asahi.peripheralFirmwareDirectory defaults to a findFirst over
+  # `builtins.pathExists /boot/vendorfw/firmware.cpio`, an absolute path that
+  # pure eval refuses to read. Setting it to a /nix/store path does not help
+  # either, since pure eval rejects those too. The only way to make it pure
+  # would be to carry firmware.cpio inside the flake, and it is non-free and
+  # non-redistributable, so that is off the table for this repo.
+  # .github/workflows/check.yml neutralises just that option so CI can still
+  # type-check the rest of these hosts.
 
   # Broadcom Wi-Fi on Apple Silicon needs iwd, per nixos-apple-silicon's docs
   # (NetworkManager's default wpa_supplicant backend isn't supported here).
   networking.networkmanager.wifi.backend = "iwd";
 
   # The one thing these hosts take differently from modules/nixos/boot.nix,
-  # imported above: nixos-apple-silicon's own install guide calls for false
-  # where that module defaults to true. A plain definition beats its mkDefault.
+  # imported via nixos-common: nixos-apple-silicon's own install guide calls
+  # for false where that module defaults to true. A plain definition beats its
+  # mkDefault.
   boot.loader.efi.canTouchEfiVariables = false;
 
-  # The splash that module used to carry lives in modules/nixos/splash.nix,
-  # imported above too. Confirmed working on bookpro14-m1-pro; still
+  # splash.nix sizes its logo off local.splash.panelHeightPx, left at the
+  # default here: studio-m1-max drives an external display whose height isn't
+  # known until it's installed. bookpro14-m1-pro sets its own.
+  #
+  # The splash itself is confirmed working on bookpro14-m1-pro; still
   # unverified on studio-m1-max, which isn't installed yet.
-
-  home-manager = {
-    useGlobalPkgs = true;
-    useUserPackages = true;
-    backupFileExtension = "hm-backup";
-    users.${username} = {
-      imports = [
-        (selfPath "home/common")
-        (selfPath "home/linux")
-        (selfPath "home/linux/cosmic")
-        inputs.cosmic-manager.homeManagerModules.cosmic-manager
-        inputs.zen-browser.homeModules.beta
-      ];
-      home.username = username;
-      home.homeDirectory = "/home/${username}";
-      home.stateVersion = "26.05";
-    };
-    extraSpecialArgs = { inherit inputs selfPath; };
-  };
-
-  system.stateVersion = "26.05";
 }
