@@ -31,6 +31,15 @@
   # mkDefault.
   boot.loader.efi.canTouchEfiVariables = false;
 
+  # The same problem framework13 solves by forcing amdgpu. nixos-apple-silicon
+  # lists ~30 Apple modules for stage 1 but no display driver among them, and
+  # lists them as availableKernelModules - present, loaded on demand - so
+  # plymouth draws on whatever framebuffer m1n1 handed over and apple-drm
+  # resizes it once it binds. Forcing appledrm in means the splash is drawn
+  # once, at the native mode; modprobe pulls drm_dma_helper and the dcp bits
+  # along with it.
+  boot.initrd.kernelModules = [ "appledrm" ];
+
   # modules/nixos/settings.nix sizes its build caps for framework13's sixteen
   # threads and leaves them mkDefault for exactly this. Both Apple Silicon
   # hosts are ten-core (M1 Pro and M1 Max alike), so the same
