@@ -31,6 +31,15 @@
   # mkDefault.
   boot.loader.efi.canTouchEfiVariables = false;
 
+  # modules/nixos/settings.nix sizes its build caps for framework13's sixteen
+  # threads and leaves them mkDefault for exactly this. Both Apple Silicon
+  # hosts are ten-core (M1 Pro and M1 Max alike), so the same
+  # half-the-machine policy lands on five: cores 5 so the worst case of
+  # max-jobs x cores is the whole machine rather than 160% of it, and a
+  # CPUQuota to match.
+  nix.settings.cores = 5;
+  systemd.services.nix-daemon.serviceConfig.CPUQuota = "500%";
+
   # splash.nix sizes its logo off local.splash.panelHeightPx, left at the
   # default here: studio-m1-max drives an external display whose height isn't
   # known until it's installed. bookpro14-m1-pro sets its own.
