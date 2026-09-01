@@ -37,7 +37,7 @@
   nix.settings.cores = 5;
   systemd.services.nix-daemon.serviceConfig.CPUQuota = "500%";
 
-  # local.splash.panelHeightPx is left at its default: studio-m1-max drives
-  # an external display of unknown height until it is installed, and the
-  # splash there is unverified. bookpro14-m1-pro sets its own.
+  # local.splash.panelHeightPx is left at its default: studio-m1-max has no
+  # built-in panel, so its height depends on whatever display is attached.
+  # bookpro14-m1-pro sets its own.
 }
