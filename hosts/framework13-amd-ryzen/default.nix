@@ -23,4 +23,11 @@
   # gets resized a second later when amdgpu takes the panel over. Loading the
   # driver in the initrd means the splash is drawn once, at the native mode.
   boot.initrd.kernelModules = [ "amdgpu" ];
+
+  # This board's MT7925 drops the link intermittently across suspend/resume
+  # with power save on. Scoped to this host rather than to
+  # modules/nixos/networking.nix: the Asahi machines run Broadcom (brcmfmac),
+  # which is also why they pick a different NetworkManager backend, so the
+  # workaround has nothing to do there.
+  networking.networkmanager.wifi.powersave = false;
 }
