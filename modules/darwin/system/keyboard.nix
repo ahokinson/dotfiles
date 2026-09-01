@@ -1,5 +1,4 @@
 _: {
-  # Caps Lock -> Control (terminal/emacs-style bindings).
   system.keyboard.enableKeyMapping = true;
   system.keyboard.remapCapsLockToControl = true;
   system.keyboard.remapCapsLockToEscape = false;

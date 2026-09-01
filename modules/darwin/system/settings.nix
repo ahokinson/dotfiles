@@ -1,9 +1,8 @@
 { username, ... }: {
-  # Apple Silicon mac
   nixpkgs.hostPlatform = "aarch64-darwin";
 
-  # Required since nix-darwin's multi-user migration: user-scoped
-  # system.defaults options (dock, finder, NSGlobalDomain) apply to this user.
+  # Required since the multi-user migration: this is the user that
+  # user-scoped system.defaults (dock, finder, NSGlobalDomain) apply to.
   system.primaryUser = username;
 
   nix.settings.experimental-features = [
@@ -23,8 +22,8 @@
     options = "--delete-older-than 14d";
   };
 
-  # Determinate Nix uses GID 350 for nixbld, not nix-darwin's historical
-  # default of 30000. Must match the actual group or activation aborts.
+  # Determinate Nix uses 350, not nix-darwin's historical 30000. A mismatch
+  # aborts activation.
   ids.gids.nixbld = 350;
 
   system.stateVersion = 4;

@@ -1,7 +1,5 @@
-# Boot splash: a white Nix snowflake on black with a thin progress bar under
-# it, the layout macOS boots with. Kept separate from boot.nix because the
-# splash is a look and that module is a bootloader; both are imported by
-# hosts/framework13-amd-ryzen and hosts/asahi-common.nix.
+# Boot splash: white Nix snowflake on black, thin progress bar underneath.
+# Separate from boot.nix; both are imported by framework13 and asahi-common.
 {
   config,
   lib,
@@ -9,20 +7,18 @@
   ...
 }:
 let
-  # The plymouth the NixOS module itself builds against, so borrowing assets
-  # below costs nothing extra in the closure. Its themesEnv is not usable here:
-  # that reads themePackages, which this file defines.
+  # The plymouth the NixOS module itself builds against, so the assets
+  # borrowed below cost nothing extra in the closure. Its themesEnv is not
+  # usable here: that reads themePackages, which this file defines.
   plymouth = config.boot.plymouth.package;
 
-  # Plymouth draws images at a fixed pixel size, so the mark is sized per
-  # machine rather than in relative units. 180px on the Framework's 2256x1504
-  # panel is ~12% of its height, the proportion macOS gives its own boot mark;
-  # that ratio is what carries across to a differently sized panel.
+  # Plymouth draws images at a fixed pixel size, so the mark is scaled per
+  # panel: ~12% of height, 180px on framework13's 1504.
   logoFraction = 180.0 / 1504.0;
   logoSize = builtins.floor (config.local.splash.panelHeightPx * logoFraction + 0.5);
 
-  # Rendered from the scalable source. Leaving boot.plymouth.logo unset gets a
-  # 48x48 raster instead - sized for GDM, and visibly soft on a boot screen.
+  # Rendered from the scalable source. Leaving boot.plymouth.logo unset gets
+  # a 48x48 GDM raster instead, visibly soft on a boot screen.
   logo =
     pkgs.runCommand "nix-snowflake-${toString logoSize}.png" { nativeBuildInputs = [ pkgs.librsvg ]; }
       ''
@@ -33,9 +29,8 @@ let
           ${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake-white.svg
       '';
 
-  # The password-entry widget's images, plus the lock two-step loads alongside
-  # them. Upstream's spinner theme is where every other two-step theme takes
-  # this set from.
+  # The password-entry widget's images, plus the lock two-step loads with
+  # them. Taken from upstream's spinner theme, as every two-step theme does.
   widgetImages = [
     "bullet.png"
     "capslock.png"
@@ -46,8 +41,8 @@ let
   ];
 
   # ImageDir is only known once the derivation has an output path, hence the
-  # placeholder rather than a plain writeText. DejaVu Sans is the one face
-  # boot.plymouth.font puts in the initrd.
+  # placeholder. DejaVu Sans is the one face boot.plymouth.font puts in the
+  # initrd.
   themeConfig = pkgs.writeText "nix.plymouth" ''
     [Plymouth Theme]
     Name=nix
@@ -90,47 +85,38 @@ let
     SuppressMessages=true
   '';
 
-  # The directory name, the .plymouth basename, and boot.plymouth.theme below
-  # all have to read "nix": the NixOS plymouth module looks the theme up by
-  # name to decide what to carry into the initrd, and rewrites ImageDir by
-  # matching on that path.
+  # The directory name, the .plymouth basename and boot.plymouth.theme below
+  # must all read "nix": the NixOS module looks the theme up by name to decide
+  # what goes in the initrd, and rewrites ImageDir by matching that path.
   theme = pkgs.runCommand "plymouth-theme-nix" { } ''
     dir=$out/share/plymouth/themes/nix
 
-    # two-step loads the password entry before anything else and discards the
-    # whole view if one of its images is missing, dropping plymouth to the text
-    # splash. The theme carries them even though nothing here asks for a
-    # passphrase.
+    # two-step loads the password entry first and discards the whole view if
+    # any of its images is missing, dropping to the text splash. Carried even
+    # though nothing here asks for a passphrase.
     for image in ${lib.concatStringsSep " " widgetImages}; do
       install -Dm444 ${plymouth}/share/plymouth/themes/spinner/"$image" "$dir/$image"
     done
 
-    # watermark.png, not header-image.png: header-image is positioned relative
-    # to the animation slot, which is off here, while the watermark carries its
-    # own alignment. It is the slot nixpkgs' own plymouth module uses to drop
-    # this logo into the upstream spinner theme.
+    # watermark.png, not header-image.png: header-image is positioned against
+    # the animation slot, which is off here.
     install -Dm444 ${logo} "$dir/watermark.png"
 
-    # No animation-*.png or throbber-*.png: those strips are what the previous
-    # catppuccin theme drew as a row of colored dots. UseAnimation=false in the
-    # config says the same thing a second time.
+    # No animation-*.png or throbber-*.png; UseAnimation=false says the same.
     substitute ${themeConfig} "$dir/nix.plymouth" --replace-fail @imagedir@ "$dir"
   '';
 in
 {
-  # The repo's one custom option. Every other module here is plain config,
-  # but the logo size has to come from the host and there is no stock NixOS
-  # option carrying a panel resolution. Namespaced under `local` so it cannot
-  # collide with anything upstream adds.
+  # The repo's one custom option: no stock NixOS option carries a panel
+  # resolution. Namespaced under `local` to stay clear of upstream.
   options.local.splash.panelHeightPx = lib.mkOption {
     type = lib.types.ints.positive;
     default = 1504;
     example = 1890;
     description = ''
       Vertical resolution, in pixels, of the display plymouth draws on. The
-      Nix mark is sized as a fixed fraction of it, so a taller panel gets a
-      proportionally larger logo instead of a small one adrift in black.
-      Defaults to framework13-amd-ryzen's 2256x1504 panel.
+      Nix mark is sized as a fixed fraction of it. Defaults to
+      framework13-amd-ryzen's 2256x1504 panel.
     '';
   };
 
@@ -139,16 +125,14 @@ in
       enable = true;
       theme = "nix";
       themePackages = [ theme ];
-      # Also replaces the 48x48 logo.png that themes compiled against
+      # Also replaces the 48x48 logo.png that themes built against
       # PLYMOUTH_LOGO_FILE fall back to.
       inherit logo;
     };
 
-    # No "splash" here - the plymouth module appends it. No "loglevel=" either:
-    # consoleLogLevel below appends its own further right on the command line,
-    # and the last one wins. vt.global_cursor_default=0 hides the console cursor
-    # if anything does expose it; boot.shell_on_fail keeps a rescue shell
-    # reachable despite the silence.
+    # No "splash": the plymouth module appends it. No "loglevel=" either;
+    # consoleLogLevel below appends its own further right, and last wins.
+    # boot.shell_on_fail keeps a rescue shell reachable despite the silence.
     boot.kernelParams = [
       "quiet"
       "rd.systemd.show_status=false"
@@ -161,16 +145,13 @@ in
     boot.consoleLogLevel = 0;
     boot.initrd.verbose = false;
 
-    # Upstream orders plymouth-quit after nothing that draws, so the splash comes
-    # down seconds before greetd puts a greeter on the panel and the bare console
-    # shows through. Reversing the two, and leaving the last frame on the
-    # framebuffer, gives cosmic-comp something to cut from. Every host importing
-    # this module runs greetd, via desktop-cosmic.nix.
+    # Upstream lets the splash come down seconds before greetd draws a
+    # greeter, showing the bare console. Reversing the order and retaining the
+    # last frame gives cosmic-comp something to cut from.
     #
-    # greeterManagesPlymouth is the greetd module's own switch for dropping its
-    # After=plymouth-quit-wait; overriding systemd.services.greetd.after cannot
-    # do it, since that ordering comes from the module's unitConfig and would
-    # only be appended to.
+    # greeterManagesPlymouth is the only way to drop greetd's
+    # After=plymouth-quit-wait: it comes from the module's unitConfig, so
+    # overriding systemd.services.greetd.after would only append.
     services.greetd.greeterManagesPlymouth = true;
 
     systemd.services.plymouth-quit = {

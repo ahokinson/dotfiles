@@ -5,20 +5,18 @@
   ...
 }:
 let
-  # Pinned apps only - vesktop opts out (home/common/dock-apps.nix), so it's
-  # installed and icon-themed but not in the Dock.
+  # vesktop opts out of pinning (home/common/dock-apps.nix).
   pinnedApps = builtins.filter (app: app.pinned or true) (
     builtins.attrValues (import (selfPath "home/common/dock-apps.nix"))
   );
 in
 {
-  # macOS user defaults, set exhaustively so all 3 Macs stay identical
-  # (except universalaccess.*, which has its own module).
+  # Set exhaustively, stock values included, so the Macs cannot drift apart.
+  # universalaccess.* is the exception; it has its own module.
   system.defaults = {
     dock.autohide = true;
     dock.magnification = false;
-    # Finder is always pinned by macOS regardless of what's declared here.
-    # Including it would risk a duplicate icon, so it's omitted.
+    # No Finder: macOS pins it regardless, and declaring it duplicates it.
     dock.persistent-apps = map (
       app: "/Users/${username}/Applications/Home Manager Apps/${app.darwinApp}"
     ) pinnedApps;
@@ -45,17 +43,15 @@ in
     dock.showMissionControlGestureEnabled = false;
     dock.show-process-indicators = true;
     dock.showhidden = false;
-    # Recent apps would otherwise show up dynamically next to the pinned
-    # list above, defeating the point of pinning it identically everywhere.
+    # Recents would otherwise appear next to the pinned list above.
     dock.show-recents = false;
     dock.slow-motion-allowed = false;
     dock.static-only = false;
     dock.tilesize = 32;
     dock.largesize = 16;
 
-    # Verified against this machine's actual settings, not nix-darwin's docs
-    # (which claim different defaults for Clicking/TrackpadRightClick/
-    # swipescrolldirection).
+    # Read off the real machine. nix-darwin's docs list the wrong defaults
+    # for Clicking, TrackpadRightClick and swipescrolldirection.
     trackpad.Clicking = false;
     trackpad.TrackpadRightClick = true;
     trackpad.Dragging = false;
@@ -82,12 +78,8 @@ in
     NSGlobalDomain.AppleShowAllExtensions = true;
     NSGlobalDomain.InitialKeyRepeat = 14;
     NSGlobalDomain.KeyRepeat = 1;
-    # Dark mode, matching the Catppuccin Frappe theme used across
-    # terminal/editor/CLI tooling.
     NSGlobalDomain.AppleInterfaceStyle = "Dark";
     NSGlobalDomain.AppleInterfaceStyleSwitchesAutomatically = false;
-    # Autocorrect/text-substitution/prediction off: interferes with
-    # code/terminal/config text.
     NSGlobalDomain.NSAutomaticCapitalizationEnabled = false;
     NSGlobalDomain.NSAutomaticDashSubstitutionEnabled = false;
     NSGlobalDomain.NSAutomaticPeriodSubstitutionEnabled = false;
@@ -98,7 +90,7 @@ in
     NSGlobalDomain.AppleEnableMouseSwipeNavigateWithScrolls = true;
     NSGlobalDomain.AppleEnableSwipeNavigateWithScrolls = true;
     NSGlobalDomain.AppleKeyboardUIMode = 0;
-    # Otherwise held keys show the accent-picker popup instead of repeating.
+    # Held keys repeat instead of opening the accent picker.
     NSGlobalDomain.ApplePressAndHoldEnabled = false;
     NSGlobalDomain.AppleScrollerPagingBehavior = false;
     NSGlobalDomain.AppleSpacesSwitchOnActivate = true;
@@ -185,8 +177,7 @@ in
 
     controlcenter.NowPlaying = false;
 
-    # Real current value on this machine (0-3 scale).
-    ".GlobalPreferences"."com.apple.mouse.scaling" = 2.0;
+    ".GlobalPreferences"."com.apple.mouse.scaling" = 2.0; # 0-3 scale
 
     ActivityMonitor.ShowCategory = 101; # All Processes, Hierarchically
     ActivityMonitor.SortColumn = "CPUUsage";

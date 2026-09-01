@@ -1,18 +1,16 @@
 { pkgs, ... }: {
-  # CUPS + brlaser for the Brother laser (toner) printer, plus Avahi/mDNS so
-  # network printers resolve by name instead of needing a manual IP-based
-  # setup. No GUI frontend: localhost:631 covers the rare manual change.
+  # No GUI frontend; localhost:631 covers the rare manual change.
   services.printing = {
     enable = true;
     drivers = [ pkgs.brlaser ];
 
-    # Defaults on whenever Avahi is enabled, and re-adds the declared printer
-    # as a duplicate implicitclass:// queue beside the real ipp:// one.
+    # Defaults on with Avahi, and re-adds the printer below as a duplicate
+    # implicitclass:// queue beside the real ipp:// one.
     browsed.enable = false;
   };
 
-  # The queue is declared rather than left to discovery so it survives a
-  # reinstall. ensureDefaultPrinter is a no-op unless ensurePrinters is set.
+  # Declared rather than discovered so it survives a reinstall.
+  # ensureDefaultPrinter is a no-op unless ensurePrinters is set.
   hardware.printers = {
     ensureDefaultPrinter = "Brother_MFC-L2710DW_series";
     ensurePrinters = [

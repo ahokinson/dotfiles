@@ -1,8 +1,7 @@
 { pkgs, username, ... }: {
   programs.zsh.enable = true;
 
-  # User account. Default shell is nixpkgs-managed zsh, overriding the stock
-  # macOS zsh so it tracks nixpkgs.
+  # nixpkgs zsh as the login shell, not the stock macOS one.
   users.users.${username} = {
     name = username;
     home = "/Users/${username}";

@@ -1,15 +1,11 @@
-# System-wide hardening that doesn't belong to a single other concern (see
-# also modules/nixos/ssh.nix for SSH-specific hardening).
+# Hardening that doesn't belong to another module. SSH is in ssh.nix.
 _: {
-  # Restricts who can even invoke /usr/bin/sudo to the wheel group, rather
-  # than relying solely on sudoers rules to gate privilege escalation.
+  # Restricts who can invoke sudo at all, not just what sudoers permits.
   security.sudo.execWheelOnly = true;
 
-  # USB device allowlisting - mitigates BadUSB/evil-maid attacks on a laptop
-  # that leaves your side. presentDevicePolicy "allow" only covers what's
-  # already connected when the daemon starts; anything plugged in after that
-  # falls through to insertedDevicePolicy's default (block), so a new
-  # Expansion Card needs an explicit `usbguard allow-device`.
+  # presentDevicePolicy "allow" only covers what is connected when the daemon
+  # starts. Anything plugged in later hits insertedDevicePolicy's default of
+  # block, so a new Expansion Card needs `usbguard allow-device`.
   services.usbguard = {
     enable = true;
     presentDevicePolicy = "allow";

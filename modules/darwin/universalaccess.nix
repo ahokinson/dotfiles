@@ -1,8 +1,6 @@
-# macOS Accessibility (universalaccess) defaults - imported only by the
-# personal Macs. On macbookpro16-m5 (work-managed laptop under MDM), writing
-# to the com.apple.universalaccess domain is blocked by a configuration
-# profile and aborts nix-darwin activation ("Could not write domain
-# com.apple.universalaccess; exiting"), so that host omits this import.
+# Personal Macs only. macbookpro16-m5 is MDM-managed and a configuration
+# profile blocks writes to com.apple.universalaccess, aborting activation
+# with "Could not write domain com.apple.universalaccess; exiting".
 {
   system.defaults.universalaccess = {
     reduceMotion = true;

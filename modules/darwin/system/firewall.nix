@@ -1,7 +1,6 @@
 _: {
-  # blockAllIncoming stays false: true would also kill AirDrop/sharing.
-  # Stealth mode still keeps the machine from responding to unsolicited
-  # probes. Signed software is let through automatically.
+  # blockAllIncoming stays false: true also blocks AirDrop and sharing.
+  # Stealth mode still drops unsolicited probes.
   networking.applicationFirewall = {
     enable = true;
     blockAllIncoming = false;
@@ -10,7 +9,5 @@ _: {
     enableStealthMode = true;
   };
 
-  # Not managed via services.openssh elsewhere on darwin, so this is
-  # authoritative for it.
   services.openssh.enable = false;
 }

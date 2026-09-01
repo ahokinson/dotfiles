@@ -1,11 +1,6 @@
-# Darwin equivalent of modules/nixos/hermes.nix. The upstream hermes-agent
-# flake (NousResearch/hermes-agent) only ships a NixOS systemd module, so
-# this hand-rolls a launchd agent running the same `hermes gateway` command
-# its systemd ExecStart uses (`pkgs.hermes` is that same package, aliased by
-# the overlay in overlays/default.nix). Runs as a per-user
-# LaunchAgent against the user's own ~/.hermes (already populated by
-# home/common/hermes/default.nix), not the NixOS module's isolated system
-# user/stateDir, since a personal Mac has no need for that isolation.
+# The upstream hermes-agent flake ships only a NixOS systemd module, so this
+# hand-rolls the launchd equivalent of modules/nixos/hermes.nix. Per-user,
+# against ~/.hermes as populated by home/common/hermes/default.nix.
 { pkgs, username, ... }:
 let
   homeDir = "/Users/${username}";

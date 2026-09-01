@@ -1,11 +1,6 @@
-# Shared by every NixOS host (framework13-amd-ryzen, bookpro14-m1-pro,
-# studio-m1-max): the modular system config and home-manager wiring that is
-# byte-for-byte identical between them. A host's own default.nix - or
-# hosts/asahi-common.nix, which sits between this and the two Apple Silicon
-# machines - supplies only its hostname, its hardware-configuration.nix, and
-# whatever its hardware genuinely forces.
-#
-# Counterpart to hosts/darwin-common.nix, which does the same job for the Macs.
+# Everything identical across the NixOS hosts. A host's own default.nix, or
+# hosts/asahi-common.nix for the two Apple Silicon machines, adds only its
+# hostname, hardware config, and whatever its hardware forces.
 { inputs, selfPath, ... }:
 {
   imports = [
@@ -28,8 +23,7 @@
     inputs.hermes-agent.nixosModules.default
   ];
 
-  # Every NixOS host here was installed on the same release, the way
-  # modules/darwin/system/settings.nix carries one system.stateVersion for
-  # every Mac. A host first installed on a later release would set its own.
+  # Every host here was installed on this release. One first installed on a
+  # later one would set its own.
   system.stateVersion = "26.05";
 }

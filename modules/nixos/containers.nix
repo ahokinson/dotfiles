@@ -1,6 +1,5 @@
-# Rootless Podman with Docker-CLI compatibility, so the shared `podman`
-# package (home/common/packages.nix) plus lazydocker/dive have a runtime to
-# talk to on Linux, matching `podman machine` on the Darwin hosts.
+# The Linux-native counterpart to `podman machine` on the Darwin hosts
+# (home/darwin/podman.nix).
 _: {
   virtualisation.podman = {
     enable = true;

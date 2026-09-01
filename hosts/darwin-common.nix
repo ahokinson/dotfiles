@@ -1,7 +1,6 @@
-# Shared by every darwin host: computerName mirrors networking.hostName (set
-# per-host; localHostName already defaults to it upstream), plus the imports
-# every Mac gets regardless of hardware. Host-specific bits (hardware module,
-# universalaccess.nix opt-out) stay in each host's own default.nix.
+# Everything identical across the Macs. The hardware module and the
+# universalaccess opt-out stay in each host's own default.nix.
+# localHostName already defaults to computerName upstream.
 { selfPath, config, ... }:
 {
   networking.computerName = config.networking.hostName;
