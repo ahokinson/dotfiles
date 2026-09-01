@@ -1,32 +1,23 @@
 import type { Plugin } from "@opencode-ai/plugin"
 
 /**
- * cerberus's opencode plugin.
+ * cerberus's opencode plugin. Runs in-process under Bun, so the whole
+ * adapter lives here: it shells out to `cerberus guard` on
+ * `tool.execute.before` and translates both directions.
  *
- * opencode plugins run in-process (Bun), not as a subprocess given a JSON
- * hook payload on stdin the way Claude Code, Codex CLI, and Cursor all
- * are. The whole adapter lives here: shells out to the real
- * `cerberus guard` binary on `tool.execute.before` and translates both
- * directions. `cerberus guard` itself needs no opencode-specific code.
+ * `tool.execute.before` fires for *every* tool call and opencode has no
+ * per-tool matcher config, so GUARDED_TOOLS below does the job cerberus's
+ * GUARD_MATCHER does elsewhere, keeping the read path clear.
  *
- * opencode has no per-tool matcher config like the other three harnesses:
- * `tool.execute.before` fires for *every* tool call, so GUARDED_TOOLS
- * below does the job cerberus's own GUARD_MATCHER does elsewhere, keeping
- * cerberus off the hot read path (read/glob/grep/list/...) instead of
- * spawning a subprocess on every single tool call.
- *
- * This file is a best effort against opencode's documented plugin API,
- * not verified against the real opencode binary:
- *   - opencode's own built-in tool names ("bash", "edit", "write",
- *     "webfetch") are confirmed from opencode's docs/tool reference.
- *   - The camelCase→snake_case remapping (`filePath` -> `file_path`) is
- *     confirmed only for "edit"'s args in opencode's own examples;
- *     applied to "write" too by analogy, not independently confirmed.
- *   - Piping JSON to `cerberus guard` via `new Response(payload)` as
- *     shell input follows Bun's documented "Response as stdin" shell
- *     redirection, since Bun's `$` has no dedicated `.stdin()` method.
- * If any of this drifts from opencode's actual behavior, this plugin
- * fails open (see the try/catch below) rather than silently mis-blocking.
+ * Written against opencode's documented plugin API, not verified against the
+ * binary. Unconfirmed parts:
+ *   - The camelCase to snake_case remapping (`filePath` -> `file_path`) is
+ *     confirmed only for "edit" in opencode's examples; "write" is by
+ *     analogy.
+ *   - Piping JSON via `new Response(payload)` follows Bun's documented
+ *     "Response as stdin" redirection, since `$` has no `.stdin()`.
+ * If any of it drifts, the try/catch below fails open rather than
+ * mis-blocking.
  */
 
 const GUARDED_TOOLS: Record<string, string> = {

@@ -22,8 +22,8 @@ function propertiesOf(event: BusEvent): PartEventProperties {
   return (event.properties as PartEventProperties | undefined) ?? {};
 }
 
-// This must remain private: OpenCode's legacy loader treats each exported
-// function in the module as a plugin.
+// Must stay private: OpenCode's legacy loader treats every exported function
+// in the module as a plugin.
 function pulseStateFor(event: BusEvent): PulseState | null {
   if (event.type === "session.idle") return "off";
   if (event.type !== "message.part.updated") return null;
@@ -49,7 +49,7 @@ export const PharosBridge = async ({ $ }: { $: Shell }) => {
     try {
       await $`pharos tmux dispatch ${state} --tool=opencode`;
     } catch {
-      // The status integration must never break OpenCode.
+      // Best effort; never break OpenCode over the status line.
     }
   };
 
@@ -61,7 +61,7 @@ export const PharosBridge = async ({ $ }: { $: Shell }) => {
       const payload = JSON.stringify({ session_id: sessionId });
       await $`echo ${payload} | pharos tmux render --tool=opencode`;
     } catch {
-      // The status integration must never break OpenCode.
+      // Best effort; never break OpenCode over the status line.
     }
   };
 

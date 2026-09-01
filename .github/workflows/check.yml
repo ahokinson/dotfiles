@@ -1,7 +1,6 @@
-# Evaluation and lint only: no host is ever built here. Evaluating a
-# darwinConfigurations drvPath from Linux is fine - only realising it needs a
-# matching platform - so one ubuntu runner covers all six configurations
-# without spending macOS minutes.
+# Evaluation and lint only; nothing is built. Evaluating a darwin drvPath
+# from Linux is fine, only realising it needs a matching platform, so one
+# ubuntu runner covers all six configurations.
 name: check
 
 on:
@@ -22,21 +21,17 @@ jobs:
 
       - uses: DeterminateSystems/nix-installer-action@main
 
-      # Builds checks.x86_64-linux (treefmt + pre-commit hooks) and evaluates
-      # nixosConfigurations. darwinConfigurations is not a standard flake
-      # output, so it is skipped here and covered by the loop below.
+      # darwinConfigurations is not a standard flake output, so this skips it
+      # and the loop below covers it.
       - name: nix flake check
         run: nix flake check --show-trace
 
-      # Host names come from the flake itself, so a seventh configuration
-      # cannot silently escape CI.
-      #
-      # Asahi hosts are skipped by a property they declare, not by name, so a
-      # new non-Asahi host is still covered automatically. They can only
-      # evaluate on the real hardware: hardware.asahi.enable pulls in
-      # peripheral firmware extracted from that machine's macOS install, and
-      # their hardware-configuration.nix is a placeholder with no fileSystems
-      # until someone runs nixos-generate-config there.
+      # Host names come from the flake, so a seventh configuration cannot
+      # escape CI, and the Asahi skip keys off a property they declare rather
+      # than their names. Those two only evaluate on the real hardware:
+      # hardware.asahi.enable pulls in firmware extracted from that machine's
+      # macOS install, and their hardware-configuration.nix is a placeholder
+      # with no fileSystems until nixos-generate-config runs there.
       - name: Evaluate every host configuration
         run: |
           set -euo pipefail

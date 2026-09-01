@@ -11,8 +11,8 @@ one on their own. `nh` sets `NH_FLAKE` to this repo, so it needs no `--flake`:
     nh darwin switch      # macOS
 
 It wraps the native tools with a `nix-output-monitor` build tree and an `nvd`
-diff of what actually changed. Those tools still work directly, and are what
-you need on a machine where home-manager hasn't activated yet:
+diff between generations. Those tools still work directly, and are what you
+need on a machine where home-manager hasn't activated yet:
 
     sudo nixos-rebuild switch --flake ~/.dotfiles     # NixOS, incl. Asahi
     sudo darwin-rebuild switch --flake ~/.dotfiles    # macOS
@@ -22,7 +22,7 @@ sitting at.
 
 ## Hosts
 
-Four machines, six configs — the two Apple Silicon Macs dual-boot macOS and
+Four machines, six configs: the two Apple Silicon Macs dual-boot macOS and
 Asahi NixOS.
 
 | Machine        | macOS                 | Linux                   |
