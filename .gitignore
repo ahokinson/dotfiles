@@ -5,6 +5,7 @@ result-*
 # Editor / OS cruft
 .DS_Store
 *.swp
+nvim.log
 .vscode/
 
 #temporary files from `nix flake check`
