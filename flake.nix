@@ -11,6 +11,11 @@
       inputs.home-manager.follows = "home-manager";
     };
 
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Own tools, each packaging itself. Tag-pinned so `nix flake update`
     # cannot move them and a bump stays a reviewable one-line edit.
     bloom = {
@@ -63,6 +68,14 @@
       url = "github:nix-community/nixos-apple-silicon";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # No `follows`: like hermes-agent above, nixos-raspberrypi pins its own
+    # nixpkgs deliberately - its Pi-specific kernel/firmware/u-boot
+    # packaging is validated against that release branch, and forcing it
+    # onto this repo's nixos-unstable on every `nix flake update` would
+    # risk breaking ARM kernel/DTB builds for the sake of two hosts with no
+    # other reason to track unstable.
+    nixos-raspberrypi.url = "github:nvmd/nixos-raspberrypi";
 
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
@@ -144,6 +157,21 @@
           ];
         };
 
+      # Raspberry Pi hosts use nixos-raspberrypi's own nixosSystem instead of
+      # nixpkgs.lib.nixosSystem: it wires in Pi-specific kernel/firmware
+      # packaging and disko-integrated boot provisioning nixos-anywhere needs
+      # for a fully non-interactive install. Board support and the disko
+      # module live in hosts/raspberrypi-common.nix, so this stays as short
+      # as mkNixos. No overlays.default: nothing these two hosts reuse needs
+      # it, and it would cross nixos-raspberrypi's own (older, deliberately
+      # unfollowed) nixpkgs revision for no reason.
+      mkRaspberryPi =
+        hostDir:
+        inputs.nixos-raspberrypi.lib.nixosSystem {
+          specialArgs = { inherit inputs selfPath username; };
+          modules = [ (selfPath "hosts/${hostDir}") ];
+        };
+
       # Each host pins its own platform; this list is only for the per-system
       # outputs at the bottom.
       systems = [
@@ -188,6 +216,11 @@
       nixosConfigurations.bookpro14-m1-pro = mkNixos "aarch64-linux" "bookpro14-m1-pro";
 
       nixosConfigurations.studio-m1-max = mkNixos "aarch64-linux" "studio-m1-max";
+
+      # --- Raspberry Pi 4 (aarch64-linux, headless appliances) ---
+      nixosConfigurations.pi-hole = mkRaspberryPi "pi-hole";
+
+      nixosConfigurations.pi-nas = mkRaspberryPi "pi-nas";
 
       # nixfmt, deadnix and statix over every .nix file; see treefmt.nix.
       formatter = eachSystem (pkgs: treefmtEval.${pkgs.system}.config.build.wrapper);

@@ -8,5 +8,6 @@
   imports = [
     (selfPath "hosts/studio-m1-max/hardware-configuration.nix")
     (selfPath "hosts/asahi-common.nix")
+    (selfPath "modules/nixos/nas-mount.nix")
   ];
 }
