@@ -74,11 +74,16 @@ let
     ${install "com.system76.CosmicAppLibrary" logo}
     ${lib.concatMapStrings (
       app:
-      install app.linuxIconName (mkIcon {
-        name = app.linuxIconName;
-        glyph = app.simpleIcon;
-        inherit (app) hue;
-      })
+      install app.linuxIconName (mkIcon (
+        {
+          name = app.linuxIconName;
+          glyph = app.simpleIcon;
+          inherit (app) hue;
+        }
+        // lib.optionalAttrs (app.vendoredIcon or false) {
+          glyphDir = selfPath "home/common/_files";
+        }
+      ))
     ) (builtins.attrValues dockApps)}
   '';
 in

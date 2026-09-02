@@ -23,6 +23,7 @@
   selfPath,
   lib,
   pkgs,
+  osConfig ? null,
   ...
 }:
 let
@@ -31,6 +32,13 @@ let
     builtins.attrValues (import (selfPath "home/common/dock-apps.nix"))
   );
   stripDesktopSuffix = id: lib.removeSuffix ".desktop" id;
+
+  # Asahi hosts run some apps' unofficial ARM64 builds under a different
+  # .desktop id (home/common/dock-apps.nix's asahi* overrides); same split as
+  # home/linux/icons/default.nix.
+  isApple = osConfig.hardware.asahi.enable or false;
+  desktopIdFor =
+    app: if isApple then (app.asahiLinuxDesktopId or app.linuxDesktopId) else app.linuxDesktopId;
 
   inherit (import (selfPath "home/linux/cosmic/ron.nix")) ronOptional ronEnum;
 
@@ -67,7 +75,7 @@ in
   wayland.desktopManager.cosmic.enable = true;
 
   wayland.desktopManager.cosmic.applets."app-list".settings.favorites = map (
-    app: stripDesktopSuffix app.linuxDesktopId
+    app: stripDesktopSuffix (desktopIdFor app)
   ) pinnedApps;
 
   # Weekday, month, day, 24-hour time with seconds, as the macOS menu bar.

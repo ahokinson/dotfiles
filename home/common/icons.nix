@@ -24,17 +24,21 @@ let
   glyphColor = "#ffffff";
 in
 {
-  # name:  the desktop entry's Icon= key, which also becomes the filename.
-  # glyph: basename under simple-icons' icons/ directory.
-  # hue:   an attribute name in palette.nix.
+  # name:     the desktop entry's Icon= key, which also becomes the filename.
+  # glyph:    basename under glyphDir.
+  # hue:      an attribute name in palette.nix.
+  # glyphDir: defaults to simple-icons' icons/ directory; pass selfPath
+  #           "home/common/_files" for a vendored glyph simple-icons doesn't
+  #           carry (e.g. slack.svg — see home/linux/icons/default.nix).
   mkIcon =
     {
       name,
       glyph,
       hue,
+      glyphDir ? "${inputs.simple-icons}/icons",
     }:
     let
-      source = "${inputs.simple-icons}/icons/${glyph}.svg";
+      source = "${glyphDir}/${glyph}.svg";
       matched = builtins.match ''.*<path d="([^"]+)".*'' (builtins.readFile source);
       pathData =
         if matched == null then

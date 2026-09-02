@@ -96,6 +96,9 @@ in
       sd
       semgrep
       signal-desktop
+      # Linux gets slack (or slacky on Asahi) from home/linux/packages.nix;
+      # pkgs.slack has no aarch64-linux build.
+      (lib.optionals isDarwin [ slack ])
       sox
       sqld
       stylua
