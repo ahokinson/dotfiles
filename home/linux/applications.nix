@@ -1,23 +1,16 @@
-# Hides entries for packages that must stay installed. home-manager writes to
-# /etc/profiles/per-user, which precedes /run/current-system/sw in
-# XDG_DATA_DIRS, so these shadow the system copies.
+# Hides app-grid entries for CLI-only tools that still need to stay
+# installed. home-manager writes to /etc/profiles/per-user, which precedes
+# /run/current-system/sw in XDG_DATA_DIRS, so this shadows a same-named
+# system copy for spec-compliant readers of that variable.
+#
+# COSMIC's app library isn't one: it doesn't prefer the earlier copy the way
+# the ordering above says it should, so this only actually hides anything
+# for a package with no system-level duplicate to lose to. cups and
+# nixos-manual both had one; modules/nixos/printing.nix strips the former at
+# the source instead, and modules/nixos/settings.nix drops the latter
+# entirely, since nixpkgs synthesizes it inline with no package to swap.
 _: {
   xdg.desktopEntries = {
-    # Ships inside pkgs.cups, so dropping it means dropping CUPS.
-    cups = {
-      name = "Manage Printing";
-      exec = "xdg-open http://localhost:631/";
-      noDisplay = true;
-    };
-
-    # From documentation.doc.enable, which also carries every package's
-    # /share/doc.
-    nixos-manual = {
-      name = "NixOS Manual";
-      exec = "nixos-help";
-      noDisplay = true;
-    };
-
     # Used from the terminal only; its .desktop entry is for launching from
     # an app grid, which nothing here does.
     btop = {

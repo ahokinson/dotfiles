@@ -29,4 +29,10 @@
   nixpkgs.config.allowUnfree = true;
   # mitmproxy -> python ecdsa has CVE-2024-23342 present in legacy curve support.
   nixpkgs.config.permittedInsecurePackages = [ "python3.14-ecdsa-0.19.2" ];
+
+  # nixos-help is unused here, and its desktop entry is synthesized inline in
+  # nixpkgs' documentation module, not a swappable package, so
+  # home/linux/applications.nix's NoDisplay shadow can't reach it the way
+  # modules/nixos/printing.nix's cups override does. This is the only lever.
+  documentation.nixos.enable = false;
 }
