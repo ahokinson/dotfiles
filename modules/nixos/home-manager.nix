@@ -1,4 +1,5 @@
 {
+  config,
   inputs,
   selfPath,
   username,
@@ -45,4 +46,12 @@
     # their home modules the same argument set.
     extraSpecialArgs = { inherit inputs selfPath username; };
   };
+
+  # cosmic-greeter-daemon is one long-lived process for the whole boot; it
+  # renders login, lock and wake screens from whatever config it read at its
+  # own start, not live from disk. Restart it whenever this generation
+  # changes so a rebuild's wallpaper/theme actually reaches those screens.
+  systemd.services.cosmic-greeter-daemon.restartTriggers = [
+    config.home-manager.users.cosmic-greeter.home.activationPackage
+  ];
 }
