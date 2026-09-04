@@ -17,5 +17,19 @@ _: {
       exec = "nixos-help";
       noDisplay = true;
     };
+
+    # Used from the terminal only; its .desktop entry is for launching from
+    # an app grid, which nothing here does.
+    btop = {
+      name = "btop++";
+      exec = "btop";
+      noDisplay = true;
+    };
+
+    nvim = {
+      name = "Neovim wrapper";
+      exec = "nvim";
+      noDisplay = true;
+    };
   };
 }
