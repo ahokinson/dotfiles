@@ -1,5 +1,5 @@
 # Dock and panel icons, generated: a simple-icons glyph recolored onto a
-# rounded Frappe tile from palette.nix.
+# rounded Mocha tile from palette.nix.
 #
 # simple-icons ships exactly one <path> per file against a 0 0 24 24 viewBox,
 # which is what lets the extraction below be a string match rather than an XML
@@ -19,7 +19,7 @@ let
   # 24 * 0.225, the corner radius proportion macOS uses on its app icons.
   cornerRadius = 5.4;
 
-  # Not from palette.nix: Frappe has no white, and rosewater sinks into the
+  # Not from palette.nix: Mocha has no white, and rosewater sinks into the
   # peach tile.
   glyphColor = "#ffffff";
 in

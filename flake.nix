@@ -98,7 +98,7 @@
     nvim.url = "github:ahokinson/nvim";
     nvim.flake = false;
 
-    # Also a plain source tree. Only icons/ is used, recolored onto Frappe
+    # Also a plain source tree. Only icons/ is used, recolored onto Mocha
     # tiles by home/common/icons.nix.
     simple-icons.url = "github:simple-icons/simple-icons";
     simple-icons.flake = false;

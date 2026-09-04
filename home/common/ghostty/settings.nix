@@ -12,12 +12,17 @@ let
   isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
   sharedFonts = import (selfPath "home/common/fonts.nix") { inherit pkgs; };
 
-  # The two colors the window chrome needs, matching what catppuccin/nix's
-  # ghostty module sets as background and foreground.
+  # Ghostty takes these without a leading "#". base and text are the two the
+  # window chrome needs, matching what catppuccin/nix's ghostty module sets as
+  # background and foreground; the other two colour the macOS app icon.
   palette = import (selfPath "home/common/palette.nix");
-  chrome = {
-    base = lib.removePrefix "#" palette.base;
-    text = lib.removePrefix "#" palette.text;
+  chrome = builtins.mapAttrs (_: lib.removePrefix "#") {
+    inherit (palette)
+      base
+      text
+      overlay0
+      crust
+      ;
   };
 
 in
@@ -25,8 +30,8 @@ in
   programs.ghostty.settings = {
     macos-icon = "custom-style";
     macos-icon-frame = "beige";
-    macos-icon-ghost-color = "737994";
-    macos-icon-screen-color = "232634";
+    macos-icon-ghost-color = chrome.overlay0;
+    macos-icon-screen-color = chrome.crust;
 
     # "hidden" removes the titlebar; the blank title below is belt and
     # braces. The Linux equivalent is window-decoration further down.

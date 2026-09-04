@@ -4,7 +4,7 @@
 {
   catppuccin = {
     # Mirrors `enable` to silence catppuccin/nix's migration warning. Stays
-    # Linux-only: the darwin apps mostly ship hand-authored Frappe themes.
+    # Linux-only: the darwin apps mostly ship hand-authored Mocha themes.
     autoEnable = true;
 
     # WhiteSur supplies the icons and cursor; this keeps only its GTK colors.

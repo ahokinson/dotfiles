@@ -1,15 +1,14 @@
 # Also builds the cached theme delta reads as `syntax-theme`.
 #
-# bat identifies a theme by the file's basename, so the file is "Catppuccin
-# Frappe.tmTheme" with no accent, even though the theme's internal name has
-# one. That basename is what config.theme and delta reference.
+# bat identifies a theme by the file's basename, so that is what config.theme
+# and delta reference, not the name inside the file.
 { selfPath, ... }: {
   programs.bat = {
     enable = true;
-    config.theme = "Catppuccin Frappe";
-    themes."Catppuccin Frappe" = {
+    config.theme = "Catppuccin Mocha";
+    themes."Catppuccin Mocha" = {
       src = selfPath "home/common/bat/themes";
-      file = "Catppuccin Frappe.tmTheme";
+      file = "Catppuccin Mocha.tmTheme";
     };
   };
 }

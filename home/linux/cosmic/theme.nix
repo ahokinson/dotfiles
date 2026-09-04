@@ -1,5 +1,5 @@
 # accent and bg_color are hex->float conversions of palette.nix colors,
-# checked against catppuccin/cosmic-desktop's catppuccin-frappe-blue+round.ron.
+# checked against catppuccin/cosmic-desktop's catppuccin-mocha-blue+round.ron.
 { selfPath, pkgs, ... }:
 let
   sharedFonts = import (selfPath "home/common/fonts.nix") { inherit pkgs; };
@@ -22,17 +22,17 @@ in
       mode = "dark";
       # Typed as a RON optional of submodule, so the wrapper is required.
       dark = {
-        # #8caaee (home/common/palette.nix's blue, hex->float)
+        # #89b4fa (home/common/palette.nix's blue, hex->float)
         accent = ronOptional {
-          red = 0.549020;
-          green = 0.666667;
-          blue = 0.933333;
+          red = 0.537255;
+          green = 0.705882;
+          blue = 0.980392;
         };
-        # #303446 (home/common/palette.nix's base, hex->float)
+        # #1e1e2e (home/common/palette.nix's base, hex->float)
         bg_color = ronOptional {
-          red = 0.188235;
-          green = 0.203922;
-          blue = 0.274510;
+          red = 0.117647;
+          green = 0.117647;
+          blue = 0.180392;
           alpha = 1.0;
         };
 

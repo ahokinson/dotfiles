@@ -39,4 +39,4 @@ k9s:
     crumbsless: false
     reactive: false
     noIcons: false
-    skin: catppuccin-frappe
+    skin: catppuccin-mocha

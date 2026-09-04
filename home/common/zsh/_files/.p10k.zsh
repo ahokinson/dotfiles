@@ -9,33 +9,33 @@
   unset -m '(POWERLEVEL9K_*|DEFAULT_USER)~POWERLEVEL9K_GITSTATUS_DIR'
   autoload -Uz is-at-least && is-at-least 5.1 || return
 
-  local -A CATPPUCCIN_FRAPPE=(
-    rosewater 217
-    flamingo  211
-    pink      212
+  local -A CATPPUCCIN_MOCHA=(
+    rosewater 224
+    flamingo  224
+    pink      218
     mauve     183
-    red       204
-    maroon    210
+    red       211
+    maroon    181
     peach     216
-    yellow    229
+    yellow    223
     green     151
-    teal      152
-    sky       153
+    teal      116
+    sky       116
     sapphire  117
     blue      111
     lavender  147
     text      189
-    subtext1  181
-    subtext0  145
-    overlay2  109
+    subtext1  146
+    subtext0  146
+    overlay2  103
     overlay1  103
-    overlay0  97
-    surface2  59
-    surface1  53
-    surface0  59
-    base      237
-    mantle    236
-    crust     235
+    overlay0  243
+    surface2  241
+    surface1  239
+    surface0  237
+    base      235
+    mantle    234
+    crust     233
   )
 
   typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
@@ -79,13 +79,13 @@
     typeset -g POWERLEVEL9K_EMPTY_LINE_RIGHT_PROMPT_FIRST_SEGMENT_START_SYMBOL='%{%}'
   fi
 
-  typeset -g POWERLEVEL9K_OS_ICON_FOREGROUND=$CATPPUCCIN_FRAPPE[base]
-  typeset -g POWERLEVEL9K_OS_ICON_BACKGROUND=$CATPPUCCIN_FRAPPE[text]
+  typeset -g POWERLEVEL9K_OS_ICON_FOREGROUND=$CATPPUCCIN_MOCHA[base]
+  typeset -g POWERLEVEL9K_OS_ICON_BACKGROUND=$CATPPUCCIN_MOCHA[text]
 
-  typeset -g POWERLEVEL9K_DIR_BACKGROUND=$CATPPUCCIN_FRAPPE[blue]
-  typeset -g POWERLEVEL9K_DIR_FOREGROUND=$CATPPUCCIN_FRAPPE[text]
-  typeset -g POWERLEVEL9K_DIR_SHORTENED_FOREGROUND=$CATPPUCCIN_FRAPPE[subtext1]
-  typeset -g POWERLEVEL9K_DIR_ANCHOR_FOREGROUND=$CATPPUCCIN_FRAPPE[text]
+  typeset -g POWERLEVEL9K_DIR_BACKGROUND=$CATPPUCCIN_MOCHA[blue]
+  typeset -g POWERLEVEL9K_DIR_FOREGROUND=$CATPPUCCIN_MOCHA[text]
+  typeset -g POWERLEVEL9K_DIR_SHORTENED_FOREGROUND=$CATPPUCCIN_MOCHA[subtext1]
+  typeset -g POWERLEVEL9K_DIR_ANCHOR_FOREGROUND=$CATPPUCCIN_MOCHA[text]
   typeset -g POWERLEVEL9K_DIR_ANCHOR_BOLD=true
   typeset -g POWERLEVEL9K_DIR_SHOW_WRITABLE=v3
   typeset -g POWERLEVEL9K_DIR_HYPERLINK=false
@@ -102,11 +102,11 @@
   )
   typeset -g POWERLEVEL9K_SHORTEN_FOLDER_MARKER="(${(j:|:)anchor_files})"
 
-  typeset -g POWERLEVEL9K_VCS_CLEAN_BACKGROUND=$CATPPUCCIN_FRAPPE[peach]
-  typeset -g POWERLEVEL9K_VCS_MODIFIED_BACKGROUND=$CATPPUCCIN_FRAPPE[peach]
-  typeset -g POWERLEVEL9K_VCS_UNTRACKED_BACKGROUND=$CATPPUCCIN_FRAPPE[peach]
-  typeset -g POWERLEVEL9K_VCS_CONFLICTED_BACKGROUND=$CATPPUCCIN_FRAPPE[peach]
-  typeset -g POWERLEVEL9K_VCS_LOADING_BACKGROUND=$CATPPUCCIN_FRAPPE[surface2]
+  typeset -g POWERLEVEL9K_VCS_CLEAN_BACKGROUND=$CATPPUCCIN_MOCHA[peach]
+  typeset -g POWERLEVEL9K_VCS_MODIFIED_BACKGROUND=$CATPPUCCIN_MOCHA[peach]
+  typeset -g POWERLEVEL9K_VCS_UNTRACKED_BACKGROUND=$CATPPUCCIN_MOCHA[peach]
+  typeset -g POWERLEVEL9K_VCS_CONFLICTED_BACKGROUND=$CATPPUCCIN_MOCHA[peach]
+  typeset -g POWERLEVEL9K_VCS_LOADING_BACKGROUND=$CATPPUCCIN_MOCHA[surface2]
   typeset -g POWERLEVEL9K_VCS_BRANCH_ICON='\uF126'
   typeset -g POWERLEVEL9K_VCS_UNTRACKED_ICON='?'
   typeset -g POWERLEVEL9K_VCS_BACKENDS=(git)
@@ -124,7 +124,7 @@
       return
     fi
 
-    typeset -g my_git_format="%${CATPPUCCIN_FRAPPE[base]}F${(g::)POWERLEVEL9K_VCS_BRANCH_ICON}"
+    typeset -g my_git_format="%${CATPPUCCIN_MOCHA[base]}F${(g::)POWERLEVEL9K_VCS_BRANCH_ICON}"
   }
   functions -M my_git_formatter 2>/dev/null
 

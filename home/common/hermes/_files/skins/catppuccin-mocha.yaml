@@ -1,0 +1,95 @@
+# Catppuccin Mocha skin for Hermes CLI
+# Palette reference: https://github.com/catppuccin/catppuccin
+#   Base #1e1e2e  Mantle #181825  Crust #11111b
+#   Text #cdd6f4  Subtext1 #bac2de  Subtext0 #a6adc8
+#   Overlay2 #9399b2  Overlay1 #7f849c  Overlay0 #6c7086
+#   Surface2 #585b70  Surface1 #45475a  Surface0 #313244
+#   Blue #89b4fa  Lavender #b4befe  Sapphire #74c7ec  Sky #89dceb  Teal #94e2d5
+#   Green #a6e3a1  Yellow #f9e2af  Peach #fab387  Maroon #eba0ac  Red #f38ba8
+#   Mauve #cba6f7  Pink #f5c2e7  Flamingo #f2cdcd  Rosewater #f5e0dc
+name: catppuccin-mocha
+description: Catppuccin Mocha, deep dark pastel theme
+
+colors:
+  # Banner / panels
+  banner_border: "#89b4fa" # Blue
+  banner_title: "#b4befe" # Lavender
+  banner_accent: "#cba6f7" # Mauve
+  banner_dim: "#a6adc8" # Subtext0 (lifted for readable category labels)
+  banner_text: "#cdd6f4" # Text
+
+  # General UI
+  ui_accent: "#89b4fa" # Blue
+  ui_label: "#b4befe" # Lavender
+  ui_ok: "#a6e3a1" # Green
+  ui_error: "#f38ba8" # Red
+  ui_warn: "#f9e2af" # Yellow
+
+  # Prompt / input
+  prompt: "#cdd6f4" # Text
+  input_rule: "#45475a" # Surface1
+  response_border: "#89b4fa" # Blue
+
+  # Session labels
+  session_label: "#b4befe" # Lavender
+  session_border: "#6c7086" # Overlay0
+
+  # Status / usage bar
+  status_bar_bg: "#181825" # Mantle
+  status_bar_text: "#cdd6f4" # Text
+  status_bar_strong: "#b4befe" # Lavender
+  status_bar_dim: "#6c7086" # Overlay0
+  status_bar_good: "#a6e3a1" # Green
+  status_bar_warn: "#f9e2af" # Yellow
+  status_bar_bad: "#fab387" # Peach
+  status_bar_critical: "#f38ba8" # Red
+
+  # TUI extras
+  # Popup menus float ABOVE the base (#1e1e2e), so they use Surface tones
+  # (lighter than base) to stand out, not Mantle/Crust, which sit behind base
+  # and made the menus read as a murky dark blob.
+  voice_status_bg: "#181825" # Mantle
+  selection_bg: "#585b70" # Surface2
+  completion_menu_bg: "#313244" # Surface0 (lifted from Mantle)
+  completion_menu_current_bg: "#6c7086" # Overlay0, clear highlight vs menu bg
+  completion_menu_meta_bg: "#45475a" # Surface1
+  completion_menu_meta_current_bg: "#585b70" # Surface2
+
+branding:
+  agent_name: "Hermes Agent"
+  welcome: "Welcome to Hermes Agent! Type your message or /help for commands."
+  goodbye: "Goodbye! ⚕"
+  response_label: " ⚕ Hermes "
+  prompt_symbol: "❯"
+  help_header: "(=^･ω･^=) Available Commands"
+
+tool_prefix: "┊"
+
+# Warm Mocha gradient logo (Yellow -> Peach -> Maroon/Red); keeps the
+# original gold->bronze warmth but remapped onto Mocha's warm pastels.
+banner_logo: |
+  [#f9e2af] ██╗  ██╗███████╗██████╗ ███╗   ███╗███████╗███████╗[/]
+  [#f9ca9b] ██║  ██║██╔════╝██╔══██╗████╗ ████║██╔════╝██╔════╝[/]
+  [#fab387] ███████║█████╗  ██████╔╝██╔████╔██║█████╗  ███████╗[/]
+  [#f2a999] ██╔══██║██╔══╝  ██╔══██╗██║╚██╔╝██║██╔══╝  ╚════██║[/]
+  [#eba0ac] ██║  ██║███████╗██║  ██║██║ ╚═╝ ██║███████╗███████║[/]
+  [#f38ba8] ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝╚══════╝[/]
+
+# Caduceus hero art on the same warm Mocha gradient
+# (Yellow -> Peach -> Maroon -> Red -> Flamingo) replacing gold/bronze.
+banner_hero: |
+  [#f9e2af]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⡀⠀⣀⣀⠀⢀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#f9e2af]⠀⠀⠀⠀⠀⠀⢀⣠⣴⣾⣿⣿⣇⠸⣿⣿⠇⣸⣿⣿⣷⣦⣄⡀⠀⠀⠀⠀⠀⠀[/]
+  [#f9ca9b]⠀⢀⣠⣴⣶⠿⠋⣩⡿⣿⡿⠻⣿⡇⢠⡄⢸⣿⠟⢿⣿⢿⣍⠙⠿⣶⣦⣄⡀⠀[/]
+  [#f9ca9b]⠀⠀⠉⠉⠁⠶⠟⠋⠀⠉⠀⢀⣈⣁⡈⢁⣈⣁⡀⠀⠉⠀⠙⠻⠶⠈⠉⠉⠀⠀[/]
+  [#fab387]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣴⣿⡿⠛⢁⡈⠛⢿⣿⣦⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#fab387]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠿⣿⣦⣤⣈⠁⢠⣴⣿⠿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#f2a999]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠻⢿⣿⣦⡉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#f2a999]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⢷⣦⣈⠛⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#eba0ac]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣴⠦⠈⠙⠿⣦⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#eba0ac]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠸⣿⣤⡈⠁⢤⣿⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#f38ba8]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠷⠄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#f38ba8]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⠑⢶⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#f2cdcd]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⠁⢰⡆⠈⡿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#f2cdcd]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠳⠈⣡⠞⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#f2cdcd]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]

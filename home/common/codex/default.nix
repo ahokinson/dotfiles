@@ -11,14 +11,14 @@ let
     ${pkgs.gawk}/bin/awk '
       /^\[tui\]/ { print; in_tui=1; seen_tui=1; next }
       /^\[/ {
-        if (in_tui && !seen_theme) print "theme = \"catppuccin-frappe\""
+        if (in_tui && !seen_theme) print "theme = \"catppuccin-mocha\""
         in_tui=0; print; next
       }
-      in_tui && /^theme[ \t]*=/ { print "theme = \"catppuccin-frappe\""; seen_theme=1; next }
+      in_tui && /^theme[ \t]*=/ { print "theme = \"catppuccin-mocha\""; seen_theme=1; next }
       { print }
       END {
-        if (in_tui && !seen_theme) print "theme = \"catppuccin-frappe\""
-        if (!seen_tui) { print ""; print "[tui]"; print "theme = \"catppuccin-frappe\"" }
+        if (in_tui && !seen_theme) print "theme = \"catppuccin-mocha\""
+        if (!seen_tui) { print ""; print "[tui]"; print "theme = \"catppuccin-mocha\"" }
       }
     ' "$codexConfig" > "$codexConfig.hm-tmp" && mv "$codexConfig.hm-tmp" "$codexConfig"
   '';

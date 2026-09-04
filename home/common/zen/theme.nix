@@ -7,4 +7,4 @@ let
     owner = "catppuccin";
   };
 in
-"${catppuccinZen}/themes/Frappe/Blue"
+"${catppuccinZen}/themes/Mocha/Blue"

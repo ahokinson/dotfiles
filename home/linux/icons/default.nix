@@ -41,7 +41,7 @@ let
   indexTheme = pkgs.writeText "index.theme" ''
     [Icon Theme]
     Name=${themeName}
-    Comment=WhiteSur-dark with Catppuccin Frappe icons for the pinned apps
+    Comment=WhiteSur-dark with Catppuccin Mocha icons for the pinned apps
     Inherits=WhiteSur-dark,hicolor
     Directories=apps/scalable,apps@2x/scalable
     ScaledDirectories=apps@2x/scalable
@@ -74,16 +74,18 @@ let
     ${install "com.system76.CosmicAppLibrary" logo}
     ${lib.concatMapStrings (
       app:
-      install app.linuxIconName (mkIcon (
-        {
-          name = app.linuxIconName;
-          glyph = app.simpleIcon;
-          inherit (app) hue;
-        }
-        // lib.optionalAttrs (app.vendoredIcon or false) {
-          glyphDir = selfPath "home/common/_files";
-        }
-      ))
+      install app.linuxIconName (
+        mkIcon (
+          {
+            name = app.linuxIconName;
+            glyph = app.simpleIcon;
+            inherit (app) hue;
+          }
+          // lib.optionalAttrs (app.vendoredIcon or false) {
+            glyphDir = selfPath "home/common/_files";
+          }
+        )
+      )
     ) (builtins.attrValues dockApps)}
   '';
 in

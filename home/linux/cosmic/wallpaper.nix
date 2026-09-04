@@ -1,9 +1,9 @@
-# The same solid Frappe base-color image the Macs use. cosmic-manager writes
+# The same solid Mocha base-color image the Macs use. cosmic-manager writes
 # cosmic-bg's config directly, so it applies at activation with no login-time
 # script.
 { selfPath, ... }:
 let
-  wallpaper = selfPath "home/common/_files/wallpaper-frappe-base.png";
+  wallpaper = selfPath "home/common/_files/wallpaper-mocha-base.png";
 in
 {
   wayland.desktopManager.cosmic.wallpapers = [
