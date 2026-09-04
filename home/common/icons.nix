@@ -19,9 +19,9 @@ let
   # 24 * 0.225, the corner radius proportion macOS uses on its app icons.
   cornerRadius = 5.4;
 
-  # Not from palette.nix: Mocha has no white, and rosewater sinks into the
-  # peach tile.
-  glyphColor = "#ffffff";
+  # Every tile hue is a light pastel, so the glyph on top of it is dark. Same
+  # convention as overlays/signal.nix's *-oncolor tokens.
+  glyphColor = palette.crust;
 in
 {
   # name:     the desktop entry's Icon= key, which also becomes the filename.
