@@ -24,6 +24,14 @@
     hue = "mauve";
     pinned = true;
   };
+  # Linux only: pkgs.obs-studio's meta.platforms has no darwin entry, and
+  # there's no cask here standing in for one, so darwinApp stays unset.
+  obs = {
+    linuxDesktopId = "com.obsproject.Studio.desktop";
+    linuxIconName = "com.obsproject.Studio";
+    simpleIcon = "obsstudio";
+    hue = "red";
+  };
   # Linux only: pkgs.proton-vpn's meta.platforms has no darwin entry, and
   # there's no cask here standing in for one, so darwinApp stays unset.
   protonvpn = {
