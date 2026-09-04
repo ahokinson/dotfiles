@@ -41,7 +41,7 @@ let
   indexTheme = pkgs.writeText "index.theme" ''
     [Icon Theme]
     Name=${themeName}
-    Comment=WhiteSur-dark with Catppuccin Mocha icons for the pinned apps
+    Comment=WhiteSur-dark with Catppuccin Mocha icons for this repo's apps
     Inherits=WhiteSur-dark,hicolor
     Directories=apps/scalable,apps@2x/scalable
     ScaledDirectories=apps@2x/scalable
@@ -74,8 +74,8 @@ let
     ${install "com.system76.CosmicAppLibrary" logo}
     ${lib.concatMapStrings (
       app:
-      install app.linuxIconName (
-        mkIcon (
+      let
+        tile = mkIcon (
           {
             name = app.linuxIconName;
             glyph = app.simpleIcon;
@@ -84,7 +84,14 @@ let
           // lib.optionalAttrs (app.vendoredIcon or false) {
             glyphDir = selfPath "home/common/_files";
           }
-        )
+        );
+      in
+      # One generated tile, filed under every Icon= key a desktop entry for
+      # this app could use (home/common/dock-apps.nix's extraLinuxIconNames)
+      # — a host only ever has one of those builds installed, so this beats
+      # branching the filename per arch.
+      lib.concatMapStrings (name: install name tile) (
+        [ app.linuxIconName ] ++ (app.extraLinuxIconNames or [ ])
       )
     ) (builtins.attrValues dockApps)}
   '';

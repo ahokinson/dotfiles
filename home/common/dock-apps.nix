@@ -3,13 +3,16 @@
 # modules/darwin/system, home/linux/cosmic/panel.nix and home/common/icons.nix.
 #
 # linuxIconName is the desktop entry's Icon= key; it matches linuxDesktopId
-# only for ghostty. pinned defaults true (`app.pinned or true`), and opting
-# out drops the app from the dock, not from the generated icon set.
+# only for ghostty. pinned defaults false (`app.pinned or false`), so opting
+# in is what puts an app in the dock; everything listed here gets a generated
+# icon either way.
 # vendoredIcon marks simpleIcon as a filename under home/common/_files
 # instead of a glyph in the simple-icons input (see slack; the glyph itself
 # lives in home/linux/icons/default.nix's mkIcon call).
 # asahiLinuxDesktopId overrides linuxDesktopId on the Asahi hosts, for an app
-# whose Linux build differs by CPU arch.
+# whose Linux build differs by CPU arch. extraLinuxIconNames files the same
+# generated tile under further Icon= keys; a host only ever has one of those
+# builds installed, so carrying both names beats branching per arch.
 # darwinApp is optional (see protonvpn): modules/darwin/system/defaults.nix
 # skips pinning any app that omits it, for one with no macOS build here.
 {
@@ -19,6 +22,7 @@
     linuxIconName = "com.mitchellh.ghostty";
     simpleIcon = "ghostty";
     hue = "mauve";
+    pinned = true;
   };
   # Linux only: pkgs.proton-vpn's meta.platforms has no darwin entry, and
   # there's no cask here standing in for one, so darwinApp stays unset.
@@ -40,8 +44,9 @@
     linuxDesktopId = "slack.desktop";
     linuxIconName = "slack";
     # Asahi hosts run slacky instead (home/linux/packages.nix); its .desktop
-    # id differs from the real client's.
+    # id and its Icon= key both differ from the real client's.
     asahiLinuxDesktopId = "slacky.desktop";
+    extraLinuxIconNames = [ "slacky" ];
     # simple-icons dropped this glyph (a Salesforce trademark request, since
     # Salesforce owns Slack); vendored from before the removal instead.
     simpleIcon = "slack";
@@ -55,7 +60,6 @@
     linuxIconName = "vesktop";
     simpleIcon = "discord";
     hue = "lavender";
-    pinned = false;
   };
   zen = {
     darwinApp = "Zen Browser (Beta).app";
@@ -63,5 +67,6 @@
     linuxIconName = "zen-browser";
     simpleIcon = "zenbrowser";
     hue = "peach";
+    pinned = true;
   };
 }

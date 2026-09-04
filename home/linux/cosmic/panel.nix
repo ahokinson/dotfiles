@@ -27,8 +27,9 @@
   ...
 }:
 let
-  # vesktop opts out of pinning (home/common/dock-apps.nix).
-  pinnedApps = builtins.filter (app: app.pinned or true) (
+  # Pinning is opt-in (home/common/dock-apps.nix): only ghostty and zen ask
+  # for it, the rest are listed there for their icons alone.
+  pinnedApps = builtins.filter (app: app.pinned or false) (
     builtins.attrValues (import (selfPath "home/common/dock-apps.nix"))
   );
   stripDesktopSuffix = id: lib.removeSuffix ".desktop" id;
@@ -172,5 +173,6 @@ in
     run ${lib.getExe pkgs.killall} .cosmic-panel-wrapped || true
   '';
 
-  # The logo and the pinned apps' icons come from home/linux/icons.
+  # The logo and every dock-apps.nix icon, pinned or not, come from
+  # home/linux/icons.
 }
