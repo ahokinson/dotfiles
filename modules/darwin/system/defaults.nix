@@ -5,8 +5,9 @@
   ...
 }:
 let
-  # vesktop opts out of pinning (home/common/dock-apps.nix).
-  pinnedApps = builtins.filter (app: app.pinned or true) (
+  # vesktop opts out of pinning; protonvpn has no darwinApp to pin, having no
+  # macOS build at all (home/common/dock-apps.nix).
+  pinnedApps = builtins.filter (app: (app.pinned or true) && app ? darwinApp) (
     builtins.attrValues (import (selfPath "home/common/dock-apps.nix"))
   );
 in

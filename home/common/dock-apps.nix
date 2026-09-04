@@ -10,6 +10,8 @@
 # lives in home/linux/icons/default.nix's mkIcon call).
 # asahiLinuxDesktopId overrides linuxDesktopId on the Asahi hosts, for an app
 # whose Linux build differs by CPU arch.
+# darwinApp is optional (see protonvpn): modules/darwin/system/defaults.nix
+# skips pinning any app that omits it, for one with no macOS build here.
 {
   ghostty = {
     darwinApp = "Ghostty.app";
@@ -17,6 +19,14 @@
     linuxIconName = "com.mitchellh.ghostty";
     simpleIcon = "ghostty";
     hue = "mauve";
+  };
+  # Linux only: pkgs.proton-vpn's meta.platforms has no darwin entry, and
+  # there's no cask here standing in for one, so darwinApp stays unset.
+  protonvpn = {
+    linuxDesktopId = "proton.vpn.app.gtk.desktop";
+    linuxIconName = "proton-vpn-logo";
+    simpleIcon = "protonvpn";
+    hue = "lavender";
   };
   signal = {
     darwinApp = "Signal.app";
