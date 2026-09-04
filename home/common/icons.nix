@@ -21,7 +21,7 @@ let
 
   # Every tile hue is a light pastel, so the glyph on top of it is dark. Same
   # convention as overlays/signal.nix's *-oncolor tokens.
-  glyphColor = palette.crust;
+  glyphColor = palette.base;
 in
 {
   # name:     the desktop entry's Icon= key, which also becomes the filename.
