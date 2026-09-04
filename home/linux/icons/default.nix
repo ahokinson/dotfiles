@@ -19,6 +19,7 @@
 let
   dockApps = import (selfPath "home/common/dock-apps.nix");
   inherit (import (selfPath "home/common/icons.nix") { inherit inputs pkgs selfPath; }) mkIcon;
+  palette = import (selfPath "home/common/palette.nix");
 
   themeName = "WhiteSur-dark-catppuccin";
 
@@ -26,13 +27,41 @@ let
   # Apple Silicon hosts from framework13-amd-ryzen.
   isApple = osConfig.hardware.asahi.enable or false;
 
+  # Both logos below ship their own brand colors; swapped hex-for-hex onto
+  # Mocha so the app-library button matches the rest of the icon theme.
+  recolor =
+    replacements: source:
+    pkgs.writeText (baseNameOf source) (
+      lib.replaceStrings (builtins.attrNames replacements) (builtins.attrValues replacements) (
+        builtins.readFile source
+      )
+    );
+
   # Shadows com.system76.CosmicAppLibrary rather than the panel button's own
   # icon name: the button renders whatever app id it is passed.
   logo =
     if isApple then
-      selfPath "home/common/_files/asahi-apple.svg"
+      recolor {
+        "#2c2c2c" = palette.crust; # darkest facet
+        "#530900" = palette.mantle; # small dark sliver
+        "#d3506f" = palette.red;
+        "#a61200" = palette.maroon;
+        "#00a67c" = palette.teal;
+        "#edbb60" = palette.yellow;
+        "#ffffff" = palette.text;
+        "#96caf3" = palette.sapphire;
+      } (selfPath "home/common/_files/asahi-apple.svg")
     else
-      "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+      recolor {
+        # linearGradient5562 (light triangles), 3 stops flattened to one tone
+        "#699ad7" = palette.sapphire;
+        "#7eb1dd" = palette.sapphire;
+        "#7ebae4" = palette.sapphire;
+        # linearGradient5053 (dark triangles), 3 stops flattened to one tone
+        "#415e9a" = palette.blue;
+        "#4a6baf" = palette.blue;
+        "#5277c3" = palette.blue;
+      } "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
 
   # apps@2x/scalable is under both keys on purpose: the spec wants a Scale=2
   # directory in ScaledDirectories, but implementations reading only
