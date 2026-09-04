@@ -7,6 +7,17 @@
     # Defaults on with Avahi, and re-adds the printer below as a duplicate
     # implicitclass:// queue beside the real ipp:// one.
     browsed.enable = false;
+
+    # cups.out lands in environment.systemPackages regardless of a GUI
+    # frontend, carrying share/applications/cups.desktop with it. COSMIC's
+    # app library doesn't prefer home/linux/applications.nix's NoDisplay
+    # override over this copy the way XDG_DATA_DIRS order says it should, so
+    # the entry has to not exist here at all.
+    package = pkgs.cups.overrideAttrs (old: {
+      postInstall = (old.postInstall or "") + ''
+        rm -f $out/share/applications/cups.desktop
+      '';
+    });
   };
 
   # Declared rather than discovered so it survives a reinstall.
