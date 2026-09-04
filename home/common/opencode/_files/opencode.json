@@ -44,7 +44,6 @@
       }
     }
   },
-  "theme": "catppuccin-mocha",
   "permission": {
     "edit": "allow",
     "write": "allow",

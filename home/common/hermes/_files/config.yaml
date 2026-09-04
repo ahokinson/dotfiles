@@ -5,7 +5,7 @@
 model:
   provider: nous
   base_url: https://inference-api.nousresearch.com/v1
-  default: anthropic/claude-fable-5
+  default: deepseek/deepseek-v4-flash
 fallback_providers: []
 toolsets:
   - hermes-cli
@@ -28,7 +28,7 @@ agent:
   gateway_auto_continue_freshness: 3600  # seconds a session stays auto-continuable
   image_input_mode: auto
   disabled_toolsets: []
-  reasoning_effort: high
+  reasoning_effort: xhigh
 terminal:
   backend: local
   modal_mode: auto

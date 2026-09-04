@@ -2,7 +2,7 @@
   "permissions": {
     "defaultMode": "bypassPermissions"
   },
-  "model": "opus[1m]",
+  "model": "sonnet[1m]",
   "enableAllProjectMcpServers": false,
   "statusLine": {
     "type": "command",
