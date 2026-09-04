@@ -1,9 +1,18 @@
-# The same solid Mocha base-color image the Macs use. cosmic-manager writes
-# cosmic-bg's config directly, so it applies at activation with no login-time
-# script.
-{ selfPath, ... }:
+# The same tower, submerged: home/darwin/wallpaper.nix uses the dry, lit
+# version for real macOS. Both are NixOS on Apple hardware, so isApple here
+# means Asahi specifically, mirroring home/linux/icons/default.nix's split.
+# cosmic-manager writes cosmic-bg's config directly, so it applies at
+# activation with no login-time script.
+{
+  selfPath,
+  osConfig ? null,
+  ...
+}:
 let
-  wallpaper = selfPath "home/common/_files/wallpaper-mocha-base.png";
+  isApple = osConfig.hardware.asahi.enable or false;
+  wallpaper = selfPath (
+    if isApple then "home/common/_files/wallpaper/asahi.jpg" else "home/common/_files/wallpaper/nix.jpg"
+  );
 in
 {
   wayland.desktopManager.cosmic.wallpapers = [
@@ -16,8 +25,7 @@ in
       };
 
       # No field here has a default in cosmic-manager's wallpapers submodule,
-      # so all are mandatory once the list is non-empty. Scaling, sampling and
-      # rotation are moot for a flat-color image.
+      # so all are mandatory once the list is non-empty.
       filter_by_theme = false;
       filter_method = {
         __type = "enum";
