@@ -1,6 +1,7 @@
 # On-access scanning is fanotify-based and blocks the open until the scan
 # finishes, so it is pointed at ~/Downloads rather than all of /home.
 {
+  config,
   lib,
   username,
   ...
@@ -13,7 +14,7 @@
 
     daemon.settings = {
       OnAccessPrevention = true;
-      OnAccessIncludePath = "/home/${username}/Downloads";
+      OnAccessIncludePath = "${config.users.users.${username}.home}/Downloads";
     };
   };
 

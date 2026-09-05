@@ -22,7 +22,7 @@
         inputs.zen-browser.homeModules.beta
       ];
       home.username = username;
-      home.homeDirectory = "/home/${username}";
+      home.homeDirectory = config.users.users.${username}.home;
       home.stateVersion = "26.05";
     };
     # cosmic-greeter (modules/nixos/desktop-cosmic.nix) draws both the login

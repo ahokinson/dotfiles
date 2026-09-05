@@ -50,6 +50,6 @@
   # it once, so this self-heals if anything else ever ends up at that path.
   systemd.tmpfiles.rules = [
     "d /mnt 0755 root root -"
-    "L+ /home/${username}/Developer - - - - /mnt/developer"
+    "L+ ${config.users.users.${username}.home}/Developer - - - - /mnt/developer"
   ];
 }
