@@ -1,4 +1,12 @@
-{ lib, pkgs, ... }: {
+{
+  lib,
+  pkgs,
+  selfPath,
+  ...
+}:
+{
+  imports = [ (selfPath "modules/nixos/mdns.nix") ];
+
   # No GUI frontend; localhost:631 covers the rare manual change.
   services.printing = {
     enable = true;
@@ -33,12 +41,6 @@
         model = "everywhere";
       }
     ];
-  };
-
-  services.avahi = {
-    enable = true;
-    nssmdns4 = true;
-    openFirewall = true;
   };
 
   # The printer and this laptop's network are rarely both up when a switch

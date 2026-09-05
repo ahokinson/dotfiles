@@ -16,6 +16,7 @@
     inputs.nixos-raspberrypi.nixosModules.raspberry-pi-4.base
     (selfPath "modules/nixos/containers.nix")
     (selfPath "modules/nixos/locale.nix")
+    (selfPath "modules/nixos/mdns.nix")
     (selfPath "modules/nixos/networking.nix")
     (selfPath "modules/nixos/packages.nix")
     (selfPath "modules/nixos/security.nix")
@@ -30,7 +31,12 @@
   # logged into interactively, so no home-manager profile of any kind.
   # No hermes.nix, audio.nix, clamav.nix, desktop-cosmic.nix, printing.nix,
   # splash.nix: agent/desktop/display-oriented, out of scope for these two
-  # minimal boxes by design.
+  # minimal boxes by design. modules/nixos/mdns.nix is the one exception,
+  # imported directly above rather than through printing.nix: without it,
+  # the installer's temporary rpi4-installer.local name would stop
+  # resolving the moment the real config activates, since
+  # networking.hostName's own pi-hole.local/pi-nas.local would have nothing
+  # publishing it.
 
   # Identical on both hosts: nixos-raspberrypi's installer SD card is already
   # partitioned and labeled (FIRMWARE, NIXOS_SD) by the sd-image build
@@ -53,18 +59,6 @@
     device = "/dev/disk/by-label/NIXOS_SD";
     fsType = "ext4";
     options = [ "noatime" ];
-  };
-
-  # modules/nixos/printing.nix is the only other place avahi lives in this
-  # repo, and it isn't imported here - without this, the installer's
-  # temporary rpi4-installer.local name would stop resolving the moment the
-  # real config activates, since networking.hostName's own pi-hole.local/
-  # pi-nas.local would have nothing publishing it. Same shape as
-  # printing.nix's own block, minus the printer-sharing context.
-  services.avahi = {
-    enable = true;
-    nssmdns4 = true;
-    openFirewall = true;
   };
 
   # No console ever reaches these boxes - management is 100% over SSH, which
