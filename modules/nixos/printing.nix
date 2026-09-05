@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{ lib, pkgs, ... }: {
   # No GUI frontend; localhost:631 covers the rare manual change.
   services.printing = {
     enable = true;
@@ -39,5 +39,21 @@
     enable = true;
     nssmdns4 = true;
     openFirewall = true;
+  };
+
+  # The printer and this laptop's network are rarely both up when a switch
+  # runs, and switch-to-configuration fails the whole switch on ANY unit
+  # that's currently failed, system-wide - not just ones it touched. A
+  # retry can't dodge that check, so this can never be allowed to fail:
+  #   - RemainAfterExit off so it's never "already done" and skipped; every
+  #     switch gets a fresh, free attempt instead of one shot forever.
+  #   - set +e / exit 0 wraps the module's own script so an unreachable
+  #     printer can't turn into a failed unit.
+  systemd.services.ensure-printers = {
+    serviceConfig.RemainAfterExit = lib.mkForce false;
+    script = lib.mkMerge [
+      (lib.mkBefore "set +e\n")
+      (lib.mkAfter "\nexit 0\n")
+    ];
   };
 }
