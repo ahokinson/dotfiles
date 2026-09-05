@@ -168,9 +168,24 @@ in
 
   # cosmic-manager only wires its own restartCosmicPanel hook when `panels`
   # is used. cosmic-session respawns the panel immediately.
+  #
+  # Applets are embedded in a Wayland surface the panel owns: killing the
+  # panel first destroys that surface out from under them, and cosmic-applets'
+  # wayland-backend treats the resulting protocol error as fatal and aborts
+  # (SIGABRT, core dump) instead of exiting cleanly. Killing the applets first
+  # with an ordinary SIGTERM avoids that race entirely.
   home.activation.restartCosmicPanel = lib.hm.dag.entryAfter [ "configureCosmic" ] ''
+    run ${lib.getExe pkgs.killall} .cosmic-applets-wrapped || true
     run ${lib.getExe pkgs.killall} .cosmic-panel-wrapped || true
   '';
+
+  # cosmic-session can wedge into an infinite retry loop: some applet click
+  # asks for an xdg_popup grab after the popup is already mapped, Smithay
+  # rejects it ("tried to grab after being mapped"), and the shared
+  # libcosmic/iced-sctk popup code retries the same request forever instead
+  # of giving up. No fix in nixpkgs' 1.6.0. Related, not identical, upstream:
+  # pop-os/cosmic-comp#1815, #1758, #1708. Recovery: kill the wedged
+  # cosmic-session process; it respawns clean.
 
   # The logo and every dock-apps.nix icon, pinned or not, come from
   # home/linux/icons.
