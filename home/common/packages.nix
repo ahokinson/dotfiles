@@ -45,7 +45,6 @@ in
       gitleaks
       glab
       go
-      go-task
       golangci-lint
       gosec
       grype
