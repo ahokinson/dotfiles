@@ -1,9 +1,9 @@
 # Only the external USB3 SSD that holds the actual share. The SD card
-# itself isn't disko-managed - see hosts/pi-nas/default.nix's fileSystems
-# and hosts/pi-hole/disko-config.nix's old comment for why (nixos-
-# raspberrypi's installer SD card is already partitioned/labeled by the
-# sd-image build, and disko can't safely wipe the disk it's actively
-# booted from without kexec, which the Pi doesn't support).
+# itself isn't disko-managed - see hosts/raspberrypi-common.nix's
+# fileSystems comment for why (nixos-raspberrypi's installer SD card is
+# already partitioned/labeled by the sd-image build, and disko can't safely
+# wipe the disk it's actively booted from without kexec, which the Pi
+# doesn't support).
 {
   disko.devices.disk.developer-ssd = {
     type = "disk";

@@ -6,33 +6,13 @@
 # is disabled (modules/nixos/ssh.nix) and anders isn't a trusted Nix user,
 # so a `--target-host` build-elsewhere-and-copy deploy fails with an
 # untrusted-signature error. Building locally sidesteps that entirely.
-{ selfPath, ... }:
+{ config, selfPath, ... }:
 {
   networking.hostName = "pi-hole";
 
   imports = [ (selfPath "hosts/raspberrypi-common.nix") ];
 
-  # No disko here: nixos-raspberrypi's installer SD card is already
-  # partitioned and labeled (FIRMWARE, NIXOS_SD) by the sd-image build
-  # itself - disko is for describing a genuinely blank disk, and wiping the
-  # card the installer is actively booted from doesn't work without kexec
-  # (unsupported on the Pi). Deploy with a plain
-  # `nixos-rebuild switch --target-host`, not nixos-anywhere.
-  fileSystems."/boot/firmware" = {
-    device = "/dev/disk/by-label/FIRMWARE";
-    fsType = "vfat";
-    options = [
-      "noatime"
-      "noauto"
-      "x-systemd.automount"
-      "x-systemd.idle-timeout=1min"
-    ];
-  };
-  fileSystems."/" = {
-    device = "/dev/disk/by-label/NIXOS_SD";
-    fsType = "ext4";
-    options = [ "noatime" ];
-  };
+  # No disko here - see raspberrypi-common.nix's fileSystems comment for why.
 
   # nixpkgs has no native services.pihole module; the official image is the
   # supported path. modules/nixos/containers.nix (imported via
@@ -57,7 +37,7 @@
     # implementation time; re-check there before bumping.
     image = "docker.io/pihole/pihole:2026.07.2";
     environment = {
-      TZ = "America/New_York"; # matches modules/nixos/locale.nix's mkDefault
+      TZ = config.time.timeZone;
     };
     volumes = [
       "/var/lib/pihole/etc-pihole:/etc/pihole"

@@ -32,6 +32,29 @@
   # splash.nix: agent/desktop/display-oriented, out of scope for these two
   # minimal boxes by design.
 
+  # Identical on both hosts: nixos-raspberrypi's installer SD card is already
+  # partitioned and labeled (FIRMWARE, NIXOS_SD) by the sd-image build
+  # itself - disko is for describing a genuinely blank disk, and wiping the
+  # card the installer is actively booted from doesn't work without kexec
+  # (unsupported on the Pi). pi-nas's disko-config.nix only covers its extra
+  # SSD, a genuinely blank disk disko can safely format. Deploy with a plain
+  # `nixos-rebuild switch --target-host`, not nixos-anywhere.
+  fileSystems."/boot/firmware" = {
+    device = "/dev/disk/by-label/FIRMWARE";
+    fsType = "vfat";
+    options = [
+      "noatime"
+      "noauto"
+      "x-systemd.automount"
+      "x-systemd.idle-timeout=1min"
+    ];
+  };
+  fileSystems."/" = {
+    device = "/dev/disk/by-label/NIXOS_SD";
+    fsType = "ext4";
+    options = [ "noatime" ];
+  };
+
   # modules/nixos/printing.nix is the only other place avahi lives in this
   # repo, and it isn't imported here - without this, the installer's
   # temporary rpi4-installer.local name would stop resolving the moment the

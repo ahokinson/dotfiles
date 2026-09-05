@@ -15,24 +15,8 @@
     (selfPath "hosts/raspberrypi-common.nix")
   ];
 
-  # No disko for the SD card itself - see hosts/pi-hole/default.nix's
-  # comment for why. disko-config.nix only covers the SSD, which is a
-  # genuinely blank disk disko can safely format.
-  fileSystems."/boot/firmware" = {
-    device = "/dev/disk/by-label/FIRMWARE";
-    fsType = "vfat";
-    options = [
-      "noatime"
-      "noauto"
-      "x-systemd.automount"
-      "x-systemd.idle-timeout=1min"
-    ];
-  };
-  fileSystems."/" = {
-    device = "/dev/disk/by-label/NIXOS_SD";
-    fsType = "ext4";
-    options = [ "noatime" ];
-  };
+  # No disko for the SD card itself - see raspberrypi-common.nix's
+  # fileSystems comment for why. disko-config.nix only covers the SSD.
 
   # mkfs.ext4 leaves a freshly formatted filesystem's root directory owned
   # by root:root, mode 755 - Samba enforces real Unix permissions
