@@ -3,17 +3,15 @@
 {
   pkgs,
   lib,
+  config,
   selfPath,
   ...
 }:
 let
-  loginItem = import (selfPath "home/darwin/login-item.nix") { inherit lib; };
+  loginItem = import (selfPath "home/darwin/login-item.nix") { inherit lib config; };
 in
 {
   home.packages = [ pkgs.thaw ];
 
-  home.activation.thawLoginItem = loginItem {
-    name = "Thaw";
-    appPath = "/Users/anders/Applications/Home Manager Apps/Thaw.app";
-  };
+  home.activation.thawLoginItem = loginItem { name = "Thaw"; };
 }

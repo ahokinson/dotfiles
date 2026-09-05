@@ -3,17 +3,15 @@
 {
   pkgs,
   lib,
+  config,
   selfPath,
   ...
 }:
 let
-  loginItem = import (selfPath "home/darwin/login-item.nix") { inherit lib; };
+  loginItem = import (selfPath "home/darwin/login-item.nix") { inherit lib config; };
 in
 {
   home.packages = [ pkgs.monitorcontrol ];
 
-  home.activation.monitorcontrolLoginItem = loginItem {
-    name = "MonitorControl";
-    appPath = "/Users/anders/Applications/Home Manager Apps/MonitorControl.app";
-  };
+  home.activation.monitorcontrolLoginItem = loginItem { name = "MonitorControl"; };
 }
