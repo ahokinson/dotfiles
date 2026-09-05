@@ -24,7 +24,7 @@
     };
 
     busy-nas = {
-      url = "github:ahokinson/busy-nas/v0.1.1";
+      url = "github:ahokinson/busy-nas/v0.1.2";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 

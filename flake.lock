@@ -44,16 +44,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1788591351,
-        "narHash": "sha256-6XZYTo/UEODRA/hrlKQqRZfhZv/sfmFKJ7Pp5tLk/Hk=",
+        "lastModified": 1788646363,
+        "narHash": "sha256-fiCt3m4Lmj43x+43C4xn9FCfeoM1+bq8iaEoXhpmIIU=",
         "owner": "ahokinson",
         "repo": "busy-nas",
-        "rev": "d03f2cb862c74333145ebe955285b448c3b2046e",
+        "rev": "bce3eda420c098a3971d3e4d0892b5047170ee8c",
         "type": "github"
       },
       "original": {
         "owner": "ahokinson",
-        "ref": "v0.1.1",
+        "ref": "v0.1.2",
         "repo": "busy-nas",
         "type": "github"
       }
