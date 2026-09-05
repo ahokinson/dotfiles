@@ -1,14 +1,16 @@
 # claude-code, codex and opencode come straight from nixpkgs, so they are not
-# listed here. Each of the seven own tools packages itself; cerberus also
-# vends tirith and cupcake, the two binaries it wraps onto its PATH, so there
-# is one pinned copy of each rather than two that can drift.
+# listed here. Each of the six own tools packages itself; cerberus also vends
+# tirith and cupcake, the two binaries it wraps onto its PATH, so there is
+# one pinned copy of each rather than two that can drift. busy-nas is the
+# odd one out: it has no overlays.default of its own, so
+# home/common/busy-nas/default.nix reaches it directly via
+# inputs.busy-nas.packages.<system>.default instead.
 inputs: final: prev:
 let
   system = final.stdenv.hostPlatform.system;
 
   ownToolInputs = [
     inputs.bloom
-    inputs.busy-nas
     inputs.cerberus # cerberus + tirith + cupcake
     inputs.clipleaks
     inputs.pharos
