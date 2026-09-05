@@ -29,6 +29,7 @@
     (selfPath "home/common/ssh-agent.nix")
     (selfPath "home/common/tmux")
     (selfPath "home/common/vesktop.nix")
+    (selfPath "home/common/yazi.nix")
     (selfPath "home/common/yt-dlp")
     (selfPath "home/common/zen")
     (selfPath "home/common/zoxide")

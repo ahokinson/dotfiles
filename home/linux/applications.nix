@@ -24,5 +24,13 @@ _: {
       exec = "nvim";
       noDisplay = true;
     };
+
+    # programs.yazi (home/common/yazi.nix) installs it; pkgs.yazi ships a
+    # yazi.desktop for launching from an app grid, which nothing here does.
+    yazi = {
+      name = "Yazi";
+      exec = "yazi";
+      noDisplay = true;
+    };
   };
 }
