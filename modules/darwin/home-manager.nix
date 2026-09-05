@@ -1,6 +1,7 @@
 {
   inputs,
   selfPath,
+  config,
   username,
   ...
 }:
@@ -19,7 +20,7 @@
         (selfPath "home/darwin")
       ];
       home.username = username;
-      home.homeDirectory = "/Users/${username}";
+      home.homeDirectory = config.users.users.${username}.home;
       home.stateVersion = "26.05";
     };
     extraSpecialArgs = { inherit inputs selfPath username; };

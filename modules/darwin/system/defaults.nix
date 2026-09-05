@@ -20,7 +20,7 @@ in
     dock.magnification = false;
     # No Finder: macOS pins it regardless, and declaring it duplicates it.
     dock.persistent-apps = map (
-      app: "/Users/${username}/Applications/Home Manager Apps/${app.darwinApp}"
+      app: "${config.users.users.${username}.home}/Applications/Home Manager Apps/${app.darwinApp}"
     ) pinnedApps;
     dock.wvous-br-corner = 4; # Desktop
     dock.wvous-tr-corner = 2; # Mission Control
@@ -113,7 +113,7 @@ in
     NSGlobalDomain.AppleICUForce24HourTime = true;
     NSGlobalDomain._HIHideMenuBar = false;
 
-    screencapture.location = "/Users/${username}/Pictures/Screenshots";
+    screencapture.location = "${config.users.users.${username}.home}/Pictures/Screenshots";
     screencapture.type = "png";
     screencapture.disable-shadow = false;
     screencapture.include-date = true;
