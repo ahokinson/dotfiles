@@ -6,10 +6,7 @@
   ...
 }:
 let
-  # Not selfPath: that resolves into the store, and mkOutOfStoreSymlink below
-  # needs a mutable path for Claude Code's runtime writes to settings.json to
-  # survive. Assumes the checkout is at ~/.dotfiles.
-  dotfilesRepo = "${config.home.homeDirectory}/.dotfiles";
+  dotfilesRepo = import (selfPath "home/common/dotfiles-repo.nix") { inherit config; };
 
   wireShared = import (selfPath "home/common/_shared/default.nix") { inherit selfPath; };
 in
