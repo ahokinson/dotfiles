@@ -6,6 +6,6 @@
   imports = [
     (selfPath "hosts/darwin-common.nix")
     (selfPath "modules/darwin/universalaccess.nix")
-    (selfPath "modules/darwin/hardware-macbookpro14.nix")
+    (selfPath "modules/darwin/laptop-wake.nix")
   ];
 }

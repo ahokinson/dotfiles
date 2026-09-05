@@ -6,6 +6,6 @@
   imports = [
     (selfPath "hosts/darwin-common.nix")
     # No universalaccess.nix: MDM blocks that domain and aborts activation.
-    (selfPath "modules/darwin/hardware-macbookpro16.nix")
+    (selfPath "modules/darwin/laptop-wake.nix")
   ];
 }
