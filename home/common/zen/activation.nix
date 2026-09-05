@@ -1,10 +1,17 @@
 { pkgs, config }:
 let
-  configDir =
+  # Which root a machine has depends on when Zen first ran there: it creates
+  # new profiles under XDG but keeps using a legacy ~/.zen that predates that.
+  # Probed in this order at activation time, so both stay supported.
+  # Not programs.zen-browser.configPath, whose Darwin value is capital-Z Zen.
+  configDirs =
     if pkgs.stdenv.hostPlatform.isDarwin then
-      "${config.home.homeDirectory}/Library/Application Support/zen"
+      [ "${config.home.homeDirectory}/Library/Application Support/zen" ]
     else
-      "${config.home.homeDirectory}/.zen";
+      [
+        "${config.home.homeDirectory}/.zen"
+        "${config.xdg.configHome}/zen"
+      ];
 
   # Zen sometimes spawns an empty profile and orphans the real one, leaving
   # multiple Default= entries. Repoints them all at the oldest times.json
@@ -65,5 +72,5 @@ let
   '';
 in
 {
-  inherit configDir selfHealInstalls findDefaultProfile;
+  inherit configDirs selfHealInstalls findDefaultProfile;
 }

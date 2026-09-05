@@ -1,4 +1,16 @@
-{ lib, selfPath, ... }: {
+{
+  pkgs,
+  config,
+  lib,
+  selfPath,
+  ...
+}:
+let
+  # Shared with zen/default.nix so both files' idea of where Zen keeps its
+  # profile root can't drift apart.
+  activation = import (selfPath "home/common/zen/activation.nix") { inherit pkgs config; };
+in
+{
   imports = [ (selfPath "home/common/zen/extensions.nix") ];
 
   programs.zen-browser.enable = true;
@@ -15,10 +27,12 @@
   # one. Undeclaring it drops home-manager's stale symlink but does not
   # restore the backup it took. Restores that backup if profiles.ini is gone.
   home.activation.restoreZenProfilesIni = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    profilesIni="$HOME/Library/Application Support/zen/profiles.ini"
-    backup="$HOME/Library/Application Support/zen/profiles.ini.hm-backup"
-    if [[ -e "$backup" && ! -e "$profilesIni" ]]; then
-      run cp "$backup" "$profilesIni"
-    fi
+    for zenConfigDir in ${lib.escapeShellArgs activation.configDirs}; do
+      profilesIni="$zenConfigDir/profiles.ini"
+      backup="$zenConfigDir/profiles.ini.hm-backup"
+      if [[ -e "$backup" && ! -e "$profilesIni" ]]; then
+        run cp "$backup" "$profilesIni"
+      fi
+    done
   '';
 }
