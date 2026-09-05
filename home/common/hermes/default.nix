@@ -1,10 +1,14 @@
-{ selfPath, pkgs, ... }: {
+{ selfPath, pkgs, ... }:
+let
+  wireShared = import (selfPath "home/common/_shared/default.nix") { inherit selfPath; };
+in
+{
   home.packages = [ pkgs.hermes ];
 
-  home.file.".hermes" = {
-    source = selfPath "home/common/hermes/_files";
-    recursive = true;
-  };
-
-  home.file.".hermes/SOUL.md".source = selfPath "home/common/_shared/SOUL.md";
+  home.file = {
+    ".hermes" = {
+      source = selfPath "home/common/hermes/_files";
+      recursive = true;
+    };
+  } // wireShared ".hermes" [ "SOUL.md" ];
 }
