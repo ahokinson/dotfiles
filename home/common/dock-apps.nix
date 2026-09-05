@@ -32,6 +32,19 @@
     simpleIcon = "obsstudio";
     hue = "red";
   };
+  # Linux only: pkgs.orca-slicer's meta.platforms has no darwin entry, and
+  # there's no cask here standing in for one, so darwinApp stays unset.
+  # simple-icons has no OrcaSlicer glyph, so vendored: a single flat path
+  # derived from OrcaSlicer's own gradient-circle mark
+  # (orcaslicer.com/images/OrcaSlicer_gradient_circle.svg), transforms
+  # flattened and rescaled to simple-icons' 0 0 24 24 convention.
+  orcaslicer = {
+    linuxDesktopId = "com.orcaslicer.OrcaSlicer.desktop";
+    linuxIconName = "OrcaSlicer";
+    simpleIcon = "orca-slicer";
+    vendoredIcon = true;
+    hue = "teal";
+  };
   # Linux only: pkgs.proton-vpn's meta.platforms has no darwin entry, and
   # there's no cask here standing in for one, so darwinApp stays unset.
   protonvpn = {

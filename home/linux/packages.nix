@@ -10,5 +10,6 @@
   home.packages = with pkgs; [
     # ghostty installed via programs.ghostty (home/common/ghostty) instead.
     (if osConfig.hardware.asahi.enable or false then slacky else slack)
+    orca-slicer # gcode for the Prusa Mini+
   ];
 }
