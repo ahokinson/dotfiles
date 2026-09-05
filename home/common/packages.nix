@@ -84,6 +84,7 @@ in
       # natively and rootless.
       podman
       portaudio
+      posting
       procs
       proton-vpn
       prowler
