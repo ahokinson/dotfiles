@@ -1,6 +1,6 @@
 # Apple-Silicon-specific overrides on top of hosts/nixos-common.nix. Each
 # host's default.nix adds only its hostname and hardware-config import.
-{ inputs, selfPath, ... }:
+{ config, inputs, selfPath, ... }:
 {
   imports = [
     inputs.nixos-apple-silicon.nixosModules.apple-silicon-support
@@ -30,6 +30,22 @@
   # display driver, so plymouth draws on m1n1's framebuffer until apple-drm
   # binds. modprobe pulls drm_dma_helper and the dcp bits along with this.
   boot.initrd.kernelModules = [ "appledrm" ];
+
+  # macOS's APFS partition on this disk. No in-tree Linux driver exists;
+  # linux-apfs-rw is the out-of-tree read-write one, packaged generically as
+  # `<kernelPackages>.apfs` (pkgs/top-level/linux-kernels.nix), built here
+  # against nixos-apple-silicon's kernel. Loads mount -t apfs into the
+  # kernel, so udisks2/Cosmic Files mount it with no further wiring.
+  #
+  # Read-only unless a mount explicitly passes -o readwrite - upstream calls
+  # write support experimental, real risk of data corruption. No encryption
+  # support at all; if the macOS side has FileVault on, this can't mount it,
+  # and apfs-fuse -r <recovery-key> (read-only) is the fallback.
+  #
+  # Untested against the pinned kernel: no nix-daemon access from the
+  # sandbox to build it, and check.yml already skips full eval of both
+  # Asahi hosts.
+  boot.extraModulePackages = [ config.boot.kernelPackages.apfs ];
 
   # Ten cores on both (M1 Pro and M1 Max), against the sixteen threads
   # modules/nixos/settings.nix sizes its mkDefault caps for. Same
