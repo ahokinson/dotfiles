@@ -1,6 +1,7 @@
 { selfPath, ... }:
 let
   palette = import (selfPath "home/common/palette.nix");
+  themeName = import (selfPath "home/common/bat/theme-name.nix");
 in
 {
   programs.delta = {
@@ -9,7 +10,7 @@ in
     # Ported from catppuccin/delta's `[delta "catppuccin-mocha"]` block.
     # syntax-theme resolves against the bat theme in home/common/bat.
     options = {
-      syntax-theme = "Catppuccin Mocha";
+      syntax-theme = themeName;
       dark = true;
       line-numbers = true;
       minus-empty-line-marker-style = "normal";
