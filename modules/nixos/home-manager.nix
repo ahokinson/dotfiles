@@ -42,8 +42,6 @@
       home.homeDirectory = "/var/lib/cosmic-greeter";
       home.stateVersion = "26.05";
     };
-    # username is unused under home/ so far; kept so both platforms hand
-    # their home modules the same argument set.
     extraSpecialArgs = { inherit inputs selfPath username; };
   };
 

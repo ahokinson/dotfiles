@@ -1,8 +1,0 @@
-# Local, temporary worktrees. This must be a local directory, not the NAS mount.
-workspace_root = "/home/anders/Local/Developer"
-snapshot_retention = 20
-
-[nas]
-host = "pi-nas.home.arpa"
-user = "anders"
-root = "/srv/developer"

@@ -1,3 +1,12 @@
-{ selfPath, ... }: {
-  xdg.configFile."busy-nas/config.toml".source = selfPath "home/common/busy-nas/config.toml";
+{ config, username, ... }: {
+  xdg.configFile."busy-nas/config.toml".text = ''
+    # Local, temporary worktrees. This must be a local directory, not the NAS mount.
+    workspace_root = "${config.home.homeDirectory}/Local/Developer"
+    snapshot_retention = 20
+
+    [nas]
+    host = "pi-nas.home.arpa"
+    user = "${username}"
+    root = "/srv/developer"
+  '';
 }
