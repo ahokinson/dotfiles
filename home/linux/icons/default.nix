@@ -23,9 +23,7 @@ let
 
   themeName = "WhiteSur-dark-catppuccin";
 
-  # osConfig is always set here, so hardware.asahi.enable can distinguish the
-  # Apple Silicon hosts from framework13-amd-ryzen.
-  isApple = osConfig.hardware.asahi.enable or false;
+  isApple = import (selfPath "home/common/is-apple.nix") { inherit osConfig; };
 
   # Both logos below ship their own brand colors; swapped hex-for-hex onto
   # Mocha so the app-library button matches the rest of the icon theme.

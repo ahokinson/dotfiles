@@ -1,6 +1,6 @@
 # The same tower, submerged: home/darwin/wallpaper.nix uses the dry, lit
 # version for real macOS. Both are NixOS on Apple hardware, so isApple here
-# means Asahi specifically, mirroring home/linux/icons/default.nix's split.
+# means Asahi specifically.
 # cosmic-manager writes cosmic-bg's config directly, so it applies at
 # activation with no login-time script.
 {
@@ -9,7 +9,7 @@
   ...
 }:
 let
-  isApple = osConfig.hardware.asahi.enable or false;
+  isApple = import (selfPath "home/common/is-apple.nix") { inherit osConfig; };
   wallpaper = selfPath (
     if isApple then "home/common/_files/wallpaper/asahi.jpg" else "home/common/_files/wallpaper/nix.jpg"
   );

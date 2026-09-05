@@ -35,9 +35,8 @@ let
   stripDesktopSuffix = id: lib.removeSuffix ".desktop" id;
 
   # Asahi hosts run some apps' unofficial ARM64 builds under a different
-  # .desktop id (home/common/dock-apps.nix's asahi* overrides); same split as
-  # home/linux/icons/default.nix.
-  isApple = osConfig.hardware.asahi.enable or false;
+  # .desktop id (home/common/dock-apps.nix's asahi* overrides).
+  isApple = import (selfPath "home/common/is-apple.nix") { inherit osConfig; };
   desktopIdFor =
     app: if isApple then (app.asahiLinuxDesktopId or app.linuxDesktopId) else app.linuxDesktopId;
 
