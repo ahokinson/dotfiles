@@ -9,4 +9,8 @@
     __type = "enum";
     inherit variant;
   };
+  ronEnumValue = variant: value: {
+    __type = "enum";
+    inherit variant value;
+  };
 }
