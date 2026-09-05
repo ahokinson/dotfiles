@@ -1,5 +1,6 @@
 { selfPath, ... }: {
   imports = [
+    (selfPath "home/common/atuin.nix")
     (selfPath "home/common/bat")
     (selfPath "home/common/bloom")
     (selfPath "home/common/busy-nas")
