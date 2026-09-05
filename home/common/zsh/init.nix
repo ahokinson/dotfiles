@@ -20,7 +20,6 @@ in
     ''
       ZSH_AUTOSUGGEST_STRATEGY=(history)
 
-      export XDG_CONFIG_HOME="$HOME/.config"
       export GOPATH=$HOME/.go
       [[ -d "$HOME/.go/bin" ]] && export PATH=$PATH:$HOME/.go/bin
       export K9S_CONFIG_DIR="$HOME/.config/k9s"
