@@ -42,11 +42,14 @@
 
   # A friendlier address than /mnt/developer. Purely cosmetic - following
   # it into an empty directory when the share isn't currently mounted is
-  # expected; `sudo mount /mnt/developer` (or ~/Developer, same target)
-  # still has to happen first. "L+" (over plain "L") replaces whatever's
-  # there on every activation instead of only creating it once, so this
-  # self-heals if anything else ever ends up at that path.
+  # expected; `sudo mount /mnt/developer` still has to happen first. mount
+  # looks up its literal argument in fstab, so it cannot use the symlink.
+  # `X-mount.mkdir` creates the mountpoint itself but not its parent, which
+  # is absent on a minimal NixOS installation. "L+" (over plain "L")
+  # replaces whatever's there on every activation instead of only creating
+  # it once, so this self-heals if anything else ever ends up at that path.
   systemd.tmpfiles.rules = [
+    "d /mnt 0755 root root -"
     "L+ /home/${username}/Developer - - - - /mnt/developer"
   ];
 }

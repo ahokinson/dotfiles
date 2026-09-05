@@ -2,6 +2,7 @@
   imports = [
     (selfPath "home/common/bat")
     (selfPath "home/common/bloom")
+    (selfPath "home/common/busy-nas")
     (selfPath "home/common/btop")
     (selfPath "home/common/catppuccin.nix")
     (selfPath "home/common/cerberus")

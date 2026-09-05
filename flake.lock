@@ -37,6 +37,27 @@
         "type": "github"
       }
     },
+    "busy-nas": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1788591351,
+        "narHash": "sha256-6XZYTo/UEODRA/hrlKQqRZfhZv/sfmFKJ7Pp5tLk/Hk=",
+        "owner": "ahokinson",
+        "repo": "busy-nas",
+        "rev": "d03f2cb862c74333145ebe955285b448c3b2046e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ahokinson",
+        "ref": "v0.1.1",
+        "repo": "busy-nas",
+        "type": "github"
+      }
+    },
     "catppuccin": {
       "inputs": {
         "nixpkgs": [
@@ -726,6 +747,7 @@
     "root": {
       "inputs": {
         "bloom": "bloom",
+        "busy-nas": "busy-nas",
         "catppuccin": "catppuccin",
         "cerberus": "cerberus",
         "clipleaks": "clipleaks",

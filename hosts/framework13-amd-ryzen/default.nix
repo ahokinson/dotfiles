@@ -12,6 +12,7 @@
     inputs.nixos-hardware.nixosModules.framework-amd-ai-300-series
     (selfPath "hosts/framework13-amd-ryzen/hardware-configuration.nix")
     (selfPath "hosts/nixos-common.nix")
+    (selfPath "modules/nixos/nas-mount.nix")
   ];
 
   # Otherwise plymouth starts on the EFI framebuffer via simpledrm and is

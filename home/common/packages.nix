@@ -1,6 +1,7 @@
 {
   pkgs,
   lib,
+  inputs,
   selfPath,
   ...
 }:
@@ -16,6 +17,7 @@ in
     lib.flatten [
       acli
       awscli2
+      inputs.busy-nas.packages.${pkgs.stdenv.hostPlatform.system}.default
       btop
       bun
       cargo

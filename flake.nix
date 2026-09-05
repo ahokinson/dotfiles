@@ -23,6 +23,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    busy-nas = {
+      url = "github:ahokinson/busy-nas/v0.1.1";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Also vends pkgs.tirith and pkgs.cupcake, the binaries it wraps onto its
     # own PATH, so there is one pinned copy of each.
     cerberus = {
