@@ -1,15 +1,12 @@
-{ username, ... }: {
+{ username, selfPath, ... }: {
+  imports = [ (selfPath "modules/nix-settings.nix") ];
+
   nixpkgs.hostPlatform = "aarch64-darwin";
 
   # Required since the multi-user migration: this is the user that
   # user-scoped system.defaults (dock, finder, NSGlobalDomain) apply to.
   system.primaryUser = username;
 
-  nix.settings.experimental-features = [
-    "nix-command"
-    "flakes"
-  ];
-  nixpkgs.config.allowUnfree = true;
   nix.gc = {
     automatic = true;
     interval = [

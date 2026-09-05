@@ -1,8 +1,6 @@
-{ lib, ... }: {
-  nix.settings.experimental-features = [
-    "nix-command"
-    "flakes"
-  ];
+{ lib, selfPath, ... }: {
+  imports = [ (selfPath "modules/nix-settings.nix") ];
+
   # Backed by a channel database a flakes-only system never populates, and it
   # shadows the nix-index handler from home/common/nix-index.nix.
   programs.command-not-found.enable = false;
@@ -26,7 +24,6 @@
     dates = "weekly";
     options = "--delete-older-than 14d";
   };
-  nixpkgs.config.allowUnfree = true;
   # mitmproxy -> python ecdsa has CVE-2024-23342 present in legacy curve support.
   nixpkgs.config.permittedInsecurePackages = [ "python3.14-ecdsa-0.19.2" ];
 
