@@ -69,6 +69,20 @@
     simpleIcon = "discord";
     hue = "lavender";
   };
+  # Linux only: pkgs.zathura ships no cask here standing in for a macOS
+  # build, so darwinApp stays unset.
+  # simple-icons has no zathura glyph, so vendored: the upstream mark
+  # (pwmt/zathura data/org.pwmt.zathura.svg), a 1280-space path under
+  # matrix(.1 0 0 -.1 0 128) flattened to simple-icons' 0 0 24 24
+  # single-path convention, bbox-normalized to fill the box. The mark's own
+  # white circle is dropped; the tile supplies the background.
+  zathura = {
+    linuxDesktopId = "org.pwmt.zathura.desktop";
+    linuxIconName = "org.pwmt.zathura";
+    simpleIcon = "zathura";
+    vendoredIcon = true;
+    hue = "yellow";
+  };
   zen = {
     darwinApp = "Zen Browser (Beta).app";
     linuxDesktopId = "zen-beta.desktop";

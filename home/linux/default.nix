@@ -6,6 +6,7 @@
     (selfPath "home/linux/icons")
     (selfPath "home/linux/obs.nix")
     (selfPath "home/linux/packages.nix")
+    (selfPath "home/linux/zathura.nix")
     (selfPath "home/linux/zen-browser.nix")
   ];
 }
