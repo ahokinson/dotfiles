@@ -48,10 +48,9 @@
   boot.extraModulePackages = [ config.boot.kernelPackages.apfs ];
 
   # Ten cores on both (M1 Pro and M1 Max), against the sixteen threads
-  # modules/nixos/settings.nix sizes its mkDefault caps for. Same
+  # modules/nixos/settings.nix's local.nix.buildCores defaults to. Same
   # half-the-machine policy, rescaled.
-  nix.settings.cores = 5;
-  systemd.services.nix-daemon.serviceConfig.CPUQuota = "500%";
+  local.nix.buildCores = 5;
 
   # local.splash.panelHeightPx is left at its default: studio-m1-max has no
   # built-in panel, so its height depends on whatever display is attached.

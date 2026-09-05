@@ -80,12 +80,11 @@
   services.usbguard.enable = lib.mkForce false;
 
   # Four cores on a Pi 4, against the sixteen threads modules/nixos/
-  # settings.nix sizes its mkDefault caps for. Half-the-machine policy,
+  # settings.nix's local.nix.buildCores defaults to. Half-the-machine policy,
   # rescaled again as hosts/asahi-common.nix does for its ten-core pair - a
   # nix-daemon rebuild should never compete with the DNS resolver or Samba
   # daemon this box exists to serve.
-  nix.settings.cores = 2;
-  systemd.services.nix-daemon.serviceConfig.CPUQuota = "200%";
+  local.nix.buildCores = 2;
 
   system.stateVersion = "26.05";
 }
