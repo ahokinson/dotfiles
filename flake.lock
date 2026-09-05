@@ -617,16 +617,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1788182525,
-        "narHash": "sha256-xLRZ8n2c93tn27w/qiDcK3ZMdzCnJ/uTPiM0Kt7cW4M=",
+        "lastModified": 1788572643,
+        "narHash": "sha256-G7CDFUFeKHD+dnBTK3hB+m960rhAx28XRZD1951hgyE=",
         "owner": "ahokinson",
         "repo": "pharos",
-        "rev": "004c6969db55c31f8dd82e242ce2fd8275f888a5",
+        "rev": "06eca5397079fa2ef4d28544f1406221ba4e8d24",
         "type": "github"
       },
       "original": {
         "owner": "ahokinson",
-        "ref": "v0.2.4",
+        "ref": "v0.2.5",
         "repo": "pharos",
         "type": "github"
       }

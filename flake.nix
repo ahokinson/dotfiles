@@ -80,7 +80,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
     pharos = {
-      url = "github:ahokinson/pharos/v0.2.4";
+      url = "github:ahokinson/pharos/v0.2.5";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
