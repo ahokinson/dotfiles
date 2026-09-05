@@ -1,7 +1,6 @@
 {
   pkgs,
   lib,
-  inputs,
   selfPath,
   ...
 }:
@@ -21,9 +20,9 @@ in
       # via sudo. Nothing else in this repo gets a wrapper/capability
       # treatment, so none is invented here.
       bandwhich
-      inputs.busy-nas.packages.${pkgs.stdenv.hostPlatform.system}.default
       btop
       bun
+      busy-nas
       cargo
       clipleaks
       clippy
