@@ -20,9 +20,7 @@ in
       # via sudo. Nothing else in this repo gets a wrapper/capability
       # treatment, so none is invented here.
       bandwhich
-      btop
       bun
-      busy-nas
       cargo
       clipleaks
       clippy
@@ -52,12 +50,9 @@ in
       hyperfine
       inetutils
       jq
-      k9s
       killall
       kubernetes-helm
       kubescape
-      lazydocker
-      lazygit
       mediainfo
       moreutils
       (lib.optionals (!isDarwin) sharedFonts.packages)

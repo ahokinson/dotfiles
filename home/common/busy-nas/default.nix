@@ -1,4 +1,6 @@
-{ config, username, ... }: {
+{ config, username, pkgs, ... }: {
+  home.packages = [ pkgs.busy-nas ];
+
   xdg.configFile."busy-nas/config.toml".text = ''
     # Local, temporary worktrees. This must be a local directory, not the NAS mount.
     workspace_root = "${config.home.homeDirectory}/Local/Developer"
