@@ -11,10 +11,6 @@ let
   activation = import (selfPath "home/common/zen/activation.nix") { inherit pkgs config; };
 in
 {
-  imports = [ (selfPath "home/common/zen/extensions.nix") ];
-
-  programs.zen-browser.enable = true;
-
   # Mac-only rather than in zen/extensions.nix's shared list: it syncs
   # Safari and iCloud Keychain passwords.
   programs.zen-browser.policies.ExtensionSettings."password-manager-firefox-extension@apple.com" = {

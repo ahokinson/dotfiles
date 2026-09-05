@@ -18,6 +18,13 @@ let
   chrome = import (selfPath "home/common/zen/chrome.nix") { inherit pkgs; };
 in
 {
+  # Needs inputs.zen-browser.homeModules.beta in the importing host's own
+  # home-manager config, since it comes from a flake input rather than
+  # nixpkgs — every host adds it alongside home/common.
+  imports = [ (selfPath "home/common/zen/extensions.nix") ];
+
+  programs.zen-browser.enable = true;
+
   home.activation.zenSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     # Subshelled so the guard clauses below can exit early on the first unmet
     # precondition without exiting the rest of home-manager's activation
