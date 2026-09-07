@@ -24,6 +24,19 @@
     hue = "mauve";
     pinned = true;
   };
+  # simple-icons has no Libation glyph, so vendored: upstream's own goblet
+  # mark (usr/share/icons/hicolor/scalable/apps/libation.svg, bundled in its
+  # .deb), simplified to a plain silhouette and flattened to simple-icons'
+  # 0 0 24 24 single-path convention - the wine-level line and halo stroke
+  # are dropped.
+  libation = {
+    darwinApp = "Libation.app";
+    linuxDesktopId = "Libation.desktop";
+    linuxIconName = "libation";
+    simpleIcon = "libation";
+    vendoredIcon = true;
+    hue = "maroon";
+  };
   # Linux only: pkgs.obs-studio's meta.platforms has no darwin entry, and
   # there's no cask here standing in for one, so darwinApp stays unset.
   obs = {

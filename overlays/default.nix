@@ -24,6 +24,10 @@ ownTools
   hermes = inputs.hermes-agent.packages.${system}.default;
 }
 // import ./cosmic-applets.nix { inherit prev; }
+// import ./libation.nix {
+  inherit final;
+  inherit (final) lib;
+}
 // import ./open-policy-agent.nix { inherit prev; }
 // import ./scorecard.nix { inherit final prev; }
 // import ./semgrep.nix { inherit final; }
