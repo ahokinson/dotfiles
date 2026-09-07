@@ -28,6 +28,7 @@
     (selfPath "home/common/opencode")
     (selfPath "home/common/packages.nix")
     (selfPath "home/common/pharos")
+    (selfPath "home/common/rbw.nix")
     (selfPath "home/common/ssh-agent.nix")
     (selfPath "home/common/tmux")
     (selfPath "home/common/vesktop.nix")
