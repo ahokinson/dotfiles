@@ -21,6 +21,7 @@
     (selfPath "home/common/lazydocker")
     (selfPath "home/common/lazygit")
     (selfPath "home/common/libation.nix")
+    (selfPath "home/common/mpv.nix")
     (selfPath "home/common/nh.nix")
     (selfPath "home/common/nix-index.nix")
     (selfPath "home/common/nvim")

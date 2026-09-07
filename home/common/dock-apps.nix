@@ -37,6 +37,13 @@
     vendoredIcon = true;
     hue = "maroon";
   };
+  mpv = {
+    darwinApp = "mpv.app";
+    linuxDesktopId = "mpv.desktop";
+    linuxIconName = "mpv";
+    simpleIcon = "mpv";
+    hue = "sapphire";
+  };
   # Linux only: pkgs.obs-studio's meta.platforms has no darwin entry, and
   # there's no cask here standing in for one, so darwinApp stays unset.
   obs = {
