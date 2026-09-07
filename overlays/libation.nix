@@ -17,7 +17,7 @@ let
   sources = {
     x86_64-linux = {
       url = "https://github.com/rmcrackan/Libation/releases/download/v${version}/Libation.${version}-linux-chardonnay-amd64.deb";
-      hash = lib.fakeHash;
+      hash = "sha256-R2agjyOPc0k2El01jxBZPMN6hD2fzCH+O7iqnZMXJVE=";
     };
     aarch64-linux = {
       url = "https://github.com/rmcrackan/Libation/releases/download/v${version}/Libation.${version}-linux-chardonnay-arm64.deb";
