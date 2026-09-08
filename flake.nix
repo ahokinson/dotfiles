@@ -1,76 +1,82 @@
 {
   description = "Unified Nix flake for NixOS (incl. Asahi/Apple Silicon) and macOS.";
 
+  # Every input below fetches over plain git (git+https, shallow=1) rather
+  # than the github: shorthand. github: resolves through GitHub's REST API,
+  # which caps unauthenticated callers at 60 req/hour per IP - shared with
+  # gh and anything else on the box hitting github.com. git+https uses the
+  # ordinary smart-HTTP git protocol instead, so it isn't subject to that
+  # limit at all.
   inputs = {
-    catppuccin.url = "github:catppuccin/nix";
+    catppuccin.url = "git+https://github.com/catppuccin/nix.git?shallow=1";
     catppuccin.inputs.nixpkgs.follows = "nixpkgs";
 
     cosmic-manager = {
-      url = "github:HeitorAugustoLN/cosmic-manager";
+      url = "git+https://github.com/HeitorAugustoLN/cosmic-manager.git?shallow=1";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
     };
 
     disko = {
-      url = "github:nix-community/disko";
+      url = "git+https://github.com/nix-community/disko.git?shallow=1";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # Own tools, each packaging itself. Tag-pinned so `nix flake update`
     # cannot move them and a bump stays a reviewable one-line edit.
     bloom = {
-      url = "github:ahokinson/bloom/v0.2.1";
+      url = "git+https://github.com/ahokinson/bloom.git?ref=refs/tags/v0.2.1&shallow=1";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     busy-nas = {
-      url = "github:ahokinson/busy-nas/v0.1.3";
+      url = "git+https://github.com/ahokinson/busy-nas.git?ref=refs/tags/v0.1.3&shallow=1";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # Also vends pkgs.tirith and pkgs.cupcake, the binaries it wraps onto its
     # own PATH, so there is one pinned copy of each.
     cerberus = {
-      url = "github:ahokinson/cerberus/v0.1.3";
+      url = "git+https://github.com/ahokinson/cerberus.git?ref=refs/tags/v0.1.3&shallow=1";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     clipleaks = {
-      url = "github:ahokinson/clipleaks/v0.1.2";
+      url = "git+https://github.com/ahokinson/clipleaks.git?ref=refs/tags/v0.1.2&shallow=1";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     git-hooks = {
-      url = "github:cachix/git-hooks.nix";
+      url = "git+https://github.com/cachix/git-hooks.nix.git?shallow=1";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # No `follows`: hermes-agent pins its own nixpkgs deliberately.
     # Tag-pinned because its default branch is shared development.
-    hermes-agent.url = "github:NousResearch/hermes-agent/v2026.8.27";
+    hermes-agent.url = "git+https://github.com/NousResearch/hermes-agent.git?ref=refs/tags/v2026.8.27&shallow=1";
 
     home-manager = {
-      url = "github:nix-community/home-manager";
+      url = "git+https://github.com/nix-community/home-manager.git?shallow=1";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     nix-darwin = {
-      url = "github:nix-darwin/nix-darwin";
+      url = "git+https://github.com/nix-darwin/nix-darwin.git?shallow=1";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     nix-index-database = {
-      url = "github:nix-community/nix-index-database";
+      url = "git+https://github.com/nix-community/nix-index-database.git?shallow=1";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     nixos-hardware = {
-      url = "github:NixOS/nixos-hardware";
+      url = "git+https://github.com/NixOS/nixos-hardware.git?shallow=1";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     nixos-apple-silicon = {
-      url = "github:nix-community/nixos-apple-silicon";
+      url = "git+https://github.com/nix-community/nixos-apple-silicon.git?shallow=1";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -80,42 +86,42 @@
     # onto this repo's nixos-unstable on every `nix flake update` would
     # risk breaking ARM kernel/DTB builds for the sake of two hosts with no
     # other reason to track unstable.
-    nixos-raspberrypi.url = "github:nvmd/nixos-raspberrypi";
+    nixos-raspberrypi.url = "git+https://github.com/nvmd/nixos-raspberrypi.git?shallow=1";
 
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "git+https://github.com/NixOS/nixpkgs.git?ref=nixos-unstable&shallow=1";
 
     pharos = {
-      url = "github:ahokinson/pharos/v0.2.5";
+      url = "git+https://github.com/ahokinson/pharos.git?ref=refs/tags/v0.2.5&shallow=1";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     psyche = {
-      url = "github:ahokinson/psyche/v0.1.1";
+      url = "git+https://github.com/ahokinson/psyche.git?ref=refs/tags/v0.1.1&shallow=1";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     reliquary = {
-      url = "github:ahokinson/reliquary/v0.1.4";
+      url = "git+https://github.com/ahokinson/reliquary.git?ref=refs/tags/v0.1.4&shallow=1";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # Plain source tree, not a flake.
-    nvim.url = "github:ahokinson/nvim";
+    nvim.url = "git+https://github.com/ahokinson/nvim.git?shallow=1";
     nvim.flake = false;
 
     # Also a plain source tree. Only icons/ is used, recolored onto Mocha
     # tiles by home/common/icons.nix.
-    simple-icons.url = "github:simple-icons/simple-icons";
+    simple-icons.url = "git+https://github.com/simple-icons/simple-icons.git?shallow=1";
     simple-icons.flake = false;
 
     treefmt-nix = {
-      url = "github:numtide/treefmt-nix";
+      url = "git+https://github.com/numtide/treefmt-nix.git?shallow=1";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # An input, not just a package: its home-manager module is what installs
     # a proper macOS .app bundle.
-    zen-browser.url = "github:0xc000022070/zen-browser-flake";
+    zen-browser.url = "git+https://github.com/0xc000022070/zen-browser-flake.git?shallow=1";
     zen-browser.inputs.nixpkgs.follows = "nixpkgs";
   };
 
