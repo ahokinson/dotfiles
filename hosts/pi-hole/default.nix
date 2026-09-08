@@ -67,4 +67,9 @@
   # The admin password: set by hand after first boot, never generated or
   # stored by Nix - same line ssh.nix draws for authorized_keys.
   #   podman exec -it pihole pihole setpassword
+
+  # Local DNS record for the Mac Studio's ollama/open-webui stack: added
+  # by hand via Pi-hole's admin UI, same "set by hand" precedent as the
+  # password above. One name for both boot-sides via a router-level DHCP
+  # reservation on their shared NIC.
 }

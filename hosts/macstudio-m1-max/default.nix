@@ -7,5 +7,8 @@
     (selfPath "hosts/darwin-common.nix")
     (selfPath "modules/darwin/universalaccess.nix")
     (selfPath "modules/darwin/hardware-macstudio.nix")
+    (selfPath "modules/darwin/ollama.nix")
+    (selfPath "modules/darwin/podman-machine-boot.nix")
+    (selfPath "modules/darwin/mlx-lm.nix")
   ];
 }
