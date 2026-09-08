@@ -18,6 +18,9 @@ in
       ENABLE_CHANNELS = "False";
       ENABLE_NOTES = "False";
       ENABLE_MEMORIES = "False";
+      # LAN-only, single household - no sign-in screen. Disabling auth
+      # entirely (not just signup) skips accounts altogether.
+      WEBUI_AUTH = "False";
     };
     openFirewall = true;
   };

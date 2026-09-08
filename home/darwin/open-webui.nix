@@ -30,6 +30,7 @@ lib.mkIf (osConfig.networking.hostName == "macstudio-m1-max") {
         -e ENABLE_CHANNELS=False \
         -e ENABLE_NOTES=False \
         -e ENABLE_MEMORIES=False \
+        -e WEBUI_AUTH=False \
         -v open-webui:/app/backend/data \
         -v "$HOME/.config/open-webui/custom.css:/app/build/static/custom.css:ro" \
         ghcr.io/open-webui/open-webui:0.11.3-slim
