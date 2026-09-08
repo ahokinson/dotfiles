@@ -9,5 +9,6 @@
     (selfPath "modules/darwin/system")
     (selfPath "modules/darwin/home-manager.nix")
     (selfPath "modules/darwin/hermes.nix")
+    (selfPath "modules/darwin/sleep.nix")
   ];
 }
