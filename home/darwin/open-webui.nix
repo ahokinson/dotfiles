@@ -26,6 +26,9 @@ lib.mkIf (osConfig.networking.hostName == "macstudio-m1-max") {
       run podman run -d --name open-webui --restart=always \
         -p 8080:8080 \
         -e ENABLE_ADMIN_ANALYTICS=False \
+        -e ENABLE_ADMIN_CHAT_ACCESS=False \
+        -e ENABLE_ADMIN_EXPORT=False \
+        -e ENABLE_ADMIN_WORKSPACE_CONTENT_ACCESS=False \
         -e ENABLE_AUTOMATIONS=False \
         -e ENABLE_CALENDAR=False \
         -e ENABLE_CHANNELS=False \
@@ -33,11 +36,13 @@ lib.mkIf (osConfig.networking.hostName == "macstudio-m1-max") {
         -e ENABLE_CODE_INTERPRETER=False \
         -e ENABLE_COMMUNITY_SHARING=False \
         -e ENABLE_EVALUATION_ARENA_MODELS=False \
+        -e ENABLE_FOLDERS=False \
         -e ENABLE_FOLLOW_UP_GENERATION=False \
         -e ENABLE_MEMORIES=False \
         -e ENABLE_MESSAGE_RATING=False \
         -e ENABLE_NOTES=False \
         -e ENABLE_OAUTH=False \
+        -e ENABLE_PERSISTENT_CONFIG=False \
         -e ENABLE_RETRIEVAL_QUERY_GENERATION=False \
         -e ENABLE_SEARCH_QUERY_GENERATION=False \
         -e ENABLE_TAGS_GENERATION=False \
