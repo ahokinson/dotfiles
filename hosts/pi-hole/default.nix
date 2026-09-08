@@ -70,8 +70,10 @@
 
   # Local DNS record for the Mac Studio's ollama/open-webui stack: added
   # by hand via Pi-hole's admin UI, same "set by hand" precedent as the
-  # password above. One name for both boot-sides via a router-level DHCP
-  # reservation on their shared NIC.
+  # password above. The stack only runs on studio-m1-max's NixOS side now
+  # (macstudio-m1-max's darwin side dropped its own copy - redundant on the
+  # same dual-boot hardware), but the record's still keyed to a router-level
+  # DHCP reservation on the shared NIC, so it needs no change either way.
   #
   # framework13-amd-ryzen runs the same stack but is a separate, portable
   # machine - give it its own record rather than folding it in here.
