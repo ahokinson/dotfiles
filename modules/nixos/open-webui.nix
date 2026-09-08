@@ -27,6 +27,7 @@ in
       ENABLE_MESSAGE_RATING = "False";
       ENABLE_NOTES = "False";
       ENABLE_OAUTH = "False";
+      ENABLE_OPENAI_API = "False";
       ENABLE_RETRIEVAL_QUERY_GENERATION = "False";
       ENABLE_SEARCH_QUERY_GENERATION = "False";
       ENABLE_TAGS_GENERATION = "False";
