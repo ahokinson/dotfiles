@@ -1,4 +1,4 @@
-# studio-m1-max only.
+# studio-m1-max and framework13-amd-ryzen.
 {
   config,
   pkgs,
@@ -11,8 +11,8 @@ in
 {
   services.open-webui = {
     enable = true;
-    host = "0.0.0.0";
-    port = 8080;
+    host = "0.0.0.0"; # the one surface phones/iPads hit
+    port = 8080; # fixed fleet-wide - same bookmarked URL either boot-side
     environment = {
       OLLAMA_API_BASE_URL = "http://127.0.0.1:${toString config.services.ollama.port}";
       ENABLE_CHANNELS = "False";

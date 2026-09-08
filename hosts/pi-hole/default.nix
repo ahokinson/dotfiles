@@ -72,4 +72,7 @@
   # by hand via Pi-hole's admin UI, same "set by hand" precedent as the
   # password above. One name for both boot-sides via a router-level DHCP
   # reservation on their shared NIC.
+  #
+  # framework13-amd-ryzen runs the same stack but is a separate, portable
+  # machine - give it its own record rather than folding it in here.
 }

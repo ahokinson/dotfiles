@@ -1,4 +1,6 @@
-# studio-m1-max only.
+# studio-m1-max and framework13-amd-ryzen. ollama-vulkan over ollama-rocm
+# even on the Framework's AMD iGPU - RADV needs no rocmOverrideGfx fussing,
+# and it's the only option on the Studio's Asahi driver anyway.
 { pkgs, ... }:
 {
   services.ollama = {

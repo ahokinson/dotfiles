@@ -13,6 +13,8 @@
     (selfPath "hosts/framework13-amd-ryzen/hardware-configuration.nix")
     (selfPath "hosts/nixos-common.nix")
     (selfPath "modules/nixos/nas-mount.nix")
+    (selfPath "modules/nixos/ollama.nix")
+    (selfPath "modules/nixos/open-webui.nix")
   ];
 
   # Otherwise plymouth starts on the EFI framebuffer via simpledrm and is
