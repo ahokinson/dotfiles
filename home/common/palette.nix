@@ -1,6 +1,7 @@
 # Catppuccin Mocha, for the Nix-side consumers: git/delta.nix, ghostty,
-# zsh/init.nix's fzf colors. The vendored theme files (bat, btop, k9s,
-# hermes, opencode) carry their own copies in foreign formats.
+# zsh/init.nix's fzf colors, open-webui-theme.nix. The vendored theme files
+# (bat, btop, k9s, hermes, opencode) carry their own copies in foreign
+# formats.
 {
   rosewater = "#f5e0dc";
   flamingo = "#f2cdcd";

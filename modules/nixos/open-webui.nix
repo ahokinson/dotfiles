@@ -1,5 +1,13 @@
 # studio-m1-max only.
-{ config, ... }:
+{
+  config,
+  pkgs,
+  selfPath,
+  ...
+}:
+let
+  themeCss = import (selfPath "home/common/open-webui-theme.nix") { inherit pkgs selfPath; };
+in
 {
   services.open-webui = {
     enable = true;
@@ -14,5 +22,11 @@
     openFirewall = true;
   };
 
-  systemd.services.open-webui.serviceConfig.Restart = "on-failure";
+  systemd.services.open-webui.serviceConfig = {
+    Restart = "on-failure";
+    # Shadows the frontend's custom.css - see home/common/open-webui-theme.nix.
+    BindReadOnlyPaths = [
+      "${themeCss}:${config.services.open-webui.package.frontend}/share/open-webui/static/custom.css"
+    ];
+  };
 }
