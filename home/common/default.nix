@@ -1,4 +1,13 @@
-{ selfPath, ... }: {
+{
+  selfPath,
+  lib,
+  osConfig ? null,
+  ...
+}:
+let
+  forWork = (import (selfPath "home/common/host.nix") { inherit osConfig; }).forWork;
+in
+{
   imports = [
     (selfPath "home/common/atuin.nix")
     (selfPath "home/common/bat")
@@ -16,11 +25,9 @@
     (selfPath "home/common/ghostty")
     (selfPath "home/common/git")
     (selfPath "home/common/go-task")
-    (selfPath "home/common/hermes")
     (selfPath "home/common/k9s")
     (selfPath "home/common/lazydocker")
     (selfPath "home/common/lazygit")
-    (selfPath "home/common/libation.nix")
     (selfPath "home/common/mpv.nix")
     (selfPath "home/common/nh.nix")
     (selfPath "home/common/nix-index.nix")
@@ -31,11 +38,16 @@
     (selfPath "home/common/rbw.nix")
     (selfPath "home/common/ssh-agent.nix")
     (selfPath "home/common/tmux")
-    (selfPath "home/common/vesktop.nix")
     (selfPath "home/common/yazi.nix")
     (selfPath "home/common/yt-dlp")
     (selfPath "home/common/zen")
     (selfPath "home/common/zoxide")
     (selfPath "home/common/zsh")
+  ]
+  # Personal-only: dropped on the work Mac.
+  ++ lib.optionals (!forWork) [
+    (selfPath "home/common/hermes")
+    (selfPath "home/common/libation.nix")
+    (selfPath "home/common/vesktop.nix")
   ];
 }

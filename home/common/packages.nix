@@ -2,6 +2,7 @@
   pkgs,
   lib,
   selfPath,
+  osConfig ? null,
   ...
 }:
 let
@@ -9,6 +10,7 @@ let
   # macOS installs the fonts system-wide (modules/darwin/system) and ignores
   # fontconfig, so the home-level install is Linux-only.
   isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
+  forWork = (import (selfPath "home/common/host.nix") { inherit osConfig; }).forWork;
 in
 {
   home.packages =
@@ -95,7 +97,7 @@ in
       scorecard
       sd
       semgrep
-      signal-desktop
+      (lib.optionals (!forWork) [ signal-desktop ])
       # Linux gets slack (or slacky on Asahi) from home/linux/packages.nix;
       # pkgs.slack has no aarch64-linux build.
       (lib.optionals isDarwin [ slack ])
@@ -111,7 +113,7 @@ in
       trivy
       trufflehog
       turso-cli
-      twitch-cli
+      (lib.optionals (!forWork) [ twitch-cli ])
       unzip
       uv
       # No vesktop: programs.vesktop installs its own, and a second copy
