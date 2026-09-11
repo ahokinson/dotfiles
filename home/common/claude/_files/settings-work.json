@@ -1,0 +1,257 @@
+{
+  "permissions": {
+    "defaultMode": "bypassPermissions"
+  },
+  "model": "sonnet[1m]",
+  "enableAllProjectMcpServers": false,
+  "statusLine": {
+    "type": "command",
+    "command": "pharos statusline scrape",
+    "refreshInterval": 15
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|Write|Edit|NotebookEdit|WebFetch|mcp__.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cerberus guard"
+          }
+        ]
+      },
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pharos tmux dispatch tool --tool=claude"
+          }
+        ]
+      },
+      {
+        "matcher": "AskUserQuestion",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pharos tmux dispatch ask --tool=claude"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pharos tmux dispatch think --tool=claude"
+          },
+          {
+            "type": "command",
+            "command": "pharos tmux render --tool=claude"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pharos tmux dispatch think --tool=claude"
+          },
+          {
+            "type": "command",
+            "command": "pharos tmux render --tool=claude"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pharos tmux render --tool=claude"
+          },
+          {
+            "type": "command",
+            "command": "pharos tmux dispatch off --tool=claude"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pharos tmux dispatch notify --tool=claude"
+          },
+          {
+            "type": "command",
+            "command": "pharos tmux render --tool=claude"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cerberus health"
+          },
+          {
+            "type": "command",
+            "command": "psyche --format claude ~/.claude/plugins/marketplaces/local/plugins/custom/SOUL.md"
+          },
+          {
+            "type": "command",
+            "command": "pharos tmux dispatch off --tool=claude"
+          },
+          {
+            "type": "command",
+            "command": "pharos tmux render --tool=claude"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pharos tmux render --tool=claude"
+          },
+          {
+            "type": "command",
+            "command": "pharos tmux dispatch off --tool=claude"
+          }
+        ]
+      }
+    ]
+  },
+  "disableAllHooks": false,
+  "workflowKeywordTriggerEnabled": false,
+  "enabledPlugins": {
+    "clangd-lsp@claude-plugins-official": true,
+    "custom@local": true,
+    "gopls-lsp@claude-plugins-official": true,
+    "press@press": true,
+    "pyright-lsp@claude-plugins-official": true,
+    "rust-analyzer-lsp@claude-plugins-official": true,
+    "swift-lsp@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": true
+  },
+  "extraKnownMarketplaces": {
+    "press": {
+      "source": {
+        "source": "github",
+        "repo": "ahokinson/press"
+      }
+    }
+  },
+  "sandbox": {
+    "enabled": true,
+    "allowUnsandboxedCommands": true,
+    "excludedCommands": [
+      "git clone:*",
+      "git fetch:*",
+      "git ls-remote:*",
+      "git pull:*",
+      "git push:*",
+      "ssh:*"
+    ],
+    "network": {
+      "allowUnixSockets": [],
+      "allowLocalBinding": true,
+      "strictAllowlist": true,
+      "allowedDomains": [
+        "grype.anchore.io",
+        "toolbox-data.anchore.io",
+        "api.armosec.io",
+        "astral.sh",
+        "*.astral.sh",
+        "acli.atlassian.com",
+        "bun.sh",
+        "*.bun.sh",
+        "*.cachix.org",
+        "code.claude.com",
+        "crates.io",
+        "*.crates.io",
+        "install.determinate.systems",
+        "*.docker.com",
+        "docker.io",
+        "*.docker.io",
+        "cache.flakehub.com",
+        "gcr.io",
+        "mirror.gcr.io",
+        "ghcr.io",
+        "github.com",
+        "*.github.com",
+        "*.githubusercontent.com",
+        "go.dev",
+        "*.golang.org",
+        "gopkg.in",
+        "*.hashicorp.com",
+        "*.nixos.org",
+        "*.npmjs.org",
+        "api.osv.dev",
+        "pypi.org",
+        "*.pypi.org",
+        "*.pythonhosted.org",
+        "*.rust-lang.org",
+        "*.schemastore.org",
+        "api.securityscorecards.dev",
+        "semgrep.dev",
+        "*.semgrep.dev",
+        "*.sigstore.dev",
+        "taskfile.dev",
+        "registry.terraform.io",
+        "ziglang.org",
+        "*.ziglang.org"
+      ],
+      "deniedDomains": [
+        "gist.github.com"
+      ]
+    },
+    "filesystem": {
+      "denyRead": [
+        "~/.ssh",
+        "~/.aws",
+        "~/.gnupg",
+        "~/.netrc",
+        "**/.env",
+        "**/.env.*",
+        "**/*.pem",
+        "**/*.key",
+        "**/*.p12",
+        "**/*.pfx",
+        "**/*.jks",
+        "**/*.keystore",
+        "**/id_rsa",
+        "**/id_dsa",
+        "**/id_ecdsa",
+        "**/id_ed25519",
+        "**/credentials",
+        "**/.credentials",
+        "**/.npmrc",
+        "**/.pypirc"
+      ]
+    }
+  },
+  "effortLevel": "xhigh",
+  "promptSuggestionEnabled": false,
+  "awaySummaryEnabled": false,
+  "tui": "fullscreen",
+  "skipDangerousModePermissionPrompt": true,
+  "theme": "dark-ansi",
+  "editorMode": "normal",
+  "autoCompactEnabled": false,
+  "fileCheckpointingEnabled": false,
+  "showTurnDuration": false,
+  "remoteControlAtStartup": false,
+  "useAutoModeDuringPlan": false
+}
