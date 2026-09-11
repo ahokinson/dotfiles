@@ -22,6 +22,11 @@ in
       # via sudo. Nothing else in this repo gets a wrapper/capability
       # treatment, so none is invented here.
       bandwhich
+      # baobab's darwin build has no real windowing backend behind it
+      # (nixpkgs' gtk4 only wires up X11 there); grandperspective is the
+      # native macOS equivalent instead.
+      (lib.optionals (!isDarwin) [ baobab ])
+      (lib.optionals isDarwin [ grandperspective ])
       bun
       cargo
       clipleaks
