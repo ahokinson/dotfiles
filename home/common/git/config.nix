@@ -1,4 +1,8 @@
-_: {
+{ selfPath, osConfig ? null, ... }:
+let
+  forWork = (import (selfPath "home/common/host.nix") { inherit osConfig; }).forWork;
+in
+{
   programs.git = {
     enable = true;
     settings = {
@@ -28,7 +32,9 @@ _: {
     includes = [
       {
         path = "~/.gitconfig-work";
-        condition = "gitdir:~/.local/src/";
+        # On the work Mac, every repo is presumptively a work repo; personal
+        # Macs only apply it under the one directory that holds work clones.
+        condition = if forWork then "gitdir:~/" else "gitdir:~/.local/src/";
       }
     ];
   };

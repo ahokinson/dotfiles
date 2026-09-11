@@ -1,6 +1,7 @@
 # Work Git identity.
 # Copy to ~/.gitconfig-work and fill in real values.
-# Auto-applied to repos under ~/.local/src/ via includeIf in ~/.gitconfig.
+# Auto-applied via includeIf in ~/.gitconfig: repo-wide on the work Mac,
+# under ~/.local/src/ elsewhere.
 # Never commit ~/.gitconfig-work.
 [user]
 	name = <work name>
