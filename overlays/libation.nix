@@ -25,7 +25,7 @@ let
     };
     aarch64-darwin = {
       url = "https://github.com/rmcrackan/Libation/releases/download/v${version}/Libation.${version}-macOS-chardonnay-arm64.dmg";
-      hash = lib.fakeHash;
+      hash = "sha256-/N3f8NoceTlRpqw/Lp0jhvIMR+kuB5/wVvhnh1iSSIc=";
     };
   };
 
@@ -128,14 +128,23 @@ let
     pname = "libation";
     inherit version src;
 
-    nativeBuildInputs = [ final.undmg ];
+    nativeBuildInputs = [ final._7zz ];
 
-    unpackPhase = "undmg $src";
+    # undmg only understands HFS+ volumes; upstream's arm64 release is
+    # APFS-formatted, hence 7zz instead. It reads straight through the dmg's
+    # container layer to the volume's actual files in one pass - no separate
+    # step to mount or unpack a partition image.
+    unpackPhase = ''
+      runHook preUnpack
+      7zz x -bd -y "$src" -ocontainer >/dev/null
+      runHook postUnpack
+    '';
 
     installPhase = ''
       runHook preInstall
       mkdir -p "$out/Applications"
-      cp -r Libation.app "$out/Applications/"
+      appBundle=$(find container -iname 'Libation.app' -print -quit)
+      cp -r "$appBundle" "$out/Applications/"
       # Ad-hoc sign so Gatekeeper accepts a locally-built copy.
       /usr/bin/codesign --force --deep --sign - "$out/Applications/Libation.app"
       runHook postInstall
