@@ -36,7 +36,7 @@ let
 
   # Asahi hosts run some apps' unofficial ARM64 builds under a different
   # .desktop id (home/common/dock-apps.nix's asahi* overrides).
-  isApple = import (selfPath "home/common/is-apple.nix") { inherit osConfig; };
+  isApple = (import (selfPath "home/common/host.nix") { inherit osConfig; }).isApple;
   desktopIdFor =
     app: if isApple then (app.asahiLinuxDesktopId or app.linuxDesktopId) else app.linuxDesktopId;
 

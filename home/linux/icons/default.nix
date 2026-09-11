@@ -23,7 +23,7 @@ let
 
   themeName = "WhiteSur-dark-catppuccin";
 
-  isApple = import (selfPath "home/common/is-apple.nix") { inherit osConfig; };
+  isApple = (import (selfPath "home/common/host.nix") { inherit osConfig; }).isApple;
 
   # Both logos below ship their own brand colors; swapped hex-for-hex onto
   # Mocha so the app-library button matches the rest of the icon theme.

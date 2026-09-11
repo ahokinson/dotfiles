@@ -2,6 +2,8 @@
 #   darwin-rebuild switch --flake ~/.dotfiles#macbookpro16-m5
 { selfPath, ... }: {
   networking.hostName = "macbookpro16-m5";
+  # MDM-managed work machine: keep personal-only apps off it.
+  forWork = true;
 
   imports = [
     (selfPath "hosts/darwin-common.nix")

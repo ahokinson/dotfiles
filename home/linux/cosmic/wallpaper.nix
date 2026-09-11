@@ -9,7 +9,7 @@
   ...
 }:
 let
-  isApple = import (selfPath "home/common/is-apple.nix") { inherit osConfig; };
+  isApple = (import (selfPath "home/common/host.nix") { inherit osConfig; }).isApple;
   wallpaper = selfPath (
     if isApple then "home/common/_files/wallpaper/asahi.jpg" else "home/common/_files/wallpaper/nix.jpg"
   );
