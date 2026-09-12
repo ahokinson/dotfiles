@@ -9,6 +9,7 @@
     (selfPath "modules/nixos/clamav.nix")
     (selfPath "modules/nixos/containers.nix")
     (selfPath "modules/nixos/desktop-cosmic.nix")
+    (selfPath "modules/nixos/desktop-hyprland.nix")
     (selfPath "modules/nixos/hermes.nix")
     (selfPath "modules/nixos/home-manager.nix")
     (selfPath "modules/nixos/locale.nix")
