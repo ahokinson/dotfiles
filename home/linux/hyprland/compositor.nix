@@ -35,10 +35,10 @@ let
   };
 in
 {
-  # brightnessctl backs the XF86MonBrightness binds below. wpctl (volume
-  # binds) and playerctl (media binds) need no addition here - wpctl ships
-  # with modules/nixos/audio.nix's pipewire/wireplumber, playerctl is already
-  # on $PATH system-wide. hyprpaper is needed explicitly since
+  # brightnessctl backs osd.nix's swayosd-client brightness calls. wpctl
+  # (volume) and playerctl (media binds) need no addition here - wpctl ships
+  # with modules/nixos/audio.nix's pipewire/wireplumber, playerctl is
+  # already on $PATH system-wide. hyprpaper is needed explicitly since
   # wallpaper.nix's package = null drops it from services.hyprpaper's own
   # wiring; waybar.nix's programs.waybar.enable already adds waybar itself.
   home.packages = [
@@ -219,12 +219,13 @@ in
 
         # No modifier - these keys have no other purpose, matching COSMIC's
         # own convention of binding XF86 keys bare. locked = fires even
-        # while hyprlock is active.
-        (bindOpts "XF86AudioMute" (lua ''hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle")'') {
+        # while hyprlock is active. swayosd-client (osd.nix) runs the
+        # underlying wpctl/brightnessctl call itself and shows the OSD.
+        (bindOpts "XF86AudioMute" (lua ''hl.dsp.exec_cmd("swayosd-client --output-volume mute-toggle")'') {
           locked = true;
         })
         (bindOpts "XF86AudioMicMute"
-          (lua ''hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle")'')
+          (lua ''hl.dsp.exec_cmd("swayosd-client --input-volume mute-toggle")'')
           {
             locked = true;
           }
@@ -233,27 +234,26 @@ in
         (bindOpts "XF86AudioNext" (lua ''hl.dsp.exec_cmd("playerctl next")'') { locked = true; })
         (bindOpts "XF86AudioPrev" (lua ''hl.dsp.exec_cmd("playerctl previous")'') { locked = true; })
 
-        # repeating = fires again while the key is held. Volume is capped
-        # at 100% so repeated presses can't push it past that.
+        # repeating = fires again while the key is held.
         (bindOpts "XF86AudioRaiseVolume"
-          (lua ''hl.dsp.exec_cmd("wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+")'')
+          (lua ''hl.dsp.exec_cmd("swayosd-client --output-volume raise")'')
           {
             locked = true;
             repeating = true;
           }
         )
         (bindOpts "XF86AudioLowerVolume"
-          (lua ''hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-")'')
+          (lua ''hl.dsp.exec_cmd("swayosd-client --output-volume lower")'')
           {
             locked = true;
             repeating = true;
           }
         )
-        (bindOpts "XF86MonBrightnessUp" (lua ''hl.dsp.exec_cmd("brightnessctl set 5%+")'') {
+        (bindOpts "XF86MonBrightnessUp" (lua ''hl.dsp.exec_cmd("swayosd-client --brightness raise")'') {
           locked = true;
           repeating = true;
         })
-        (bindOpts "XF86MonBrightnessDown" (lua ''hl.dsp.exec_cmd("brightnessctl set 5%-")'') {
+        (bindOpts "XF86MonBrightnessDown" (lua ''hl.dsp.exec_cmd("swayosd-client --brightness lower")'') {
           locked = true;
           repeating = true;
         })

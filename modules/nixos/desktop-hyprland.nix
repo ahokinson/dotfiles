@@ -16,6 +16,11 @@
   # brightnessctl (home/linux/hyprland/compositor.nix's XF86MonBrightness
   # binds) needs its udev rule and the video group to write brightness
   # without root - home.packages alone doesn't wire the udev rule in.
-  services.udev.packages = [ pkgs.brightnessctl ];
+  # swayosd (home/linux/hyprland/osd.nix) ships its own udev rule for the
+  # same reason.
+  services.udev.packages = [
+    pkgs.brightnessctl
+    pkgs.swayosd
+  ];
   users.users.${username}.extraGroups = [ "video" ];
 }
