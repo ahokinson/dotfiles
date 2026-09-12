@@ -148,6 +148,14 @@ in
         (bind "SUPER + Escape" (lua ''hl.dsp.exec_cmd("hyprlock")''))
         (bind "SUPER + SHIFT + Escape" (lua "hl.dsp.exit()"))
 
+        (bind "SUPER + V" (lua ''
+          hl.dsp.exec_cmd("bash -c 'cliphist list | fuzzel --dmenu | cliphist decode | wl-copy'")
+        ''))
+
+        # Special-workspace scratchpad.
+        (bind "SUPER + grave" (lua ''hl.dsp.workspace.toggle_special("scratch")''))
+        (bind "SUPER + SHIFT + grave" (lua ''hl.dsp.window.move({ workspace = "special:scratch" })''))
+
         # Directional focus/move, vim-style.
         (bind "SUPER + H" (lua ''hl.dsp.focus({ direction = "left" })''))
         (bind "SUPER + J" (lua ''hl.dsp.focus({ direction = "down" })''))

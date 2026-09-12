@@ -1,5 +1,6 @@
 {
   imports = [
+    ./clipboard.nix
     ./compositor.nix
     ./idle.nix
     ./launcher.nix
