@@ -76,7 +76,11 @@ in
         # divisor, not a size multiplier, so 2 here means the same
         # physical/2 logical resolution macOS's own default Retina scaling
         # uses (e.g. 3024x1964 physical -> 1512x982 logical).
-        scale = 2;
+        # framework13-amd-ryzen's panel isn't Retina, hence isApple here.
+        # studio-m1-max drives an external monitor, not a built-in Retina
+        # panel - isApple alone may still be wrong for it; wants per-monitor
+        # tuning against its actual hyprctl monitors description.
+        scale = if isApple then 2 else 1;
       };
 
       config = {
