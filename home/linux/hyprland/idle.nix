@@ -1,0 +1,26 @@
+# Locks then blanks on idle, never suspends - the same policy
+# home/linux/cosmic/idle.nix sets for COSMIC, so the two DEs behave the same
+# way on both AC and battery. Timeouts are a starting default, not fixed.
+{
+  services.hypridle = {
+    enable = true;
+    settings = {
+      general = {
+        lock_cmd = "pidof hyprlock || hyprlock";
+        before_sleep_cmd = "loginctl lock-session";
+        after_sleep_cmd = "hyprctl dispatch dpms on";
+      };
+      listener = [
+        {
+          timeout = 600;
+          on-timeout = "loginctl lock-session";
+        }
+        {
+          timeout = 900;
+          on-timeout = "hyprctl dispatch dpms off";
+          on-resume = "hyprctl dispatch dpms on";
+        }
+      ];
+    };
+  };
+}

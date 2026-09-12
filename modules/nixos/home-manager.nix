@@ -18,6 +18,7 @@
         (selfPath "home/common")
         (selfPath "home/linux")
         (selfPath "home/linux/cosmic")
+        (selfPath "home/linux/hyprland")
         inputs.cosmic-manager.homeManagerModules.cosmic-manager
         inputs.zen-browser.homeModules.beta
       ];
