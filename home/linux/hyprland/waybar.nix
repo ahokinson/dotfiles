@@ -277,10 +277,9 @@ in
         size = 16;
       };
 
-      # Placeholder for COSMIC's Power applet, which opens a lock/logout/
-      # restart/shutdown menu - waybar has no built-in equivalent widget.
-      # Wired to the same action as compositor.nix's Super+Shift+Escape for
-      # now; swap on-click for a real menu (e.g. wlogout) if that's wanted.
+      # Opens wlogout (powermenu.nix), the wlroots-ecosystem equivalent of
+      # COSMIC's Power applet menu. compositor.nix's Super+Shift+Escape
+      # stays a direct hyprctl dispatch exit.
       #
       # Themed SVG (system-shutdown-symbolic.svg), not a glyph - see the
       # #power CSS rule below for why the surrounding padding also changed
@@ -288,7 +287,7 @@ in
       "image#power" = {
         path = "${powerIcon}";
         size = 16;
-        on-click = "hyprctl dispatch exit";
+        on-click = "wlogout";
         tooltip = false;
       };
     };
