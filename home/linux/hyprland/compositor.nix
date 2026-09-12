@@ -33,6 +33,11 @@ let
       opts
     ];
   };
+  # hl.curve takes two positional args (name, spec), unlike hl.<name>(spec)
+  # everywhere else.
+  curve = name: spec: {
+    _args = [ name spec ];
+  };
 in
 {
   # brightnessctl backs osd.nix's swayosd-client brightness calls. wpctl
@@ -41,9 +46,15 @@ in
   # already on $PATH system-wide. hyprpaper is needed explicitly since
   # wallpaper.nix's package = null drops it from services.hyprpaper's own
   # wiring; waybar.nix's programs.waybar.enable already adds waybar itself.
+  # networkmanagerapplet/blueman are launched below alongside waybar/
+  # hyprpaper rather than through their own home-manager service options -
+  # desktop-cosmic.nix excludes networkmanagerapplet since COSMIC has its
+  # own; Hyprland has none.
   home.packages = [
+    pkgs.blueman
     pkgs.brightnessctl
     pkgs.hyprpaper
+    pkgs.networkmanagerapplet
   ];
 
   # home/common/catppuccin.nix's global accent is mauve; overridden to blue
@@ -104,13 +115,109 @@ in
         };
         input.touchpad.natural_scroll = false;
 
-        decoration.rounding = 8;
+        decoration = {
+          rounding = 8;
+          blur = {
+            enabled = true;
+            size = 4;
+            passes = 2;
+            vibrancy = 0.17;
+          };
+          shadow = {
+            enabled = true;
+            range = 12;
+            render_power = 3;
+            color = lua "0x66000000";
+          };
+        };
       };
+
+      curve = [
+        (curve "easeOutQuint" {
+          type = "bezier";
+          points = [
+            [
+              0.23
+              1
+            ]
+            [
+              0.32
+              1
+            ]
+          ];
+        })
+      ];
+
+      animation = [
+        {
+          leaf = "windows";
+          enabled = true;
+          speed = 4;
+          bezier = "easeOutQuint";
+        }
+        {
+          leaf = "workspaces";
+          enabled = true;
+          speed = 3;
+          bezier = "easeOutQuint";
+          style = "slide";
+        }
+      ];
+
+      # namespace values matched against hyprctl layers' own output;
+      # class/title values matched against hyprctl clients'.
+      window_rule = [
+        {
+          name = "float-pavucontrol";
+          match.class = "^(org.pulseaudio.pavucontrol)$";
+          float = true;
+        }
+        {
+          name = "float-blueman";
+          match.class = "^(blueman-manager)$";
+          float = true;
+        }
+        {
+          name = "float-nm-editor";
+          match.class = "^(nm-connection-editor)$";
+          float = true;
+        }
+        {
+          name = "pip-corner";
+          match.title = "^(Picture-in-Picture)$";
+          float = true;
+          pin = true;
+          move = "100%-w-20 100%-h-20";
+        }
+      ];
+
+      layer_rule = [
+        {
+          name = "blur-fuzzel";
+          match.namespace = "^launcher$";
+          blur = true;
+        }
+        {
+          name = "blur-waybar";
+          match.namespace = "^waybar$";
+          blur = true;
+        }
+      ];
+
+      gesture = [
+        {
+          fingers = 3;
+          direction = "horizontal";
+          action = "workspace";
+        }
+      ];
 
       # Both are systemd-disabled in their own modules (waybar.nix,
       # wallpaper.nix) - launched directly here instead, matching Hyprland's
       # own stock config, which documents exactly this hl.on("hyprland.start",
-      # ...) pattern for status bars and wallpaper daemons.
+      # ...) pattern for status bars and wallpaper daemons. nm-applet/
+      # blueman-applet (home.packages above) go through the same hook -
+      # their home-manager systemd units want tray.target, unactivated here.
       #
       on = {
         _args = [
@@ -126,6 +233,8 @@ in
               -- correct one.
               hl.exec_cmd("GDK_SCALE=1 waybar")
               hl.exec_cmd("hyprpaper")
+              hl.exec_cmd("nm-applet --indicator")
+              hl.exec_cmd("blueman-applet")
             end
           '')
         ];
