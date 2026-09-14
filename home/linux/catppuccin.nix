@@ -3,11 +3,20 @@
 { pkgs, ... }:
 {
   catppuccin = {
-    # Mirrors `enable` to silence catppuccin/nix's migration warning. Stays
-    # Linux-only: the darwin apps mostly ship hand-authored Mocha themes.
-    autoEnable = true;
+    autoEnable = false;
 
-    # WhiteSur supplies the icons and cursor; this keeps only its GTK colors.
+    # None of these have a theme of their own (unlike bat/delta in
+    # home/common/catppuccin.nix) and none exist on darwin, so they opt in
+    # here instead of there.
+    fuzzel.enable = true;
+    hyprland.enable = true;
+    hyprlock.enable = true;
+    waybar.enable = true;
+    zathura.enable = true;
+
+    # GTK colors are the module's; WhiteSur supplies the icons and cursor
+    # instead of its own.
+    gtk.enable = true;
     gtk.icon.enable = false;
   };
 
