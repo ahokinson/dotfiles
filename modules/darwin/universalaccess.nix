@@ -4,7 +4,7 @@
 {
   system.defaults.universalaccess = {
     reduceMotion = true;
-    reduceTransparency = true;
+    reduceTransparency = false; # keeps the menu bar/Dock/sidebars translucent
     mouseDriverCursorSize = 1.0;
     closeViewScrollWheelToggle = false;
     closeViewZoomFollowsFocus = false;
