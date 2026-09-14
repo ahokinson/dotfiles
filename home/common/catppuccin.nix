@@ -26,5 +26,11 @@
     mpv.enable = true;
     tmux.enable = true;
     yazi.enable = true;
+
+    # Gates on programs.zsh.enable, not on any zsh-syntax-highlighting
+    # program option (there isn't one to match - zsh/plugins.nix vendors the
+    # real highlighter as an oh-my-zsh plugin instead), so it colors that
+    # vendored plugin's output regardless.
+    zsh-syntax-highlighting.enable = true;
   };
 }
