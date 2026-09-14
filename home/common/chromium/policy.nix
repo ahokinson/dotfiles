@@ -7,6 +7,9 @@
   # --- Google account / sync ------------------------------------------------
   "SyncDisabled" = true;
   "BrowserSignin" = 0; # 0 = sign-in disabled outright
+  "SigninInterceptionEnabled" = false; # no "sign in?" bubble prompt
+  "BrowserGuestModeEnabled" = false;
+  "BrowserAddPersonEnabled" = false; # no adding further Chrome profiles
 
   # --- Telemetry -------------------------------------------------------------
   "MetricsReportingEnabled" = false;
@@ -26,6 +29,10 @@
   "PaymentMethodQueryEnabled" = false;
   "PasswordManagerEnabled" = false;
   "ImportAutofillFormData" = false;
+  # Moot with PasswordManagerEnabled already off above; explicit anyway since
+  # it's the policy that actually governs hashing saved passwords against
+  # Google's breach list.
+  "PasswordLeakDetectionEnabled" = false;
 
   # --- Spelling ----------------------------------------------------------------
   # Cloud spellcheck (uploads text-field contents to Google); local
@@ -35,6 +42,7 @@
   # --- Chrome-the-product nagging -----------------------------------------
   "PromotionsEnabled" = false;
   "DefaultBrowserSettingEnabled" = false;
+  "NTPContentSuggestionsEnabled" = false; # New Tab Page article/content cards
 
   # --- Misc, none of it feature-breaking -------------------------------------
   "AlternateErrorPagesEnabled" = false;
@@ -42,6 +50,11 @@
   "NetworkPredictionOptions" = 2; # no DNS prefetch/preconnect speculation
   "BackgroundModeEnabled" = false;
   "AllowDeletingBrowserHistory" = true;
+
+  # --- Sends data to Google outside of browsing itself ---------------------
+  "TranslateEnabled" = false; # inline page translate uploads page text
+  "BrowserNetworkTimeQueriesEnabled" = false;
+  "DnsOverHttpsMode" = "off"; # defer entirely to the system/OS resolver
 
   # --- Force-installed extensions -----------------------------------------
   "ExtensionSettings" = {
