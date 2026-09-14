@@ -56,6 +56,18 @@
   "BrowserNetworkTimeQueriesEnabled" = false;
   "DnsOverHttpsMode" = "off"; # defer entirely to the system/OS resolver
 
+  # --- Generative AI ---------------------------------------------------------
+  # 2 = disallow. Covers everything else with no more specific policy of its
+  # own: Compose ("Help me write"), Tab Organizer, Create Themes, History
+  # Search, DevTools AI, Tab Compare, VC Background, Wallpaper, Help Me Read.
+  "GenAiDefaultSettings" = 2;
+  # AI Mode's omnibox/NTP search box isn't consistently documented as falling
+  # under the default above, so it's named explicitly, same for its
+  # third-party-model equivalent. 1 = not available (both 0/1, not the
+  # 3-value enum above).
+  "AIModeSettings" = 1;
+  "ThirdPartyAiChatSettings" = 1;
+
   # --- Force-installed extensions -----------------------------------------
   "ExtensionSettings" = {
     # uBlock Origin Lite (gorhill's MV3 successor; classic MV2 uBlock
