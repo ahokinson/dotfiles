@@ -6,6 +6,7 @@
   imports = [
     (selfPath "modules/nixos/audio.nix")
     (selfPath "modules/nixos/boot.nix")
+    (selfPath "modules/nixos/chromium.nix")
     (selfPath "modules/nixos/clamav.nix")
     (selfPath "modules/nixos/containers.nix")
     (selfPath "modules/nixos/desktop-cosmic.nix")

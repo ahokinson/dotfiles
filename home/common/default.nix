@@ -16,6 +16,7 @@ in
     (selfPath "home/common/btop")
     (selfPath "home/common/catppuccin.nix")
     (selfPath "home/common/cerberus")
+    (selfPath "home/common/chromium")
     (selfPath "home/common/claude")
     (selfPath "home/common/codex")
     (selfPath "home/common/cupcake")
