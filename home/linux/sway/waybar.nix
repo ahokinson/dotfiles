@@ -202,7 +202,6 @@ in
       ];
       modules-right = [
         "network"
-        "tray"
         "custom/spacer"
         "image#battery"
         "custom/spacer"

@@ -33,20 +33,15 @@ in
   # brightnessctl backs osd.nix's swayosd-client brightness calls. wpctl
   # (volume) and playerctl (media binds) need no addition here - wpctl ships
   # with modules/nixos/audio.nix's pipewire/wireplumber, playerctl is
-  # already on $PATH system-wide. networkmanagerapplet/blueman are launched
-  # below alongside waybar rather than through their own home-manager
-  # service options - modules/nixos/desktops/cosmic.nix excludes
-  # networkmanagerapplet since COSMIC has its own; Sway has none.
+  # already on $PATH system-wide.
   home.packages = [
-    pkgs.blueman
     pkgs.brightnessctl
-    pkgs.networkmanagerapplet
   ];
 
   wayland.windowManager.sway = {
     enable = true;
     xwayland = true;
-    wrapperFeatures.gtk = true; # lets nm-applet/blueman-applet/pavucontrol pick up cursor/theme via gsettings
+    wrapperFeatures.gtk = true; # lets pavucontrol pick up cursor/theme via gsettings
 
     config = null;
 
@@ -78,10 +73,6 @@ in
       # app_id matches native Wayland clients; class is the XWayland fallback.
       for_window [app_id="^org\.pulseaudio\.pavucontrol$"] floating enable
       for_window [class="^org\.pulseaudio\.pavucontrol$"] floating enable
-      for_window [app_id="^blueman-manager$"] floating enable
-      for_window [class="^Blueman-manager$"] floating enable
-      for_window [app_id="^nm-connection-editor$"] floating enable
-      for_window [class="^Nm-connection-editor$"] floating enable
       # No percentage-arithmetic corner-pin here (Sway's move position has no
       # equivalent to Hyprland's "100%-w-20 100%-h-20") - floating + sticky
       # only, positioned wherever it opens.
@@ -195,12 +186,9 @@ in
         bindsym Return mode "default"
       }
 
-      # nm-applet, blueman-applet, and waybar are all exec'd directly here
-      # instead of through a home-manager systemd unit - each of their units
-      # wants tray.target or a graphical-session target that nothing in this
-      # session activates, so none would ever start on their own.
-      exec nm-applet --indicator
-      exec blueman-applet
+      # Waybar is exec'd directly rather than through a home-manager systemd
+      # unit, since this session does not activate its graphical-session
+      # target.
       exec waybar
     '';
   };
