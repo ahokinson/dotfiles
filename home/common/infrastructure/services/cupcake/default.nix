@@ -1,0 +1,21 @@
+{ pkgs, lib, ... }:
+{
+  home.packages = [ pkgs.cupcake ];
+
+  # cerberus is the only caller of `cupcake eval` and always passes
+  # --harness claude, so a policies/opencode/ store is never read. The
+  # policies come from home/common/infrastructure/services/cerberus.
+  home.activation.cupcakeGlobalInit = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    run ${pkgs.cupcake}/bin/cupcake init --global --harness claude
+  '';
+
+  # `cupcake eval` needs a project-level .cupcake/ in its cwd; the global
+  # store only layers on top.
+  home.activation.cupcakeStubInit = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    cupcakeStub="''${XDG_DATA_HOME:-$HOME/.local/share}/cupcake-stub"
+    if [[ ! -d "$cupcakeStub/.cupcake/policies/claude" ]]; then
+      run ${pkgs.coreutils}/bin/mkdir -p "$cupcakeStub"
+      ( cd "$cupcakeStub" && run ${pkgs.cupcake}/bin/cupcake init --harness claude )
+    fi
+  '';
+}

@@ -2,7 +2,7 @@
 # formatted.
 #
 # Nix-only: the markdown files under home/common are prompt documents, and
-# the vendored SVGs and wallpaper JPGs under home/common/_files can't be nix
+# the vendored SVGs and wallpaper JPGs under home/common/assets can't be nix
 # (a few feed derivations by path, the rest are binary). A formatter would
 # fight both.
 _: {
@@ -21,12 +21,12 @@ _: {
 
   # nixos-generate-config output, reproduced verbatim on a reinstall, so
   # deadnix must not strip the arguments it declares but never uses.
-  settings.formatter.deadnix.excludes = [ "hosts/*/hardware-configuration.nix" ];
+  settings.formatter.deadnix.excludes = [ "hosts/**/hardware-configuration.nix" ];
 
   settings.global.excludes = [
     "*.md"
     ".gitignore"
     "flake.lock"
-    "home/common/_files/*"
+    "home/common/assets/*"
   ];
 }

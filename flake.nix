@@ -111,7 +111,7 @@
     nvim.flake = false;
 
     # Also a plain source tree. Only icons/ is used, recolored onto Mocha
-    # tiles by home/common/icons.nix.
+    # tiles by home/common/theme/icons.nix.
     simple-icons.url = "github:simple-icons/simple-icons";
     simple-icons.flake = false;
 
@@ -148,24 +148,24 @@
       # shared overlay, one host import - so only the platform and the path
       # differ. Factored here to keep each declaration to those two.
       mkNixos =
-        hostPlatform: hostDir:
+        hostPlatform: hostPath:
         nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs selfPath username; };
           modules = [
             { nixpkgs.hostPlatform = hostPlatform; }
             { nixpkgs.overlays = [ overlays.default ]; }
-            (selfPath "hosts/${hostDir}")
+            (selfPath "hosts/${hostPath}")
           ];
         };
 
       mkDarwin =
-        hostDir:
+        hostPath:
         nix-darwin.lib.darwinSystem {
           specialArgs = { inherit inputs selfPath username; };
           modules = [
             { nixpkgs.hostPlatform = "aarch64-darwin"; }
             { nixpkgs.overlays = [ overlays.default ]; }
-            (selfPath "hosts/${hostDir}")
+            (selfPath "hosts/${hostPath}")
           ];
         };
 
@@ -173,15 +173,15 @@
       # nixpkgs.lib.nixosSystem: it wires in Pi-specific kernel/firmware
       # packaging and disko-integrated boot provisioning nixos-anywhere needs
       # for a fully non-interactive install. Board support and the disko
-      # module live in hosts/raspberrypi-common.nix, so this stays as short
+      # module live in hosts/nixos/raspberry-pi/common.nix, so this stays as short
       # as mkNixos. No overlays.default: nothing these two hosts reuse needs
       # it, and it would cross nixos-raspberrypi's own (older, deliberately
       # unfollowed) nixpkgs revision for no reason.
       mkRaspberryPi =
-        hostDir:
+        hostPath:
         inputs.nixos-raspberrypi.lib.nixosSystem {
           specialArgs = { inherit inputs selfPath username; };
-          modules = [ (selfPath "hosts/${hostDir}") ];
+          modules = [ (selfPath "hosts/${hostPath}") ];
         };
 
       # Each host pins its own platform; this list is only for the per-system
@@ -213,26 +213,26 @@
     in
     {
       # --- NixOS (x86_64-linux) ---
-      nixosConfigurations.framework13-amd-ryzen = mkNixos "x86_64-linux" "framework13-amd-ryzen";
+      nixosConfigurations.framework13-amd-ryzen = mkNixos "x86_64-linux" "nixos/x86_64/framework13-amd-ryzen";
 
       # --- macOS (aarch64-darwin) ---
-      darwinConfigurations.macbookpro14-m1-pro = mkDarwin "macbookpro14-m1-pro";
+      darwinConfigurations.macbookpro14-m1-pro = mkDarwin "darwin/macbookpro14-m1-pro";
 
-      darwinConfigurations.macstudio-m1-max = mkDarwin "macstudio-m1-max";
+      darwinConfigurations.macstudio-m1-max = mkDarwin "darwin/macstudio-m1-max";
 
       # The only Mac that does not dual-boot Asahi.
-      darwinConfigurations.macbookpro16-m5 = mkDarwin "macbookpro16-m5";
+      darwinConfigurations.macbookpro16-m5 = mkDarwin "darwin/macbookpro16-m5";
 
       # --- Asahi NixOS (aarch64-linux, bare metal on Apple Silicon) ---
       # Short forms of the same machines' darwin hostnames above.
-      nixosConfigurations.bookpro14-m1-pro = mkNixos "aarch64-linux" "bookpro14-m1-pro";
+      nixosConfigurations.bookpro14-m1-pro = mkNixos "aarch64-linux" "nixos/asahi/bookpro14-m1-pro";
 
-      nixosConfigurations.studio-m1-max = mkNixos "aarch64-linux" "studio-m1-max";
+      nixosConfigurations.studio-m1-max = mkNixos "aarch64-linux" "nixos/asahi/studio-m1-max";
 
       # --- Raspberry Pi 4 (aarch64-linux, headless appliances) ---
-      nixosConfigurations.pi-hole = mkRaspberryPi "pi-hole";
+      nixosConfigurations.pi-hole = mkRaspberryPi "nixos/raspberry-pi/pi-hole";
 
-      nixosConfigurations.pi-nas = mkRaspberryPi "pi-nas";
+      nixosConfigurations.pi-nas = mkRaspberryPi "nixos/raspberry-pi/pi-nas";
 
       # nixfmt, deadnix and statix over every .nix file; see treefmt.nix.
       formatter = eachSystem (pkgs: treefmtEval.${pkgs.system}.config.build.wrapper);

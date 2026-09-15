@@ -5,11 +5,11 @@
   ...
 }:
 let
-  # Pinning is opt-in (home/common/dock-apps.nix): only ghostty and zen ask
+  # Pinning is opt-in (home/common/theme/dock-apps.nix): only ghostty and zen ask
   # for it, the rest are listed there for their icons alone. protonvpn has no
   # darwinApp to pin, having no macOS build at all.
   pinnedApps = builtins.filter (app: (app.pinned or false) && app ? darwinApp) (
-    builtins.attrValues (import (selfPath "home/common/dock-apps.nix"))
+    builtins.attrValues (import (selfPath "home/common/theme/dock-apps.nix"))
   );
 in
 {

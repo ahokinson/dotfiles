@@ -1,14 +1,14 @@
 { selfPath, ... }: {
   imports = [
-    (selfPath "home/darwin/catppuccin.nix")
-    (selfPath "home/darwin/chromium.nix")
-    (selfPath "home/darwin/lifesaver.nix")
-    (selfPath "home/darwin/monitorcontrol.nix")
-    (selfPath "home/darwin/podman.nix")
-    (selfPath "home/darwin/reliquary-codesign.nix")
-    (selfPath "home/darwin/thaw.nix")
-    (selfPath "home/darwin/wallpaper.nix")
-    (selfPath "home/darwin/zen-browser.nix")
+    (selfPath "home/darwin/apps/browsers/chromium.nix")
+    (selfPath "home/darwin/apps/browsers/zen.nix")
+    (selfPath "home/darwin/apps/desktop/lifesaver.nix")
+    (selfPath "home/darwin/apps/desktop/monitorcontrol.nix")
+    (selfPath "home/darwin/apps/desktop/thaw.nix")
+    (selfPath "home/darwin/desktop/wallpaper.nix")
+    (selfPath "home/darwin/development/podman.nix")
+    (selfPath "home/darwin/development/reliquary-codesign.nix")
+    (selfPath "home/darwin/theme/catppuccin.nix")
   ];
 
   # modules/darwin/system points screencapture.location here; without the

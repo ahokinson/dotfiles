@@ -1,5 +1,5 @@
 { username, selfPath, ... }: {
-  imports = [ (selfPath "modules/nix-settings.nix") ];
+  imports = [ (selfPath "modules/shared/nix/settings.nix") ];
 
   nixpkgs.hostPlatform = "aarch64-darwin";
 

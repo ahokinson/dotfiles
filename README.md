@@ -2,6 +2,36 @@
 
 Unified Nix flake for NixOS (incl. Asahi/Apple Silicon) and macOS.
 
+## Layout
+
+The tree is organized by scope first and concern second. `hosts/` groups
+machines by platform and hardware family; `modules/` groups operating-system
+modules by responsibility; and `home/` groups home-manager configuration by
+platform, then application or capability. Each scope keeps a `default.nix`
+entrypoint, while leaf folders own a single feature and its supporting files.
+
+```
+hosts/
+  darwin/<machine>/
+  nixos/{asahi,raspberry-pi,x86_64}/<machine>/
+modules/
+  shared/nix/
+  darwin/{desktop,services,system,user}/
+  nixos/{core,desktop,networking,programs,security,services,user}/
+home/
+  common/
+    {agents,apps,development,infrastructure,security,shell,terminal,theme}/
+    packages/catalog/{development,infrastructure,media,personal,platform,security,system}/
+  darwin/{apps,desktop,development,theme}/
+  linux/{apps,desktop,packages}/
+```
+
+The shared package catalogue follows one small contract: every category and
+leaf accepts the same platform context and returns a package list. Each
+category's `default.nix` composes focused leaves; `packages/catalog/default.nix`
+composes the categories; and `packages/default.nix` owns the home-manager
+options.
+
 ## Apply
 
 Each config is named after its hostname, so the rebuild tools pick the right
@@ -25,7 +55,7 @@ sitting at.
 Six machines, eight configs: the two Apple Silicon Macs dual-boot macOS and
 Asahi NixOS. The two Raspberry Pis are single-purpose appliances with no
 desktop session and no home-manager profile at all - see
-`hosts/raspberrypi-common.nix`.
+`hosts/nixos/raspberry-pi/common.nix`.
 
 | Machine        | macOS                 | Linux                   |
 | -------------- | --------------------- | ----------------------- |
@@ -52,7 +82,7 @@ There's no already-booted OS to run `nixos-rebuild` against yet. Install via
 installer, build and boot that project's NixOS installer ISO
 (`nix build .#installer-bootstrap`), then partition and install. Copy the
 installer's generated `hardware-configuration.nix` into this repo's
-`hosts/<hostname>/` before the first `nixos-rebuild switch`.
+`hosts/nixos/asahi/<hostname>/` before the first `nixos-rebuild switch`.
 
 ### First activation on a new Raspberry Pi
 
@@ -86,7 +116,7 @@ past-me how that went - twice).
    up Ethernet, power on, and find its DHCP-assigned IP from your router.
 3. SSH in as `root` (the key from step 1) and, in that one session, do two
    things before root access disappears for good on real-config activation
-   (`modules/nixos/ssh.nix` sets `PermitRootLogin = "no"` unconditionally):
+   (`modules/nixos/networking/ssh.nix` sets `PermitRootLogin = "no"` unconditionally):
 
    ```
    mkdir -p /home/anders/.ssh && chmod 700 /home/anders/.ssh
@@ -96,7 +126,7 @@ past-me how that went - twice).
    ```
 
    Remember that password - `security.sudo.wheelNeedsPassword = false` (set
-   in `hosts/raspberrypi-common.nix`, precisely because these boxes have no
+   in `hosts/nixos/raspberry-pi/common.nix`, precisely because these boxes have no
    console to type a password at) only takes effect once the real config
    has already been deployed once, so the first deploy needs a real one.
 4. Copy this repo onto the Pi and build+activate *locally there*, not via

@@ -3,7 +3,7 @@
 # tirith and cupcake, the two binaries it wraps onto its PATH, so there is
 # one pinned copy of each rather than two that can drift. busy-nas is the
 # odd one out: it has no overlays.default of its own, so
-# home/common/busy-nas/default.nix reaches it directly via
+# home/common/infrastructure/services/busy-nas/default.nix reaches it directly via
 # inputs.busy-nas.packages.<system>.default instead.
 inputs: final: prev:
 let

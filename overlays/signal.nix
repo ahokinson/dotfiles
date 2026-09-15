@@ -27,7 +27,7 @@
   lib,
 }:
 let
-  palette = import (inputs.self + "/home/common/palette.nix");
+  palette = import (inputs.self + "/home/common/theme/palette.nix");
 
   alpha = color: pct: "color-mix(in srgb, ${color} ${toString pct}%, transparent)";
 
@@ -218,7 +218,7 @@ let
   # built from. darwin keeps its own titleBarStyle = "hidden".
   #
   # No titlebar or window controls; COSMIC keybinds replace them
-  # (home/linux/cosmic/shortcuts.nix).
+  # (home/linux/desktop/sessions/cosmic/shortcuts.nix).
   #
   # The count is asserted so the build fails if upstream moves this literal.
   linuxFramePatch = lib.optionalString (!final.stdenv.hostPlatform.isDarwin) ''
