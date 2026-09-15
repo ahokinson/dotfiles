@@ -12,7 +12,7 @@
     (selfPath "modules/darwin/system")
     (selfPath "modules/darwin/home-manager.nix")
     (selfPath "modules/darwin/hermes.nix")
-    (selfPath "modules/darwin/sleep.nix")
+    (selfPath "modules/darwin/idle.nix")
   ];
 
   # Set by the work host to drop personal-only apps. home-manager modules
