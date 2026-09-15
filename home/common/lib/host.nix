@@ -13,4 +13,8 @@
   # personal one. NixOS hosts never declare a forWork option, so this
   # doubles as their default.
   forWork = osConfig.forWork or false;
+
+  # Sway output scale (modules/nixos/desktop/sway.nix's local.display.scale)
+  # for this host's built-in panel.
+  displayScale = osConfig.local.display.scale or "1";
 }

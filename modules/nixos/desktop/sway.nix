@@ -30,25 +30,41 @@ let
       });
 in
 {
-  programs.sway.enable = true;
-  programs.sway.package = null;
-  # Drop the module's default extraPackages (foot, dmenu, swaylock,
-  # swayidle, xwayland) - home/linux/desktop/sessions/sway already covers each: ghostty is
-  # the terminal, fuzzel the launcher, cosmic-greeter-daemon does locking
-  # via ext-session-lock-v1, swayidle is disabled in idle.nix, and xwayland
-  # is enabled directly in compositor.nix.
-  programs.sway.extraPackages = lib.mkForce [ ];
+  # No stock NixOS option carries a per-panel Sway scale. Namespaced under
+  # `local` to stay clear of upstream, alongside splash.nix's
+  # local.splash.panelHeightPx.
+  options.local.display.scale = lib.mkOption {
+    type = lib.types.str;
+    default = "1";
+    example = "1.5";
+    description = ''
+      Sway output scale (home/linux/desktop/sessions/sway/compositor.nix)
+      applied to this host's built-in panel (eDP-1) only - external
+      monitors stay at native scale until profiled individually.
+    '';
+  };
 
-  environment.systemPackages = [ pkgs.sway ];
-  services.displayManager.sessionPackages = [ swaySession ];
+  config = {
+    programs.sway.enable = true;
+    programs.sway.package = null;
+    # Drop the module's default extraPackages (foot, dmenu, swaylock,
+    # swayidle, xwayland) - home/linux/desktop/sessions/sway already covers each: ghostty is
+    # the terminal, fuzzel the launcher, cosmic-greeter-daemon does locking
+    # via ext-session-lock-v1, swayidle is disabled in idle.nix, and xwayland
+    # is enabled directly in compositor.nix.
+    programs.sway.extraPackages = lib.mkForce [ ];
 
-  # brightnessctl (home/linux/desktop/sessions/sway/compositor.nix's XF86MonBrightness binds)
-  # needs its udev rule and the video group to write brightness without
-  # root - home.packages alone doesn't wire the udev rule in. swayosd
-  # (home/linux/desktop/sessions/sway/osd.nix) ships its own udev rule for the same reason.
-  services.udev.packages = [
-    pkgs.brightnessctl
-    pkgs.swayosd
-  ];
-  users.users.${username}.extraGroups = [ "video" ];
+    environment.systemPackages = [ pkgs.sway ];
+    services.displayManager.sessionPackages = [ swaySession ];
+
+    # brightnessctl (home/linux/desktop/sessions/sway/compositor.nix's XF86MonBrightness binds)
+    # needs its udev rule and the video group to write brightness without
+    # root - home.packages alone doesn't wire the udev rule in. swayosd
+    # (home/linux/desktop/sessions/sway/osd.nix) ships its own udev rule for the same reason.
+    services.udev.packages = [
+      pkgs.brightnessctl
+      pkgs.swayosd
+    ];
+    users.users.${username}.extraGroups = [ "video" ];
+  };
 }

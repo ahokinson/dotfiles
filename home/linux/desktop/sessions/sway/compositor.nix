@@ -18,11 +18,11 @@ let
 
   palette = import (selfPath "home/common/theme/palette.nix");
 
-  # Whether this host is Apple Silicon running Asahi, as opposed to
-  # framework13-amd-ryzen - used below only for the output scale. Each file
-  # in this directory computes this itself rather than importing one shared
-  # value, so any single file can be read on its own without an import chain.
-  inherit ((import (selfPath "home/common/lib/host.nix") { inherit osConfig; })) isApple;
+  # This host's built-in panel scale - used below only for the output scale.
+  # Each file in this directory computes this itself rather than importing
+  # one shared value, so any single file can be read on its own without an
+  # import chain.
+  inherit ((import (selfPath "home/common/lib/host.nix") { inherit osConfig; })) displayScale;
 
   workspaceBinds = lib.concatMapStringsSep "\n" (i: ''
     bindsym $mod+${toString i} workspace number ${toString i}
@@ -59,14 +59,12 @@ in
       client.focused      ${palette.blue}  ${palette.blue}  ${palette.base}  ${palette.blue}  ${palette.blue}
       client.unfocused    ${palette.overlay0}  ${palette.base}  ${palette.text}  ${palette.overlay0}  ${palette.overlay0}
 
-      # bookpro14-m1-pro's panel is Retina - scale is a logical-resolution
-      # divisor, not a size multiplier, so 2 here means the same
-      # physical/2 logical resolution macOS's own default Retina scaling
-      # uses. framework13-amd-ryzen's panel isn't Retina, hence isApple here.
-      # studio-m1-max drives an external monitor, not a built-in Retina
-      # panel - isApple alone may still be wrong for it; wants per-monitor
-      # tuning against its actual swaymsg -t get_outputs description.
-      output "*" scale ${if isApple then "2" else "1"}
+      # Built-in panel only - external monitors (all of studio-m1-max's
+      # outputs, or anything plugged into framework13-amd-ryzen/
+      # bookpro14-m1-pro) stay at native scale until profiled individually
+      # via swaymsg -t get_outputs.
+      output "*" scale 1
+      output eDP-1 scale ${displayScale}
 
       input type:touchpad natural_scroll disabled
 

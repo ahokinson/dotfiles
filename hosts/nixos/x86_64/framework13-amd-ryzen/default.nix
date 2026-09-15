@@ -25,4 +25,8 @@
   # This board's MT7925 drops the link across suspend/resume with power save
   # on. Host-scoped: the Asahi machines run brcmfmac and are unaffected.
   networking.networkmanager.wifi.powersave = false;
+
+  # 2256x1504 on 13.5" is ~201 PPI - dense enough that scale 1 renders text
+  # and icons illegibly small.
+  local.display.scale = "1.5";
 }
