@@ -14,9 +14,9 @@
     waybar.enable = true;
     zathura.enable = true;
 
-    # GTK colors are the module's; WhiteSur supplies the icons and cursor
-    # instead of its own.
-    gtk.enable = true;
+    # catppuccin/nix now provides only the Papirus icon variant under its GTK
+    # namespace. GTK colors come from home/linux/cosmic/gtk.nix's WhiteSur
+    # theme, so leave the Catppuccin icon variant disabled.
     gtk.icon.enable = false;
   };
 
