@@ -418,6 +418,27 @@
         "type": "github"
       }
     },
+    "lifesaver": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1789434841,
+        "narHash": "sha256-bJU67ze22QzXnCxiYX3DuKOgIMXgaUr2NBLRwdwaiP4=",
+        "owner": "ahokinson",
+        "repo": "lifesaver",
+        "rev": "28620c9b9596b2d1e1fc115fbedb67da93ba2bce",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ahokinson",
+        "ref": "develop",
+        "repo": "lifesaver",
+        "type": "github"
+      }
+    },
     "nix-darwin": {
       "inputs": {
         "nixpkgs": [
@@ -756,6 +777,7 @@
         "git-hooks": "git-hooks",
         "hermes-agent": "hermes-agent",
         "home-manager": "home-manager_2",
+        "lifesaver": "lifesaver",
         "nix-darwin": "nix-darwin",
         "nix-index-database": "nix-index-database",
         "nixos-apple-silicon": "nixos-apple-silicon",

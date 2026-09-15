@@ -2,8 +2,6 @@
 {
   lib,
   pkgs,
-  selfPath,
-  osConfig ? null,
   ...
 }:
 let
@@ -15,10 +13,6 @@ let
   # independently here rather than sharing one binding, matching this
   # directory's existing convention - needed below to re-apply it past
   # hyprpaper's own startup race (see the hyprland.start hook).
-  isApple = (import (selfPath "home/common/host.nix") { inherit osConfig; }).isApple;
-  wallpaper = selfPath (
-    if isApple then "home/common/_files/wallpaper/asahi.jpg" else "home/common/_files/wallpaper/nix.jpg"
-  );
 
   # Wraps a raw Lua expression so it renders as Lua source instead of a
   # quoted string - used both for dispatcher calls and for referencing the
@@ -26,8 +20,19 @@ let
   # below).
   lua = expr: lib.generators.mkLuaInline expr;
 
-  bind = keys: dispatcher: { _args = [ keys dispatcher ]; };
-  bindOpts = keys: dispatcher: opts: { _args = [ keys dispatcher opts ]; };
+  bind = keys: dispatcher: {
+    _args = [
+      keys
+      dispatcher
+    ];
+  };
+  bindOpts = keys: dispatcher: opts: {
+    _args = [
+      keys
+      dispatcher
+      opts
+    ];
+  };
 in
 {
   # brightnessctl backs the XF86MonBrightness binds below. wpctl (volume
@@ -122,127 +127,144 @@ in
         ];
       };
 
-      bind =
-        [
-          (bind "SUPER + Return" (lua ''hl.dsp.exec_cmd("${terminal}")''))
-          (bind "SUPER + D" (lua ''hl.dsp.exec_cmd("${menu}")''))
-          (bind "SUPER + B" (lua ''hl.dsp.exec_cmd("${browser}")'')) # mirrors COSMIC's stock Super+B web browser key
-          (bind "SUPER + Q" (lua "hl.dsp.window.close()")) # mirrors COSMIC's own Super+Q close
-          (bind "SUPER + M" (lua "hl.dsp.window.fullscreen()")) # mirrors COSMIC's own Super+M maximize
-          (bind "SUPER + F" (lua ''hl.dsp.window.float({ action = "toggle" })''))
-          (bind "SUPER + R" (lua ''hl.dsp.exec_cmd("hyprctl reload")''))
+      bind = [
+        (bind "SUPER + Return" (lua ''hl.dsp.exec_cmd("${terminal}")''))
+        (bind "SUPER + D" (lua ''hl.dsp.exec_cmd("${menu}")''))
+        (bind "SUPER + B" (lua ''hl.dsp.exec_cmd("${browser}")'')) # mirrors COSMIC's stock Super+B web browser key
+        # Explicit only: LifeSaver is never attached to idle or locking.
+        (bind "SUPER + CONTROL + G" (lua ''hl.dsp.exec_cmd("lifesaver")''))
+        (bind "SUPER + Q" (lua "hl.dsp.window.close()")) # mirrors COSMIC's own Super+Q close
+        (bind "SUPER + M" (lua "hl.dsp.window.fullscreen()")) # mirrors COSMIC's own Super+M maximize
+        (bind "SUPER + F" (lua ''hl.dsp.window.float({ action = "toggle" })''))
+        (bind "SUPER + R" (lua ''hl.dsp.exec_cmd("hyprctl reload")''))
 
-          # Lock/exit use COSMIC's own Escape pair instead of L/Shift+Q,
-          # freeing L for movefocus below and keeping this one pair
-          # identical across both DEs' sessions.
-          (bind "SUPER + Escape" (lua ''hl.dsp.exec_cmd("hyprlock")''))
-          (bind "SUPER + SHIFT + Escape" (lua "hl.dsp.exit()"))
+        # Lock/exit use COSMIC's own Escape pair instead of L/Shift+Q,
+        # freeing L for movefocus below and keeping this one pair
+        # identical across both DEs' sessions.
+        (bind "SUPER + Escape" (lua ''hl.dsp.exec_cmd("hyprlock")''))
+        (bind "SUPER + SHIFT + Escape" (lua "hl.dsp.exit()"))
 
-          # Directional focus/move, vim-style.
-          (bind "SUPER + H" (lua ''hl.dsp.focus({ direction = "left" })''))
-          (bind "SUPER + J" (lua ''hl.dsp.focus({ direction = "down" })''))
-          (bind "SUPER + K" (lua ''hl.dsp.focus({ direction = "up" })''))
-          (bind "SUPER + L" (lua ''hl.dsp.focus({ direction = "right" })''))
-          # window.move's direction key isn't shown in Hyprland's own stock
-          # config (only its workspace key is) - inferred from focus's
-          # direction key using the same table shape. Worth checking first
-          # if Shift+hjkl doesn't move the window.
-          (bind "SUPER + SHIFT + H" (lua ''hl.dsp.window.move({ direction = "left" })''))
-          (bind "SUPER + SHIFT + J" (lua ''hl.dsp.window.move({ direction = "down" })''))
-          (bind "SUPER + SHIFT + K" (lua ''hl.dsp.window.move({ direction = "up" })''))
-          (bind "SUPER + SHIFT + L" (lua ''hl.dsp.window.move({ direction = "right" })''))
+        # Directional focus/move, vim-style.
+        (bind "SUPER + H" (lua ''hl.dsp.focus({ direction = "left" })''))
+        (bind "SUPER + J" (lua ''hl.dsp.focus({ direction = "down" })''))
+        (bind "SUPER + K" (lua ''hl.dsp.focus({ direction = "up" })''))
+        (bind "SUPER + L" (lua ''hl.dsp.focus({ direction = "right" })''))
+        # window.move's direction key isn't shown in Hyprland's own stock
+        # config (only its workspace key is) - inferred from focus's
+        # direction key using the same table shape. Worth checking first
+        # if Shift+hjkl doesn't move the window.
+        (bind "SUPER + SHIFT + H" (lua ''hl.dsp.window.move({ direction = "left" })''))
+        (bind "SUPER + SHIFT + J" (lua ''hl.dsp.window.move({ direction = "down" })''))
+        (bind "SUPER + SHIFT + K" (lua ''hl.dsp.window.move({ direction = "up" })''))
+        (bind "SUPER + SHIFT + L" (lua ''hl.dsp.window.move({ direction = "right" })''))
 
-          # Same grid, one monitor over. framework13-amd-ryzen runs at most
-          # one external display, so only left/right ever fire - up/down are
-          # no-ops without a third monitor above or below. The monitor key
-          # on focus/window.move is inferred the same way as direction above
-          # (no monitor-switching dispatcher appears in Hyprland's own
-          # examples) - the first thing to check if these don't work.
-          (bind "SUPER + CONTROL + H" (lua ''hl.dsp.focus({ monitor = "left" })''))
-          (bind "SUPER + CONTROL + J" (lua ''hl.dsp.focus({ monitor = "down" })''))
-          (bind "SUPER + CONTROL + K" (lua ''hl.dsp.focus({ monitor = "up" })''))
-          (bind "SUPER + CONTROL + L" (lua ''hl.dsp.focus({ monitor = "right" })''))
-          (bind "SUPER + CONTROL + SHIFT + H" (lua ''hl.dsp.window.move({ monitor = "left" })''))
-          (bind "SUPER + CONTROL + SHIFT + J" (lua ''hl.dsp.window.move({ monitor = "down" })''))
-          (bind "SUPER + CONTROL + SHIFT + K" (lua ''hl.dsp.window.move({ monitor = "up" })''))
-          (bind "SUPER + CONTROL + SHIFT + L" (lua ''hl.dsp.window.move({ monitor = "right" })''))
+        # Same grid, one monitor over. framework13-amd-ryzen runs at most
+        # one external display, so only left/right ever fire - up/down are
+        # no-ops without a third monitor above or below. The monitor key
+        # on focus/window.move is inferred the same way as direction above
+        # (no monitor-switching dispatcher appears in Hyprland's own
+        # examples) - the first thing to check if these don't work.
+        (bind "SUPER + CONTROL + H" (lua ''hl.dsp.focus({ monitor = "left" })''))
+        (bind "SUPER + CONTROL + J" (lua ''hl.dsp.focus({ monitor = "down" })''))
+        (bind "SUPER + CONTROL + K" (lua ''hl.dsp.focus({ monitor = "up" })''))
+        (bind "SUPER + CONTROL + L" (lua ''hl.dsp.focus({ monitor = "right" })''))
+        (bind "SUPER + CONTROL + SHIFT + H" (lua ''hl.dsp.window.move({ monitor = "left" })''))
+        (bind "SUPER + CONTROL + SHIFT + J" (lua ''hl.dsp.window.move({ monitor = "down" })''))
+        (bind "SUPER + CONTROL + SHIFT + K" (lua ''hl.dsp.window.move({ monitor = "up" })''))
+        (bind "SUPER + CONTROL + SHIFT + L" (lua ''hl.dsp.window.move({ monitor = "right" })''))
 
-          (bind "SUPER + S" (lua ''hl.dsp.layout("togglesplit")'')) # dwindle only
-          (bind "SUPER + Tab" (lua "hl.dsp.window.cycle_next()"))
-          # `previous` is inferred - the reverse-direction key isn't shown in
-          # Hyprland's own examples either.
-          (bind "SUPER + SHIFT + Tab" (lua "hl.dsp.window.cycle_next({ previous = true })"))
-          (bind "SUPER + SHIFT + R" (lua ''hl.dsp.submap("resize")''))
+        (bind "SUPER + S" (lua ''hl.dsp.layout("togglesplit")'')) # dwindle only
+        (bind "SUPER + Tab" (lua "hl.dsp.window.cycle_next()"))
+        # `previous` is inferred - the reverse-direction key isn't shown in
+        # Hyprland's own examples either.
+        (bind "SUPER + SHIFT + Tab" (lua "hl.dsp.window.cycle_next({ previous = true })"))
+        (bind "SUPER + SHIFT + R" (lua ''hl.dsp.submap("resize")''))
 
-          # Relative workspace cycling, keyboard and scroll wheel.
-          (bind "SUPER + bracketleft" (lua ''hl.dsp.focus({ workspace = "e-1" })''))
-          (bind "SUPER + bracketright" (lua ''hl.dsp.focus({ workspace = "e+1" })''))
-          (bind "SUPER + mouse_down" (lua ''hl.dsp.focus({ workspace = "e+1" })''))
-          (bind "SUPER + mouse_up" (lua ''hl.dsp.focus({ workspace = "e-1" })''))
-        ]
-        ++ (map (
-          i: bind "SUPER + ${toString i}" (lua "hl.dsp.focus({ workspace = ${toString i} })")
-        ) (lib.range 1 9))
-        ++ (map (
-          i:
-          bind "SUPER + SHIFT + ${toString i}" (lua "hl.dsp.window.move({ workspace = ${toString i} })")
-        ) (lib.range 1 9))
-        ++ [
-          # Ctrl+Shift+3/4 mimic macOS's screenshot shortcuts, the same
-          # convention home/linux/cosmic/shortcuts.nix uses.
-          (bind "CONTROL + SHIFT + 3" (lua ''
-            hl.dsp.exec_cmd("grim ~/Pictures/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png")
-          ''))
-          (bind "CONTROL + SHIFT + 4" (lua ''
-            hl.dsp.exec_cmd("grim -g \"$(slurp)\" ~/Pictures/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png")
-          ''))
+        # Relative workspace cycling, keyboard and scroll wheel.
+        (bind "SUPER + bracketleft" (lua ''hl.dsp.focus({ workspace = "e-1" })''))
+        (bind "SUPER + bracketright" (lua ''hl.dsp.focus({ workspace = "e+1" })''))
+        (bind "SUPER + mouse_down" (lua ''hl.dsp.focus({ workspace = "e+1" })''))
+        (bind "SUPER + mouse_up" (lua ''hl.dsp.focus({ workspace = "e-1" })''))
+      ]
+      ++ (map (i: bind "SUPER + ${toString i}" (lua "hl.dsp.focus({ workspace = ${toString i} })")) (
+        lib.range 1 9
+      ))
+      ++ (map (
+        i: bind "SUPER + SHIFT + ${toString i}" (lua "hl.dsp.window.move({ workspace = ${toString i} })")
+      ) (lib.range 1 9))
+      ++ [
+        # Ctrl+Shift+3/4 mimic macOS's screenshot shortcuts, the same
+        # convention home/linux/cosmic/shortcuts.nix uses.
+        (bind "CONTROL + SHIFT + 3" (lua ''
+          hl.dsp.exec_cmd("grim ~/Pictures/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png")
+        ''))
+        (bind "CONTROL + SHIFT + 4" (lua ''
+          hl.dsp.exec_cmd("grim -g \"$(slurp)\" ~/Pictures/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png")
+        ''))
 
-          (bindOpts "SUPER + mouse:272" (lua "hl.dsp.window.drag()") { mouse = true; })
-          (bindOpts "SUPER + mouse:273" (lua "hl.dsp.window.resize()") { mouse = true; })
+        (bindOpts "SUPER + mouse:272" (lua "hl.dsp.window.drag()") { mouse = true; })
+        (bindOpts "SUPER + mouse:273" (lua "hl.dsp.window.resize()") { mouse = true; })
 
-          # No modifier - these keys have no other purpose, matching COSMIC's
-          # own convention of binding XF86 keys bare. locked = fires even
-          # while hyprlock is active.
-          (bindOpts "XF86AudioMute" (lua ''hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle")'') {
+        # No modifier - these keys have no other purpose, matching COSMIC's
+        # own convention of binding XF86 keys bare. locked = fires even
+        # while hyprlock is active.
+        (bindOpts "XF86AudioMute" (lua ''hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle")'') {
+          locked = true;
+        })
+        (bindOpts "XF86AudioMicMute"
+          (lua ''hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle")'')
+          {
             locked = true;
-          })
-          (bindOpts "XF86AudioMicMute" (lua ''hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle")'') {
-            locked = true;
-          })
-          (bindOpts "XF86AudioPlay" (lua ''hl.dsp.exec_cmd("playerctl play-pause")'') { locked = true; })
-          (bindOpts "XF86AudioNext" (lua ''hl.dsp.exec_cmd("playerctl next")'') { locked = true; })
-          (bindOpts "XF86AudioPrev" (lua ''hl.dsp.exec_cmd("playerctl previous")'') { locked = true; })
+          }
+        )
+        (bindOpts "XF86AudioPlay" (lua ''hl.dsp.exec_cmd("playerctl play-pause")'') { locked = true; })
+        (bindOpts "XF86AudioNext" (lua ''hl.dsp.exec_cmd("playerctl next")'') { locked = true; })
+        (bindOpts "XF86AudioPrev" (lua ''hl.dsp.exec_cmd("playerctl previous")'') { locked = true; })
 
-          # repeating = fires again while the key is held. Volume is capped
-          # at 100% so repeated presses can't push it past that.
-          (bindOpts "XF86AudioRaiseVolume" (lua ''hl.dsp.exec_cmd("wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+")'') {
-            locked = true;
-            repeating = true;
-          })
-          (bindOpts "XF86AudioLowerVolume" (lua ''hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-")'') {
-            locked = true;
-            repeating = true;
-          })
-          (bindOpts "XF86MonBrightnessUp" (lua ''hl.dsp.exec_cmd("brightnessctl set 5%+")'') {
+        # repeating = fires again while the key is held. Volume is capped
+        # at 100% so repeated presses can't push it past that.
+        (bindOpts "XF86AudioRaiseVolume"
+          (lua ''hl.dsp.exec_cmd("wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+")'')
+          {
             locked = true;
             repeating = true;
-          })
-          (bindOpts "XF86MonBrightnessDown" (lua ''hl.dsp.exec_cmd("brightnessctl set 5%-")'') {
+          }
+        )
+        (bindOpts "XF86AudioLowerVolume"
+          (lua ''hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-")'')
+          {
             locked = true;
             repeating = true;
-          })
-          # XF86PowerOff is left unbound - systemd-logind already owns the
-          # physical power key; binding it here too would double-fire it.
-        ];
+          }
+        )
+        (bindOpts "XF86MonBrightnessUp" (lua ''hl.dsp.exec_cmd("brightnessctl set 5%+")'') {
+          locked = true;
+          repeating = true;
+        })
+        (bindOpts "XF86MonBrightnessDown" (lua ''hl.dsp.exec_cmd("brightnessctl set 5%-")'') {
+          locked = true;
+          repeating = true;
+        })
+        # XF86PowerOff is left unbound - systemd-logind already owns the
+        # physical power key; binding it here too would double-fire it.
+      ];
     };
 
     # Resize mode: Super+Shift+R enters it, hjkl resizes the active window
     # in 10px steps, Escape/Return leaves it.
     submaps.resize.settings.bind = [
-      (bindOpts "l" (lua "hl.dsp.window.resize({ x = 10, y = 0, relative = true })") { repeating = true; })
-      (bindOpts "h" (lua "hl.dsp.window.resize({ x = -10, y = 0, relative = true })") { repeating = true; })
-      (bindOpts "k" (lua "hl.dsp.window.resize({ x = 0, y = -10, relative = true })") { repeating = true; })
-      (bindOpts "j" (lua "hl.dsp.window.resize({ x = 0, y = 10, relative = true })") { repeating = true; })
+      (bindOpts "l" (lua "hl.dsp.window.resize({ x = 10, y = 0, relative = true })") {
+        repeating = true;
+      })
+      (bindOpts "h" (lua "hl.dsp.window.resize({ x = -10, y = 0, relative = true })") {
+        repeating = true;
+      })
+      (bindOpts "k" (lua "hl.dsp.window.resize({ x = 0, y = -10, relative = true })") {
+        repeating = true;
+      })
+      (bindOpts "j" (lua "hl.dsp.window.resize({ x = 0, y = 10, relative = true })") {
+        repeating = true;
+      })
       (bind "Escape" (lua ''hl.dsp.submap("reset")''))
       (bind "Return" (lua ''hl.dsp.submap("reset")''))
     ];

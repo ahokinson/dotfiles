@@ -7,7 +7,7 @@
   ...
 }:
 let
-  isApple = (import (selfPath "home/common/host.nix") { inherit osConfig; }).isApple;
+  inherit ((import (selfPath "home/common/host.nix") { inherit osConfig; })) isApple;
 in
 {
   home.packages = with pkgs; [

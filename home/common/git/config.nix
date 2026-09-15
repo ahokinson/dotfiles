@@ -1,6 +1,10 @@
-{ selfPath, osConfig ? null, ... }:
+{
+  selfPath,
+  osConfig ? null,
+  ...
+}:
 let
-  forWork = (import (selfPath "home/common/host.nix") { inherit osConfig; }).forWork;
+  inherit ((import (selfPath "home/common/host.nix") { inherit osConfig; })) forWork;
 in
 {
   programs.git = {

@@ -13,6 +13,7 @@ let
     inputs.bloom
     inputs.cerberus # cerberus + tirith + cupcake
     inputs.clipleaks
+    inputs.lifesaver
     inputs.pharos
     inputs.psyche
     inputs.reliquary

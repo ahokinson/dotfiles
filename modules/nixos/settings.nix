@@ -30,8 +30,9 @@
     # The real cap, applied to every build process the daemon forks whatever
     # parallelism it asked for. Trade build speed against fan noise here, not
     # above.
-    systemd.services.nix-daemon.serviceConfig.CPUQuota =
-      lib.mkDefault "${toString (config.local.nix.buildCores * 100)}%";
+    systemd.services.nix-daemon.serviceConfig.CPUQuota = lib.mkDefault "${
+      toString (config.local.nix.buildCores * 100)
+    }%";
 
     # Builds only take CPU nothing else wants, so they never compete with the
     # desktop. A build under sustained foreground load can be starved.

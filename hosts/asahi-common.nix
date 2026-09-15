@@ -1,6 +1,11 @@
 # Apple-Silicon-specific overrides on top of hosts/nixos-common.nix. Each
 # host's default.nix adds only its hostname and hardware-config import.
-{ config, inputs, selfPath, ... }:
+{
+  config,
+  inputs,
+  selfPath,
+  ...
+}:
 {
   imports = [
     inputs.nixos-apple-silicon.nixosModules.apple-silicon-support

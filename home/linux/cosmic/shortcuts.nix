@@ -32,5 +32,11 @@ in
       key = "Ctrl+Shift+4";
       action = ronEnumValue "Spawn" [ "cosmic-screenshot" ];
     }
+    {
+      # A deliberate launcher, not an idle action: LifeSaver exits as soon
+      # as the user interacts with it again.
+      key = "Super+Ctrl+G";
+      action = ronEnumValue "Spawn" [ "lifesaver" ];
+    }
   ];
 }

@@ -1,4 +1,4 @@
-{ ... }: {
+_: {
   # Template; the real ~/.gitconfig-work is filled in by hand.
   home.file.".gitconfig-work.example".text = ''
     # Work Git identity.

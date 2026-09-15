@@ -21,7 +21,7 @@
 }:
 let
   palette = import (selfPath "home/common/palette.nix");
-  isApple = (import (selfPath "home/common/host.nix") { inherit osConfig; }).isApple;
+  inherit ((import (selfPath "home/common/host.nix") { inherit osConfig; })) isApple;
 
   # Same recolor home/linux/icons/default.nix does for COSMIC's app-button
   # logo, re-derived independently here rather than sharing one binding -

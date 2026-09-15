@@ -3,7 +3,6 @@
 # apps that need it (including ghostty) are listed in
 # home/common/catppuccin.nix, and everything else darwin-specific either
 # hand-authors its own Mocha theme or has no catppuccin/nix port at all.
-{ ... }:
-{
+_: {
   catppuccin.autoEnable = false;
 }

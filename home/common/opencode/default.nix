@@ -8,7 +8,7 @@
 let
   wireShared = import (selfPath "home/common/_shared/default.nix") { inherit selfPath; };
 
-  forWork = (import (selfPath "home/common/host.nix") { inherit osConfig; }).forWork;
+  inherit ((import (selfPath "home/common/host.nix") { inherit osConfig; })) forWork;
   # Identical today; hand-edit opencodeWorkConfig to diverge (model/provider,
   # permission mode, etc.) the same way opencodeConfig is hand-edited.
   opencodeConfig = {
@@ -403,7 +403,8 @@ in
         };
       '';
     };
-  } // wireShared "opencode" [
+  }
+  // wireShared "opencode" [
     "docs"
     "system.md"
     "SOUL.md"

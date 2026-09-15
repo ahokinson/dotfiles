@@ -10,7 +10,7 @@ let
   # macOS installs the fonts system-wide (modules/darwin/system) and ignores
   # fontconfig, so the home-level install is Linux-only.
   isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
-  forWork = (import (selfPath "home/common/host.nix") { inherit osConfig; }).forWork;
+  inherit ((import (selfPath "home/common/host.nix") { inherit osConfig; })) forWork;
 in
 {
   home.packages =

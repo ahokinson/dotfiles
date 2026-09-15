@@ -10,7 +10,7 @@
   ...
 }:
 let
-  forWork = (import (selfPath "home/common/host.nix") { inherit osConfig; }).forWork;
+  inherit ((import (selfPath "home/common/host.nix") { inherit osConfig; })) forWork;
   # Identical today; diverge model/effort here (e.g. a work-provisioned
   # account) the same way home/common/git/config.nix diverges git identity.
   modelSettings = {

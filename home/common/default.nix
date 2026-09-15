@@ -5,7 +5,7 @@
   ...
 }:
 let
-  forWork = (import (selfPath "home/common/host.nix") { inherit osConfig; }).forWork;
+  inherit ((import (selfPath "home/common/host.nix") { inherit osConfig; })) forWork;
 in
 {
   imports = [
@@ -29,6 +29,7 @@ in
     (selfPath "home/common/k9s")
     (selfPath "home/common/lazydocker")
     (selfPath "home/common/lazygit")
+    (selfPath "home/common/lifesaver.nix")
     (selfPath "home/common/mpv.nix")
     (selfPath "home/common/nh.nix")
     (selfPath "home/common/nix-index.nix")

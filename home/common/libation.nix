@@ -1,4 +1,9 @@
-{ pkgs, lib, selfPath, ... }:
+{
+  pkgs,
+  lib,
+  selfPath,
+  ...
+}:
 let
   palette = import (selfPath "home/common/palette.nix");
 

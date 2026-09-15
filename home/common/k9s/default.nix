@@ -2,7 +2,8 @@
   pkgs,
   lib,
   ...
-}: {
+}:
+{
   home.packages = [ pkgs.k9s ];
 
   xdg.configFile."k9s/config.yaml".text = lib.generators.toYAML { } {

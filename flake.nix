@@ -45,6 +45,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # A small fullscreen visualizer packaged by its own flake. It follows this
+    # repo's nixpkgs so desktop integration and app dependencies stay aligned.
+    lifesaver = {
+      url = "github:ahokinson/lifesaver/develop";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # No `follows`: hermes-agent pins its own nixpkgs deliberately.
     # Tag-pinned because its default branch is shared development.
     hermes-agent.url = "github:NousResearch/hermes-agent/v2026.8.27";

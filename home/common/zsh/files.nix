@@ -1,8 +1,7 @@
-{ ... }: {
+_: {
   # Kept byte-for-byte as upstream has them.
   home.file.".hushlogin".text = "";
-  home.file.".zsh/options.zsh".text =
-    ''
+  home.file.".zsh/options.zsh".text = ''
     # History
     HISTFILE="$HOME/.cache/zsh/history"
     HISTSIZE=50000
@@ -23,9 +22,8 @@
     setopt AUTO_PUSHD
     setopt PUSHD_IGNORE_DUPS
     setopt PUSHD_SILENT
-    '';
-  home.file.".zsh/completions.zsh".text =
-    ''
+  '';
+  home.file.".zsh/completions.zsh".text = ''
     # Case-insensitive matching
     zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
 
@@ -35,9 +33,8 @@
     # Cache expensive completions (docker, kubectl, etc.)
     zstyle ':completion:*' use-cache yes
     zstyle ':completion:*' cache-path "$HOME/.cache/zsh/completion-cache"
-    '';
-  home.file.".p10k.zsh".text =
-    ''
+  '';
+  home.file.".p10k.zsh".text = ''
     'builtin' 'local' '-a' 'p10k_config_opts'
     [[ ! -o 'aliases'         ]] || p10k_config_opts+=('aliases')
     [[ ! -o 'sh_glob'         ]] || p10k_config_opts+=('sh_glob')
@@ -153,9 +150,9 @@
       typeset -g POWERLEVEL9K_VCS_MAX_INDEX_SIZE_DIRTY=-1
       typeset -g POWERLEVEL9K_VCS_DISABLED_WORKDIR_PATTERN='~'
       typeset -g POWERLEVEL9K_VCS_DISABLE_GITSTATUS_FORMATTING=true
-      typeset -g POWERLEVEL9K_VCS_CONTENT_EXPANSION='' +
-    "'" +
-    ''
+      typeset -g POWERLEVEL9K_VCS_CONTENT_EXPANSION=''
+  + "'"
+  + ''
     ''${$((my_git_formatter()))+''${my_git_format}}'
       typeset -g POWERLEVEL9K_VCS_{STAGED,UNSTAGED,UNTRACKED,CONFLICTED,COMMITS_AHEAD,COMMITS_BEHIND}_MAX_NUM=-1
 
@@ -178,5 +175,5 @@
 
     (( ''${#p10k_config_opts} )) && setopt ''${p10k_config_opts[@]}
     'builtin' 'unset' 'p10k_config_opts'
-    '';
+  '';
 }

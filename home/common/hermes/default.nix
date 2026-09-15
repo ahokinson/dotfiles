@@ -695,5 +695,6 @@ in
         [#f2cdcd]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠳⠈⣡⠞⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
         [#f2cdcd]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
     '';
-  } // wireShared ".hermes" [ "SOUL.md" ];
+  }
+  // wireShared ".hermes" [ "SOUL.md" ];
 }

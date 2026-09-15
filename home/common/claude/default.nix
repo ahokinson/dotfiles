@@ -8,7 +8,7 @@
 let
   wireShared = import (selfPath "home/common/_shared/default.nix") { inherit selfPath; };
 
-  forWork = (import (selfPath "home/common/host.nix") { inherit osConfig; }).forWork;
+  inherit ((import (selfPath "home/common/host.nix") { inherit osConfig; })) forWork;
   # Identical today; hand-edit settingsWorkContent to diverge (permission
   # mode, sandbox allowlist, etc.) the same way settingsContent is hand-edited.
   settingsContent = {
@@ -504,12 +504,15 @@ in
       ];
     };
 
-    ".claude/plugins/marketplaces/local/plugins/custom/.claude-plugin/plugin.json".text = builtins.toJSON {
-      name = "custom";
-      description = "Custom skills and agents managed via dotfiles";
-      version = "0.1.0";
-    };
-  } // wireShared ".claude/plugins/marketplaces/local/plugins/custom" [
+    ".claude/plugins/marketplaces/local/plugins/custom/.claude-plugin/plugin.json".text =
+      builtins.toJSON
+        {
+          name = "custom";
+          description = "Custom skills and agents managed via dotfiles";
+          version = "0.1.0";
+        };
+  }
+  // wireShared ".claude/plugins/marketplaces/local/plugins/custom" [
     "docs"
     "system.md"
     "SOUL.md"

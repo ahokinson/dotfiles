@@ -2,6 +2,7 @@
   imports = [
     (selfPath "home/darwin/catppuccin.nix")
     (selfPath "home/darwin/chromium.nix")
+    (selfPath "home/darwin/lifesaver.nix")
     (selfPath "home/darwin/monitorcontrol.nix")
     (selfPath "home/darwin/podman.nix")
     (selfPath "home/darwin/reliquary-codesign.nix")
