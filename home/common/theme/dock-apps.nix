@@ -16,6 +16,20 @@
 # darwinApp is optional (see protonvpn): modules/darwin/system/defaults.nix
 # skips pinning any app that omits it, for one with no macOS build here.
 {
+  # Linux only: baobab's darwin build has no real windowing backend
+  # (home/common/packages/catalog/platform/default.nix); grandperspective
+  # stands in on macOS instead, a different app, so no darwinApp.
+  # simple-icons has no baobab glyph, so vendored: the upstream mark
+  # (share/icons/hicolor/scalable/apps/org.gnome.baobab.svg from the baobab
+  # package), flattened from its gradient pie/gauge design to a single flat
+  # silhouette on simple-icons' 0 0 24 24 convention.
+  baobab = {
+    linuxDesktopId = "org.gnome.baobab.desktop";
+    linuxIconName = "org.gnome.baobab";
+    simpleIcon = "baobab";
+    vendoredIcon = true;
+    hue = "flamingo";
+  };
   # simple-icons has no Chromium glyph, so it uses the Google Chrome mark -
   # same precedent as vesktop using Discord's.
   chromium = {
