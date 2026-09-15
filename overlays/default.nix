@@ -5,6 +5,12 @@
 # odd one out: it has no overlays.default of its own, so
 # home/common/infrastructure/services/busy-nas/default.nix reaches it directly via
 # inputs.busy-nas.packages.<system>.default instead.
+#
+# Everything below own tools/hermes is grouped by what kind of override it
+# is, not which package it touches: cosmic (pop-os desktop-shell behavior
+# patches), fixes (workarounds for a broken nixpkgs derivation), packages
+# (a whole package nixpkgs doesn't have), theme (a reskin of an otherwise
+# unthemed app).
 inputs: final: prev:
 let
   system = final.stdenv.hostPlatform.system;
@@ -24,15 +30,7 @@ ownTools
 // {
   hermes = inputs.hermes-agent.packages.${system}.default;
 }
-// import ./cosmic-applets.nix { inherit prev; }
-// import ./libation.nix {
-  inherit final;
-  inherit (final) lib;
-}
-// import ./open-policy-agent.nix { inherit prev; }
-// import ./scorecard.nix { inherit final prev; }
-// import ./semgrep.nix { inherit final; }
-// import ./signal.nix {
-  inherit inputs final prev;
-  inherit (final) lib;
-}
+// import ./cosmic { inherit prev; }
+// import ./fixes { inherit final prev; }
+// import ./packages { inherit final; }
+// import ./theme { inherit inputs final prev; }

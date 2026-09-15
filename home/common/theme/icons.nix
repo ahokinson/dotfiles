@@ -20,7 +20,7 @@ let
   cornerRadius = 5.4;
 
   # Every tile hue is a light pastel, so the glyph on top of it is dark. Same
-  # convention as overlays/signal.nix's *-oncolor tokens.
+  # convention as overlays/theme/signal.nix's *-oncolor tokens.
   glyphColor = palette.base;
 in
 {
