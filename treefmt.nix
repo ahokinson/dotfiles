@@ -1,10 +1,10 @@
 # `nix fmt` rewrites the tree; `nix flake check` fails if it is not already
 # formatted.
 #
-# Nix-only: the markdown, JSON, JS and theme files under home/common are
-# vendored assets and prompt documents, and
-# home/common/claude/_files/settings.json is an out-of-store symlink Claude
-# Code rewrites at runtime. A formatter would fight both.
+# Nix-only: the markdown files under home/common are prompt documents, and
+# the vendored SVGs and wallpaper JPGs under home/common/_files can't be nix
+# (a few feed derivations by path, the rest are binary). A formatter would
+# fight both.
 _: {
   projectRootFile = "flake.nix";
 
@@ -24,24 +24,9 @@ _: {
   settings.formatter.deadnix.excludes = [ "hosts/*/hardware-configuration.nix" ];
 
   settings.global.excludes = [
-    "*.conf"
-    "*.css"
-    "*.js"
-    "*.json"
-    "*.jsonc"
     "*.md"
-    "*.png"
-    "*.svg"
-    "*.theme"
-    "*.tmTheme"
-    "*.ts"
-    "*.yaml"
-    "*.yml"
-    "*.zsh"
     ".gitignore"
     "flake.lock"
     "home/common/_files/*"
-    "home/common/yt-dlp/config"
-    "home/darwin/_files/*"
   ];
 }

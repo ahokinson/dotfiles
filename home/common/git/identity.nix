@@ -1,5 +1,13 @@
-{ selfPath, ... }: {
+{ ... }: {
   # Template; the real ~/.gitconfig-work is filled in by hand.
-  home.file.".gitconfig-work.example".source =
-    selfPath "home/common/git/_files/gitconfig-work.example";
+  home.file.".gitconfig-work.example".text = ''
+    # Work Git identity.
+    # Copy to ~/.gitconfig-work and fill in real values.
+    # Auto-applied via includeIf in ~/.gitconfig: repo-wide on the work Mac,
+    # under ~/.local/src/ elsewhere.
+    # Never commit ~/.gitconfig-work.
+    [user]
+    	name = <work name>
+    	email = <work email>
+  '';
 }

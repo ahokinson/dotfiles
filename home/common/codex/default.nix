@@ -62,7 +62,110 @@ in
 
   # Loaded independently of config.toml; asks for one-time `/hooks` trust
   # after deployment.
-  home.file.".codex/hooks.json".source = ./hooks.json;
+  home.file.".codex/hooks.json".text = builtins.toJSON {
+    description = "Render Codex activity and session metrics through pharos in tmux.";
+    hooks = {
+      SessionStart = [
+        {
+          hooks = [
+            {
+              type = "command";
+              command = "pharos tmux dispatch off --tool=codex";
+            }
+            {
+              type = "command";
+              command = "pharos tmux render --tool=codex";
+            }
+          ];
+        }
+      ];
+      PreToolUse = [
+        {
+          matcher = "*";
+          hooks = [
+            {
+              type = "command";
+              command = "pharos tmux dispatch tool --tool=codex";
+            }
+          ];
+        }
+      ];
+      PostToolUse = [
+        {
+          matcher = "*";
+          hooks = [
+            {
+              type = "command";
+              command = "pharos tmux dispatch think --tool=codex";
+            }
+            {
+              type = "command";
+              command = "pharos tmux render --tool=codex";
+            }
+          ];
+        }
+      ];
+      PermissionRequest = [
+        {
+          matcher = "*";
+          hooks = [
+            {
+              type = "command";
+              command = "pharos tmux dispatch ask --tool=codex";
+            }
+            {
+              type = "command";
+              command = "pharos tmux render --tool=codex";
+            }
+          ];
+        }
+      ];
+      UserPromptSubmit = [
+        {
+          hooks = [
+            {
+              type = "command";
+              command = "pharos tmux dispatch think --tool=codex";
+            }
+            {
+              type = "command";
+              command = "pharos tmux render --tool=codex";
+            }
+          ];
+        }
+      ];
+      Stop = [
+        {
+          hooks = [
+            {
+              type = "command";
+              command = "pharos tmux render --tool=codex";
+            }
+            {
+              type = "command";
+              command = "pharos tmux dispatch off --tool=codex";
+            }
+          ];
+        }
+      ];
+      SessionEnd = [
+        {
+          hooks = [
+            {
+              type = "command";
+              command = "pharos tmux render --tool=codex";
+              timeout = 3;
+            }
+            {
+              type = "command";
+              command = "pharos tmux dispatch off --tool=codex";
+              timeout = 3;
+            }
+          ];
+        }
+      ];
+    };
+  };
 
   home.activation.codexConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     run ${codexConfig}
