@@ -18,7 +18,7 @@
         (selfPath "home/common")
         (selfPath "home/linux")
         (selfPath "home/linux/cosmic")
-        (selfPath "home/linux/hyprland")
+        (selfPath "home/linux/sway")
         inputs.cosmic-manager.homeManagerModules.cosmic-manager
         inputs.zen-browser.homeModules.beta
       ];
@@ -26,7 +26,7 @@
       home.homeDirectory = config.users.users.${username}.home;
       home.stateVersion = "26.05";
     };
-    # cosmic-greeter (modules/nixos/desktop-cosmic.nix) draws both the login
+    # cosmic-greeter (modules/nixos/desktops/cosmic.nix) draws both the login
     # and lock screens as its own process under /var/lib/cosmic-greeter, with
     # no config of its own - just wallpaper.nix and theme.nix, so it matches
     # the desktop instead of falling back to COSMIC's stock look.

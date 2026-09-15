@@ -29,7 +29,7 @@
   # have - raspberry-pi-4.base owns boot.loader.raspberry-pi instead.
   # No modules/nixos/home-manager.nix: single-purpose appliances, never
   # logged into interactively, so no home-manager profile of any kind.
-  # No hermes.nix, audio.nix, clamav.nix, desktop-cosmic.nix, printing.nix,
+  # No hermes.nix, audio.nix, clamav.nix, desktops/cosmic.nix, printing.nix,
   # splash.nix: agent/desktop/display-oriented, out of scope for these two
   # minimal boxes by design. modules/nixos/mdns.nix is the one exception,
   # imported directly above rather than through printing.nix: without it,

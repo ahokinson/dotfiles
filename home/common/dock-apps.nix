@@ -16,6 +16,15 @@
 # darwinApp is optional (see protonvpn): modules/darwin/system/defaults.nix
 # skips pinning any app that omits it, for one with no macOS build here.
 {
+  # simple-icons has no Chromium glyph, so it uses the Google Chrome mark -
+  # same precedent as vesktop using Discord's.
+  chromium = {
+    darwinApp = "Chromium.app";
+    linuxDesktopId = "chromium-browser.desktop";
+    linuxIconName = "chromium";
+    simpleIcon = "googlechrome";
+    hue = "sky";
+  };
   ghostty = {
     darwinApp = "Ghostty.app";
     linuxDesktopId = "com.mitchellh.ghostty.desktop";

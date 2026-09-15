@@ -15,7 +15,7 @@
         label = "logout";
         text = "Log out";
         keybind = "e";
-        action = "hyprctl dispatch exit";
+        action = "swaymsg exit";
       }
       {
         label = "reboot";

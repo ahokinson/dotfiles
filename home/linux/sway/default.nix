@@ -4,7 +4,6 @@
     ./compositor.nix
     ./idle.nix
     ./launcher.nix
-    ./lock.nix
     ./notifications.nix
     ./osd.nix
     ./polkit.nix

@@ -24,10 +24,9 @@ let
   inherit ((import (selfPath "home/common/host.nix") { inherit osConfig; })) isApple;
 
   # Same recolor home/linux/icons/default.nix does for COSMIC's app-button
-  # logo, re-derived independently here rather than sharing one binding -
-  # matches this directory's existing convention (see wallpaper.nix/lock.nix
-  # on isApple). Colors are each source SVG's own brand hex, swapped hex-for-
-  # hex onto Mocha.
+  # logo, computed independently here rather than imported, so this file
+  # reads standalone. Colors are each source SVG's own brand hex, swapped
+  # hex-for-hex onto Mocha.
   logo = pkgs.writeText "waybar-logo.svg" (
     if isApple then
       lib.replaceStrings
@@ -79,11 +78,9 @@ let
   );
 
   # Recolors a WhiteSur-dark status/symbolic SVG the same hex-for-hex way
-  # the `logo` binding above does - re-derived independently here rather
-  # than sharing one binding, matching this directory's existing
-  # convention. Every file in that theme paints itself with one literal
-  # fill="#dedede" on its outermost <g>, so a single string replacement is
-  # enough here, unlike `logo`'s multi-color source.
+  # the `logo` binding above does. Every file in that theme paints itself
+  # with one literal fill="#dedede" on its outermost <g>, so a single string
+  # replacement is enough here, unlike `logo`'s multi-color source.
   recolor =
     hex: source:
     pkgs.writeText (baseNameOf source) (
@@ -128,11 +125,11 @@ let
 
   # Emits `$path\n$tooltip` per waybar-image(5)'s exec contract. Looks up
   # the battery by power_supply *type* rather than a fixed name: this file
-  # is imported by every Hyprland host (modules/nixos/desktop-hyprland.nix),
-  # not just this one, and this host's battery is macsmc-battery (Apple
-  # Silicon's driver), not the BATn ACPI name framework13-amd-ryzen uses -
-  # waybar's own built-in battery module (man 5 waybar-battery)
-  # auto-detects the same way for the same reason.
+  # is imported by every host that runs this session (modules/nixos/
+  # desktops/sway.nix), not just this one, and this host's battery is
+  # macsmc-battery (Apple Silicon's driver), not the BATn ACPI name
+  # framework13-amd-ryzen uses - waybar's own built-in battery module
+  # (man 5 waybar-battery) auto-detects the same way for the same reason.
   batteryIconScript = pkgs.writeShellScript "waybar-battery-icon" ''
     set -euo pipefail
 
@@ -173,18 +170,14 @@ in
 {
   # Global accent is mauve (home/common/catppuccin.nix); overridden to match
   # COSMIC's own blue accent override (home/linux/cosmic/theme.nix), same as
-  # compositor.nix's catppuccin.hyprland.accent.
+  # compositor.nix's client.focused border color.
   catppuccin.waybar.accent = "blue";
 
   programs.waybar = {
     enable = true;
 
-    # Not systemd: that route binds to hyprland-session.target, whose
-    # activation chain (dbus-update-activation-environment && systemctl
-    # --user start hyprland-session.target, fired from Hyprland's own
-    # exec-once) never reliably completed here, so waybar never started.
-    # compositor.nix execs it directly instead - Hyprland's own stock config
-    # documents this as the normal way to autostart a status bar.
+    # Not systemd: compositor.nix execs waybar directly from its own extraConfig
+    # instead, matching Sway's own documented way of autostarting a status bar.
     systemd.enable = false;
 
     settings.mainBar = {
@@ -256,9 +249,9 @@ in
       # network-wireless-signal-{excellent,good,ok,weak,none}-symbolic.svg
       # (+ -secure variants) and network-wired-*-symbolic.svg.
       network = {
-        format-wifi = "";
-        format-ethernet = "";
-        format-disconnected = "";
+        format-wifi = "";
+        format-ethernet = "";
+        format-disconnected = "";
         tooltip-format = "{ifname}: {signalStrength}% via {gwaddr}";
         tooltip-format-ethernet = "{ifname}: connected";
         tooltip-format-disconnected = "Disconnected";
@@ -280,7 +273,7 @@ in
 
       # Opens wlogout (powermenu.nix), the wlroots-ecosystem equivalent of
       # COSMIC's Power applet menu. compositor.nix's Super+Shift+Escape
-      # stays a direct hyprctl dispatch exit.
+      # stays a direct exit.
       #
       # Themed SVG (system-shutdown-symbolic.svg), not a glyph - see the
       # #power CSS rule below for why the surrounding padding also changed
