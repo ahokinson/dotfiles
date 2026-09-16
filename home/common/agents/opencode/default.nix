@@ -159,8 +159,11 @@ in
         info = "sky";
         text = "text";
         textMuted = "subtext0";
-        background = "base";
-        backgroundPanel = "mantle";
+        # "none" (not a hex ref) lets the terminal's own background show
+        # through - matches the repo-wide frosted-glass pass. backgroundElement
+        # stays opaque so hovered/selected rows keep contrast against it.
+        background = "none";
+        backgroundPanel = "none";
         backgroundElement = "surface0";
         border = "mauve";
         borderActive = "pink";
