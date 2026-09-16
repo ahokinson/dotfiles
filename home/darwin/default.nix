@@ -4,7 +4,6 @@
     (selfPath "home/darwin/apps/browsers/zen.nix")
     (selfPath "home/darwin/apps/desktop/lifesaver.nix")
     (selfPath "home/darwin/apps/desktop/monitorcontrol.nix")
-    (selfPath "home/darwin/apps/desktop/thaw.nix")
     (selfPath "home/darwin/desktop/wallpaper.nix")
     (selfPath "home/darwin/development/podman.nix")
     (selfPath "home/darwin/development/reliquary-codesign.nix")
