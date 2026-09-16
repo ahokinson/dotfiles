@@ -62,7 +62,9 @@ let
     # Left at COSMIC's 0; raise it if the dock should visibly float.
     margin = 0;
 
-    opacity = 1.0;
+    # 0.867, not the stock 1.0: repo-wide frosted-glass transparency,
+    # matched to fuzzel's own shipped alpha (theme.nix's bg_color.alpha).
+    opacity = 0.867;
     output = ronEnum "All";
     padding_overlap = 0.5;
     size_center = ronOptional null;

@@ -6,13 +6,17 @@
   ...
 }:
 {
-  imports = [ inputs.home-manager.darwinModules.home-manager ];
+  imports = [
+    inputs.home-manager.darwinModules.home-manager
+    inputs.mac-app-util.darwinModules.default
+  ];
 
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
     # Back up pre-existing real files rather than hard-failing on them.
     backupFileExtension = "hm-backup";
+    sharedModules = [ inputs.mac-app-util.homeManagerModules.default ];
     users.${username} = {
       imports = [
         inputs.zen-browser.homeModules.beta

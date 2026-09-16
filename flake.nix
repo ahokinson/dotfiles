@@ -61,6 +61,15 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Generates freshly ad-hoc-signed "trampoline" .app bundles for Nix-built
+    # apps instead of exposing home-manager's copied bundles (whose upstream
+    # code signatures are often invalid) directly to Launch Services/Finder/
+    # Dock — fixes those apps' icons falling back to a generic folder glyph.
+    mac-app-util = {
+      url = "github:hraban/mac-app-util";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     nix-darwin = {
       url = "github:nix-darwin/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";

@@ -304,7 +304,9 @@ in
       }
 
       window#waybar {
-        background-color: @base;
+        /* 0.867 matches fuzzel's own shipped alpha (catppuccin's
+           1e1e2edd) - repo-wide frosted-glass consistency. */
+        background-color: alpha(@base, 0.867);
         color: @text;
       }
 

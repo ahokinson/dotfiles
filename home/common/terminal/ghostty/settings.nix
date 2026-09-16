@@ -70,7 +70,9 @@ in
     mouse-shift-capture = false;
     mouse-reporting = true;
     mouse-scroll-multiplier = "precision:1,discrete:3";
-    background-opacity = 1;
+    # Not the shipped default (1): repo-wide frosted-glass transparency,
+    # matched to fuzzel's own alpha (background-blur stays off below).
+    background-opacity = 0.867;
     background-opacity-cells = false;
     background-blur = false;
     unfocused-split-opacity = 0.7;

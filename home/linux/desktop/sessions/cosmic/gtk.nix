@@ -25,37 +25,43 @@ let
   # one switch and pasting ~/.config/gtk-4.0/cosmic/dark.css's contents over
   # the string below.
   palette = ''
-    @define-color window_bg_color rgba(48, 52, 70, 1.00);
+    /* The twelve *_bg_color/*_backdrop_color lines below are a hand-edited
+       exception to the "regenerate by live capture" rule above: their alpha
+       was dropped from 1.00 to 0.867 by hand (repo-wide frosted-glass pass,
+       matched to fuzzel's own shipped alpha). A future live recapture will
+       reset these to 1.00 and need the same edit reapplied. Foreground,
+       accent/semantic and swatch colors are untouched. */
+    @define-color window_bg_color rgba(48, 52, 70, 0.867);
     @define-color window_fg_color rgba(195, 201, 224, 1.00);
 
-    @define-color view_bg_color rgba(62, 66, 85, 1.00);
+    @define-color view_bg_color rgba(62, 66, 85, 0.867);
     @define-color view_fg_color rgba(212, 217, 240, 1.00);
 
-    @define-color headerbar_bg_color rgba(48, 52, 70, 1.00);
+    @define-color headerbar_bg_color rgba(48, 52, 70, 0.867);
     @define-color headerbar_fg_color rgba(195, 201, 224, 1.00);
     @define-color headerbar_border_color_color rgba(77, 82, 101, 1.00);
-    @define-color headerbar_backdrop_color rgba(48, 52, 70, 1.00);
+    @define-color headerbar_backdrop_color rgba(48, 52, 70, 0.867);
 
-    @define-color sidebar_bg_color rgba(62, 66, 85, 1.00);
+    @define-color sidebar_bg_color rgba(62, 66, 85, 0.867);
     @define-color sidebar_fg_color rgba(212, 217, 240, 1.00);
     @define-color sidebar_shade_color rgba(0, 0, 0, 0.08);
-    @define-color sidebar_backdrop_color rgba(77, 81, 99, 1.00);
+    @define-color sidebar_backdrop_color rgba(77, 81, 99, 0.867);
 
-    @define-color secondary_sidebar_bg_color rgba(75, 80, 99, 1.00);
+    @define-color secondary_sidebar_bg_color rgba(75, 80, 99, 0.867);
     @define-color secondary_sidebar_fg_color rgba(229, 234, 255, 1.00);
     @define-color secondary_sidebar_shade_color rgba(0, 0, 0, 0.08);
-    @define-color secondary_sidebar_backdrop_color rgba(90, 94, 112, 1.00);
+    @define-color secondary_sidebar_backdrop_color rgba(90, 94, 112, 0.867);
 
-    @define-color card_bg_color rgba(70, 74, 93, 1.00);
+    @define-color card_bg_color rgba(70, 74, 93, 0.867);
     @define-color card_fg_color rgba(221, 227, 251, 1.00);
 
-    @define-color thumbnail_bg_color rgba(70, 74, 93, 1.00);
+    @define-color thumbnail_bg_color rgba(70, 74, 93, 0.867);
     @define-color thumbnail_fg_color rgba(221, 227, 251, 1.00);
 
-    @define-color dialog_bg_color rgba(62, 66, 85, 1.00);
+    @define-color dialog_bg_color rgba(62, 66, 85, 0.867);
     @define-color dialog_fg_color rgba(212, 217, 240, 1.00);
 
-    @define-color popover_bg_color rgba(70, 74, 93, 1.00);
+    @define-color popover_bg_color rgba(70, 74, 93, 0.867);
     @define-color popover_fg_color rgba(221, 227, 251, 1.00);
 
     @define-color shade_color rgba(0, 0, 0, 0.32);

@@ -33,7 +33,9 @@ in
           red = 0.117647;
           green = 0.117647;
           blue = 0.180392;
-          alpha = 1.0;
+          # 0.867, not the stock 1.0: repo-wide frosted-glass transparency,
+          # matched to fuzzel's own shipped alpha.
+          alpha = 0.867;
         };
 
         # The dock's hover fill is not settable from ThemeBuilder; only its
