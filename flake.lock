@@ -803,11 +803,11 @@
     "nvim": {
       "flake": false,
       "locked": {
-        "lastModified": 1788496461,
-        "narHash": "sha256-zZlvioVR98ZrlewxEflIScREPTDtl0M3lT4iu2mmgSg=",
+        "lastModified": 1789521972,
+        "narHash": "sha256-zf/7E8IZcn7kRBDlyz17HPodNocPzPP5C7rBI09RWb4=",
         "owner": "ahokinson",
         "repo": "nvim",
-        "rev": "13caafb0632014da4b5d1b0f3693ed5c874f8c5c",
+        "rev": "2bdccf9bcf080fe3fc35cf3b885be05aed76997b",
         "type": "github"
       },
       "original": {
