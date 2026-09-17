@@ -115,7 +115,7 @@ in
         anchor = ronEnum "Bottom";
         autohide = ronEnum "Always";
 
-        # Detaches the dock from the screen edge so border_radius shows.
+        # Floats the dock off the screen edge, independent of corner rounding.
         anchor_gap = true;
 
         # Applications only. COSMIC also ships the launcher, workspaces and
@@ -127,7 +127,7 @@ in
         ];
         plugins_wings = ronOptional null;
 
-        border_radius = 12;
+        border_radius = 0;
         exclusive_zone = false;
         expand_to_edges = false;
         padding = 4;

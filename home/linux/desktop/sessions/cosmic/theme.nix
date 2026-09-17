@@ -38,22 +38,16 @@ in
           alpha = 0.867;
         };
 
-        # The dock's hover fill is not settable from ThemeBuilder; only its
-        # shape is. Button::AppletIcon sets no radius of its own and falls
-        # through to radius_xl, 160.0 by default, far too round at dock-button
-        # size. This is the fallback for every button style without its own
-        # radius, so it is a global change, not a dock-only one.
-        #
-        # All six are listed because the option is a submodule: setting one
-        # instantiates it and leaves the rest undefined. The other five are
-        # COSMIC's stock values.
+        # Flat everywhere, to match Sway, which has no rounding concept at
+        # all. All six are listed because the option is a submodule: setting
+        # one instantiates it and leaves the rest undefined.
         corner_radii = {
           radius_0 = radius 0.0;
-          radius_xs = radius 4.0;
-          radius_s = radius 8.0;
-          radius_m = radius 16.0;
-          radius_l = radius 32.0;
-          radius_xl = radius 8.0;
+          radius_xs = radius 0.0;
+          radius_s = radius 0.0;
+          radius_m = radius 0.0;
+          radius_l = radius 0.0;
+          radius_xl = radius 0.0;
         };
       };
     };
