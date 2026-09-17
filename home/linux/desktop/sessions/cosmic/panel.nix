@@ -54,7 +54,7 @@ let
     };
     autohover_delay_ms = ronOptional 500;
     background = ronEnum "ThemeDefault";
-    keep_style_on_maximize = false;
+    keep_style_on_maximize = true;
     keyboard_interactivity = ronEnum "OnDemand";
     layer = ronEnum "Top";
 
@@ -62,9 +62,7 @@ let
     # Left at COSMIC's 0; raise it if the dock should visibly float.
     margin = 0;
 
-    # 0.867, not the stock 1.0: repo-wide frosted-glass transparency,
-    # matched to fuzzel's own shipped alpha (theme.nix's bg_color.alpha).
-    opacity = 0.867;
+    opacity = 0;
     output = ronEnum "All";
     padding_overlap = 0.5;
     size_center = ronOptional null;
