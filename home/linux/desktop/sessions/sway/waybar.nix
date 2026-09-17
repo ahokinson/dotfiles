@@ -1,17 +1,20 @@
 # catppuccin.autoEnable (home/linux/desktop/theme/catppuccin.nix) themes this via
 # programs.waybar.style; the CSS below is layered on top of that import.
 #
-# Layout mirrors home/linux/desktop/sessions/cosmic/panel.nix's actual top Panel, not a
-# generic waybar look: border_radius = 0 (flat bar, no rounding on the bar
-# itself), plugins_center = null (nothing centered - COSMIC's clock sits in
-# the right-hand group, its own comment calls it "the macOS menu bar" look),
-# left wing a single logo button, right wing Network/Battery/Time/Power in
-# that exact order. No per-module pill backgrounds either, for the same
-# flat-menu-bar reason - COSMIC's panel items are bare icon+text at rest.
-# Icon sizes, padding, font size and inter-module spacing below are likewise
+# Layout otherwise mirrors home/linux/desktop/sessions/cosmic/panel.nix's actual top Panel:
+# border_radius = 0 (flat bar, no rounding on the bar itself), plugins_center
+# = null (nothing centered), left wing a single logo button, no per-module
+# pill backgrounds - COSMIC's panel items are bare icon+text at rest. Icon
+# sizes, padding, font size and inter-module spacing below are likewise
 # matched to cosmic-panel-config's PanelSize::XS constants and
 # padding_overlap - see the comment on each CSS rule for its specific source
 # value.
+#
+# Right wing is Battery/Network/Brightness/Clock/Power, right to left:
+# Power, Clock, Brightness, Network, Battery. This is one module ahead of
+# panel.nix's actual right wing: cosmic-applets ships no brightness applet
+# (checked 1.6.0 and 1.8.0's shipped desktop entries), so panel.nix drops it
+# and keeps Battery/Network/Time/Power instead.
 {
   lib,
   pkgs,
@@ -200,11 +203,13 @@ in
         "custom/spacer"
         "image#logo"
       ];
+      # Right to left: power, date, brightness, wifi, battery.
       modules-right = [
-        "network"
         "custom/spacer"
         "image#battery"
         "custom/spacer"
+        "network"
+        "backlight"
         "clock"
         "image#power"
         "custom/spacer"
@@ -224,17 +229,19 @@ in
         size = 24;
       };
 
-      # Month, day, 24-hour time with seconds, e.g. "Sep 12, 09:33:11" -
-      # matches COSMIC's actual panel rendering: no weekday, comma after
-      # the day, single space before the time.
-      # home/linux/desktop/sessions/cosmic/panel.nix's military_time/show_seconds applet
-      # settings only control the hour format and whether seconds show at
-      # all, not weekday or spacing (cosmic-applet-time's own format string).
-      clock.format = "{:%b %d, %H:%M:%S}";
-
-      # Waybar's clock module defaults to interval: 60 (man 5 waybar-clock),
-      # so %S only advanced once a minute instead of ticking.
-      clock.interval = 1;
+      # Themed SVG, not a glyph - the real battery-level-N-symbolic icon
+      # WhiteSur-dark (and so COSMIC's own battery applet, which inherits
+      # it - home/linux/desktop/icons/default.nix) would draw for this charge
+      # state, picked live by batteryIconScript. size = 16 matches
+      # PanelSize::XS.get_applet_icon_size(true) == 16, the symbolic icon
+      # pixel size.
+      "image#battery" = {
+        exec = "${batteryIconScript}";
+        # Matches the built-in battery module's own default poll cadence
+        # (man 5 waybar-battery: interval, default 60).
+        interval = 60;
+        size = 16;
+      };
 
       # Icon only, no percentage/text - matches COSMIC's network applet
       # exactly (its panel button is bare-icon too; details live in its
@@ -256,19 +263,30 @@ in
         tooltip-format-disconnected = "Disconnected";
       };
 
-      # Themed SVG, not a glyph - the real battery-level-N-symbolic icon
-      # WhiteSur-dark (and so COSMIC's own battery applet, which inherits
-      # it - home/linux/desktop/icons/default.nix) would draw for this charge
-      # state, picked live by batteryIconScript. size = 16 matches
-      # PanelSize::XS.get_applet_icon_size(true) == 16, the symbolic icon
-      # pixel size.
-      "image#battery" = {
-        exec = "${batteryIconScript}";
-        # Matches the built-in battery module's own default poll cadence
-        # (man 5 waybar-battery: interval, default 60).
-        interval = 60;
-        size = 16;
+      # Icon only, no percentage/text, matching network's bare-icon
+      # treatment. No COSMIC applet to mirror here - cosmic-applets ships no
+      # brightness applet at all (checked 1.6.0 and 1.8.0's shipped desktop
+      # entries), so this is waybar-only; panel.nix's right wing skips it.
+      backlight = {
+        format = "{icon}";
+        format-icons = [
+          "󰃞"
+          "󰃟"
+          "󰃠"
+        ];
+        tooltip-format = "{percent}%";
       };
+
+      # Weekday, month, day, 24-hour time with seconds, e.g.
+      # "Thu Sep 17 00:39:06" - the macOS menu bar's own date/time format.
+      # home/linux/desktop/sessions/cosmic/panel.nix's applet time settings match this via
+      # format_strftime, since cosmic-applet-time's own locale-based
+      # composition inserts a comma this format doesn't use.
+      clock.format = "{:%a %b %d %H:%M:%S}";
+
+      # Waybar's clock module defaults to interval: 60 (man 5 waybar-clock),
+      # so %S only advanced once a minute instead of ticking.
+      clock.interval = 1;
 
       # Opens wlogout (powermenu.nix), the wlroots-ecosystem equivalent of
       # COSMIC's Power applet menu. compositor.nix's Super+Shift+Escape
@@ -318,9 +336,12 @@ in
       /* Network/Battery/Power are symbolic; Time (clock) explicitly opts
          into the same symbolic spacing via suggested_padding(true) in
          cosmic-applet-time's window.rs, even though it renders text.
-         PanelSize::XS.get_applet_shrinkable_padding(true) == 12. */
+         PanelSize::XS.get_applet_shrinkable_padding(true) == 12. Backlight
+         has no COSMIC counterpart to source a value from, so it's matched
+         to this group instead since it renders the same way network does. */
       #network,
       #battery,
+      #backlight,
       #clock,
       #power {
         padding: 0 12px;
@@ -342,17 +363,21 @@ in
          (symbolic icon pixel size). #battery/#power render real SVGs now
          (their own `size` key sets 16px directly, see the Nix side above),
          not glyphs, so they're dropped from this rule; #clock renders text
-         (body, 14px, from the `*` rule above), not a glyph either. */
-      #network {
+         (body, 14px, from the `*` rule above), not a glyph either.
+         #backlight is a glyph too (no COSMIC counterpart to size against),
+         so it gets the same treatment as #network. */
+      #network,
+      #backlight {
         font-size: 16px;
       }
 
       /* cosmic-panel-bin's space/layout.rs compacts every non-first applet
          within a wing toward its predecessor by
          get_applet_shrinkable_padding(true) * padding_overlap == 12 * 0.5 ==
-         6px (panel.nix's padding_overlap = 0.5). #network is first in
-         modules-right so keeps the full gap; the rest pull left. */
-      #battery,
+         6px (panel.nix's padding_overlap = 0.5). #battery is first in
+         modules-right now, so it keeps the full gap; the rest pull left. */
+      #network,
+      #backlight,
       #clock,
       #power {
         margin-left: -6px;

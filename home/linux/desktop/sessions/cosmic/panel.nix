@@ -78,10 +78,16 @@ in
     app: stripDesktopSuffix (desktopIdFor app)
   ) pinnedApps;
 
-  # Weekday, month, day, 24-hour time with seconds, as the macOS menu bar.
+  # format_strftime overrides cosmic-applet-time's own locale-based
+  # composition entirely (window.rs's maybe_strftime() takes precedence over
+  # military_time/show_seconds/show_date_in_top_panel/show_weekday whenever
+  # it's non-empty) - the macOS menu bar's own format, e.g.
+  # "Thu Sep 17 00:39:06". Needed because that locale-based composition
+  # inserts a comma after the date this format doesn't use.
   wayland.desktopManager.cosmic.applets."time".settings = {
     military_time = true;
     show_seconds = true;
+    format_strftime = "%a %b %d %H:%M:%S";
   };
 
   # Icons rather than words, so the leftmost button reads as a logo.
@@ -141,16 +147,22 @@ in
         autohide = ronEnum "Never";
         anchor_gap = false;
 
-        # Logo far left, clock far right. COSMIC centers the clock and puts
-        # app-library second, so both move.
+        # Logo alone on the left. COSMIC centers the clock and puts
+        # app-library second by default; both move here.
+        #
+        # Right wing is Battery/Network/Time/Power, right to left: Power,
+        # Time, Network, Battery. No brightness applet: cosmic-applets
+        # (checked 1.6.0 and 1.8.0's shipped desktop entries) ships none, so
+        # waybar.nix's equivalent right wing has one extra module this can't
+        # match.
         plugins_center = ronOptional null;
         plugins_wings = ronOptional {
           __type = "tuple";
           value = [
             [ "com.system76.CosmicPanelAppButton" ]
             [
-              "com.system76.CosmicAppletNetwork"
               "com.system76.CosmicAppletBattery"
+              "com.system76.CosmicAppletNetwork"
               "com.system76.CosmicAppletTime"
               "com.system76.CosmicAppletPower"
             ]
