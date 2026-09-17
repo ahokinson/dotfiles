@@ -26,7 +26,8 @@
   # on. Host-scoped: the Asahi machines run brcmfmac and are unaffected.
   networking.networkmanager.wifi.powersave = false;
 
-  # 2256x1504 on 13.5" is ~201 PPI - dense enough that scale 1 renders text
-  # and icons illegibly small.
-  local.display.scale = "1.5";
+  # 2256x1504 on 13.5" is ~201 ppi. Scale 1.58 -> 127 logical ppi, the same
+  # apparent density as the Retina Macs' Default scaling (see
+  # hosts/nixos/asahi/bookpro14-m1-pro's local.display.scale comment).
+  local.display.scale = "1.58";
 }

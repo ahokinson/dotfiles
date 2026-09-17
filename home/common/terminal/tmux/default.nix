@@ -1,4 +1,15 @@
 _: {
+  # Runs inside home-manager's catppuccin plugin block, before this file's
+  # own extraConfig below - @catppuccin_status_background is read once, when
+  # the plugin's run-shell executes. "none" makes it set status-style to
+  # tmux's literal "default" instead of bg=#{@thm_mantle}, so the bar falls
+  # through to ghostty's background-opacity (background-opacity-cells is
+  # false there, so window-status-format's explicit thm_* pill colors below
+  # stay solid - same frosted-glass shape as everywhere else in the repo).
+  catppuccin.tmux.extraConfig = ''
+    set -g @catppuccin_status_background "none"
+  '';
+
   programs.tmux = {
     enable = true;
     aggressiveResize = true;

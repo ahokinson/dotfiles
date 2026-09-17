@@ -13,4 +13,10 @@
 
   # 3024x1890 built-in panel (card1-eDP-1), not the 1504 default.
   local.splash.panelHeightPx = 1890;
+
+  # 3024x1890 panel at 254 ppi. Scale 2 -> 127 logical ppi, matching macOS's
+  # own Default Retina scaling on this dual-booted panel
+  # (hosts/darwin/macbookpro14-m1-pro) and Cosmic's already-persisted eDP-1
+  # scale.
+  local.display.scale = "2";
 }
