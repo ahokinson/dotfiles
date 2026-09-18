@@ -85,11 +85,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Deliberately pinned, not tracking the default branch: rev a36ab64c
-    # broke wifi on both Asahi machines after the 2026-09-17 flake update.
-    # Remove the pin once upstream's regression is found and fixed.
     nixos-apple-silicon = {
-      url = "github:nix-community/nixos-apple-silicon/75c719364914ae19f604f3ddbd8f499735d1c9ff";
+      url = "github:nix-community/nixos-apple-silicon";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 

@@ -588,17 +588,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1789333811,
-        "narHash": "sha256-KsDph8jHv532k1kotia49UBRPj9DcjzziGI18tG3X+A=",
+        "lastModified": 1789726612,
+        "narHash": "sha256-yoWwhhpovtNl0AcrnFOsyUtItxyn3HtyHiSZ+r9AVmQ=",
         "owner": "nix-community",
         "repo": "nixos-apple-silicon",
-        "rev": "75c719364914ae19f604f3ddbd8f499735d1c9ff",
+        "rev": "a36ab64c782aba8444367eeee195008d61fe3a95",
         "type": "github"
       },
       "original": {
         "owner": "nix-community",
         "repo": "nixos-apple-silicon",
-        "rev": "75c719364914ae19f604f3ddbd8f499735d1c9ff",
         "type": "github"
       }
     },
