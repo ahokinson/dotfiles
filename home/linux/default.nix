@@ -1,6 +1,7 @@
 # Linux-only home config, imported by every NixOS host.
 { selfPath, ... }: {
   imports = [
+    (selfPath "home/linux/apps/brlcad.nix")
     (selfPath "home/linux/apps/obs.nix")
     (selfPath "home/linux/apps/zathura.nix")
     (selfPath "home/linux/desktop/icons")

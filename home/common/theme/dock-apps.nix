@@ -30,6 +30,19 @@
     vendoredIcon = true;
     hue = "flamingo";
   };
+  # BRL-CAD ships no .desktop entry or icon via nixpkgs
+  # (home/linux/apps/brlcad.nix synthesizes both); simple-icons has no brlcad
+  # glyph either, so vendored: upstream's own three-loop mark
+  # (misc/debian/icons/256x256/brlcad.png), traced and flattened to
+  # simple-icons' 0 0 24 24 single-path convention, bbox-normalized to fill
+  # the box.
+  brlcad = {
+    linuxDesktopId = "archer.desktop";
+    linuxIconName = "brlcad";
+    simpleIcon = "brlcad";
+    vendoredIcon = true;
+    hue = "pink";
+  };
   # simple-icons has no Chromium glyph, so it uses the Google Chrome mark -
   # same precedent as vesktop using Discord's.
   chromium = {
