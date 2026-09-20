@@ -12,10 +12,4 @@
     (selfPath "modules/nixos/services/ollama.nix")
     (selfPath "modules/nixos/services/open-webui.nix")
   ];
-
-  # 64GB of RAM here vs. 32GB on the Framework - room for a bigger model
-  # than the shared list in modules/nixos/services/ollama.nix declares.
-  services.ollama.loadModels = [
-    "hf.co/NousResearch/Hermes-4.3-36B-GGUF:Q4_K_M"
-  ];
 }

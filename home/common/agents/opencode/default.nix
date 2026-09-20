@@ -14,20 +14,20 @@ let
   opencodeConfig = {
     "$schema" = "https://opencode.ai/config.json";
     model = "opencode-go/glm-5";
-    small_model = "ollama/qwen3:8b";
+    small_model = "ollama/hf.co/Qwen/Qwen3-8B-GGUF:Q4_K_M";
     provider.ollama = {
       npm = "@ai-sdk/openai-compatible";
       name = "Local";
       options.baseURL = "http://localhost:11434/v1";
       models = {
-        "qwen3:30b-a3b" = {
+        "hf.co/Qwen/Qwen3-30B-A3B-GGUF:Q4_K_M" = {
           name = "Qwen3 30B A3B";
           limit = {
             context = 131072;
             output = 32768;
           };
         };
-        "qwen3:8b" = {
+        "hf.co/Qwen/Qwen3-8B-GGUF:Q4_K_M" = {
           name = "Qwen3 8B";
           limit = {
             context = 131072;
@@ -36,6 +36,13 @@ let
         };
         "hf.co/NousResearch/Hermes-4.3-36B-GGUF:Q4_K_M" = {
           name = "Hermes 4.3 36B";
+          limit = {
+            context = 131072;
+            output = 32768;
+          };
+        };
+        "hf.co/unsloth/DeepSeek-R1-Distill-Qwen-32B-GGUF:Q4_K_M" = {
+          name = "DeepSeek R1 32B";
           limit = {
             context = 131072;
             output = 32768;
