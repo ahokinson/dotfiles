@@ -14,6 +14,7 @@ in
     host = "0.0.0.0"; # the one surface phones/iPads hit
     port = 8080; # fixed fleet-wide - same bookmarked URL either boot-side
     environment = {
+      BYPASS_MODEL_ACCESS_CONTROL = "True"; # WEBUI_AUTH is off - no users to enforce model ACLs against.
       ENABLE_ADMIN_ANALYTICS = "False";
       ENABLE_ADMIN_CHAT_ACCESS = "False";
       ENABLE_ADMIN_EXPORT = "False";
@@ -39,6 +40,7 @@ in
       ENABLE_USER_STATUS = "False";
       ENABLE_VOICE_MODE_PROMPT = "False";
       OLLAMA_API_BASE_URL = "http://127.0.0.1:${toString config.services.ollama.port}";
+      USER_PERMISSIONS_CHAT_TEMPORARY_ENFORCED = "True"; # nothing gets written to chat history.
       WEBUI_AUTH = "False";
     };
     openFirewall = true;
