@@ -5,7 +5,12 @@
 # `sudo nixos-rebuild switch --flake .#pi-nas` there directly - see
 # hosts/nixos/raspberry-pi/pi-hole/default.nix's header comment for why `--target-host`
 # doesn't work on these hosts.
-{ inputs, selfPath, ... }:
+{
+  inputs,
+  selfPath,
+  username,
+  ...
+}:
 {
   networking.hostName = "pi-nas";
 
@@ -25,7 +30,7 @@
   # on every boot even though the directory already exists, so this
   # self-heals across a future reformat without needing to remember the
   # one-off `chown` this took to discover.
-  systemd.tmpfiles.rules = [ "d /srv/developer 0755 anders users -" ];
+  systemd.tmpfiles.rules = [ "d /srv/developer 0755 ${username} users -" ];
 
   # A native module, unlike pi-hole - no container needed.
   services.samba = {
@@ -48,7 +53,7 @@
         path = "/srv/developer";
         browseable = "yes";
         writable = "yes";
-        "valid users" = "anders";
+        "valid users" = username;
         # The vfs_fruit pair modern macOS clients actually need: proper
         # resource-fork/Finder metadata storage in an xattr stream instead
         # of littering the share with ._AppleDouble files.
