@@ -2,13 +2,23 @@
   selfPath,
   pkgs,
   lib,
-  osConfig ? null,
+  hostFacts,
   ...
 }:
 let
   wireShared = import (selfPath "home/common/agents/shared/default.nix") { inherit selfPath; };
+  wireSkills = import (selfPath "home/common/agents/shared/skill.nix") { inherit selfPath lib; };
+  skillNames = [
+    "code-security"
+    "container-security"
+    "iac-security"
+    "pipeline-security"
+    "supply-chain-security"
+    "technical-documentation"
+    "threat-modeling"
+  ];
 
-  inherit ((import (selfPath "home/common/lib/host.nix") { inherit osConfig; })) forWork;
+  inherit (hostFacts) forWork;
   # Identical today; hand-edit opencodeWorkConfig to diverge (model/provider,
   # permission mode, etc.) the same way opencodeConfig is hand-edited.
   opencodeConfig = {
@@ -418,5 +428,6 @@ in
     "docs"
     "system.md"
     "SOUL.md"
-  ];
+  ]
+  // wireSkills "opencode/skill" "home/common/agents/opencode/_skills" skillNames;
 }

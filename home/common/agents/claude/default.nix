@@ -2,13 +2,23 @@
   selfPath,
   pkgs,
   lib,
-  osConfig ? null,
+  hostFacts,
   ...
 }:
 let
   wireShared = import (selfPath "home/common/agents/shared/default.nix") { inherit selfPath; };
+  wireSkills = import (selfPath "home/common/agents/shared/skill.nix") { inherit selfPath lib; };
+  skillNames = [
+    "code-security"
+    "container-security"
+    "iac-security"
+    "pipeline-security"
+    "supply-chain-security"
+    "technical-documentation"
+    "threat-modeling"
+  ];
 
-  inherit ((import (selfPath "home/common/lib/host.nix") { inherit osConfig; })) forWork;
+  inherit (hostFacts) forWork;
   # Identical today; hand-edit settingsWorkContent to diverge (permission
   # mode, sandbox allowlist, etc.) the same way settingsContent is hand-edited.
   settingsContent = {
@@ -516,7 +526,11 @@ in
     "docs"
     "system.md"
     "SOUL.md"
-  ];
+  ]
+  //
+    wireSkills ".claude/plugins/marketplaces/local/plugins/custom/skills"
+      "home/common/agents/claude/_skills"
+      skillNames;
 
   home.activation.claudeSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     run ${claudeSettingsSeed}
