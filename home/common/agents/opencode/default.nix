@@ -24,21 +24,21 @@ let
   opencodeConfig = {
     "$schema" = "https://opencode.ai/config.json";
     model = "opencode-go/glm-5";
-    small_model = "ollama/hf.co/Qwen/Qwen3-8B-GGUF:Q4_K_M";
+    small_model = "ollama/hf.co/dphn/Dolphin-X1-Trinity-Nano-GGUF:Q4_K_M";
     provider.ollama = {
       npm = "@ai-sdk/openai-compatible";
       name = "Local";
       options.baseURL = "http://localhost:11434/v1";
       models = {
-        "hf.co/Qwen/Qwen3-30B-A3B-GGUF:Q4_K_M" = {
-          name = "Qwen3 30B A3B";
+        "hf.co/unsloth/Qwen3.8-27B-GGUF:UD-Q4_K_M" = {
+          name = "Qwen3.8 27B";
           limit = {
             context = 131072;
             output = 32768;
           };
         };
-        "hf.co/Qwen/Qwen3-8B-GGUF:Q4_K_M" = {
-          name = "Qwen3 8B";
+        "hf.co/dphn/Dolphin-X1-Trinity-Nano-GGUF:Q4_K_M" = {
+          name = "Dolphin X1 Trinity Nano";
           limit = {
             context = 131072;
             output = 32768;
@@ -53,6 +53,13 @@ let
         };
         "hf.co/unsloth/DeepSeek-R1-Distill-Qwen-32B-GGUF:Q4_K_M" = {
           name = "DeepSeek R1 32B";
+          limit = {
+            context = 131072;
+            output = 32768;
+          };
+        };
+        "hf.co/unsloth/gemma-4-26B-A4B-it-GGUF:UD-Q4_K_M" = {
+          name = "Gemma 4 26B A4B";
           limit = {
             context = 131072;
             output = 32768;
