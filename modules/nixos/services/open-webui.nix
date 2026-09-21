@@ -1,4 +1,3 @@
-# studio-m1-max and framework13-amd-ryzen.
 {
   config,
   pkgs,
@@ -11,10 +10,21 @@ in
 {
   services.open-webui = {
     enable = true;
-    host = "0.0.0.0"; # the one surface phones/iPads hit
-    port = 8080; # fixed fleet-wide - same bookmarked URL either boot-side
+    host = "0.0.0.0";
+    port = 6604;
     environment = {
-      BYPASS_MODEL_ACCESS_CONTROL = "True"; # WEBUI_AUTH is off - no users to enforce model ACLs against.
+      ANONYMIZED_TELEMETRY = "false";
+      BYPASS_MODEL_ACCESS_CONTROL = "True";
+      DEFAULT_PROMPT_SUGGESTIONS = builtins.toJSON [
+        {
+          title = [
+            ""
+            ""
+          ];
+          content = "";
+        }
+      ];
+      DO_NOT_TRACK = "true";
       ENABLE_ADMIN_ANALYTICS = "False";
       ENABLE_ADMIN_CHAT_ACCESS = "False";
       ENABLE_ADMIN_EXPORT = "False";
@@ -28,6 +38,7 @@ in
       ENABLE_EVALUATION_ARENA_MODELS = "False";
       ENABLE_FOLDERS = "False";
       ENABLE_FOLLOW_UP_GENERATION = "False";
+      ENABLE_LOGIN_FORM = "False";
       ENABLE_MEMORIES = "False";
       ENABLE_MESSAGE_RATING = "False";
       ENABLE_NOTES = "False";
@@ -36,11 +47,18 @@ in
       ENABLE_PERSISTENT_CONFIG = "False";
       ENABLE_RETRIEVAL_QUERY_GENERATION = "False";
       ENABLE_SEARCH_QUERY_GENERATION = "False";
+      ENABLE_SIGNUP = "False";
+      ENABLE_SUBAGENTS = "False";
       ENABLE_TAGS_GENERATION = "False";
+      ENABLE_TITLE_GENERATION = "False";
       ENABLE_USER_STATUS = "False";
+      ENABLE_USER_WEBHOOKS = "False";
+      ENABLE_VERSION_UPDATE_CHECK = "False";
       ENABLE_VOICE_MODE_PROMPT = "False";
       OLLAMA_API_BASE_URL = "http://127.0.0.1:${toString config.services.ollama.port}";
-      USER_PERMISSIONS_CHAT_TEMPORARY_ENFORCED = "True"; # nothing gets written to chat history.
+      SCARF_NO_ANALYTICS = "true";
+      SUBAGENTS_BACKGROUND_ENABLED = "False";
+      USER_PERMISSIONS_CHAT_TEMPORARY_ENFORCED = "True";
       WEBUI_AUTH = "False";
     };
     openFirewall = true;
@@ -48,7 +66,6 @@ in
 
   systemd.services.open-webui.serviceConfig = {
     Restart = "on-failure";
-    # Shadows the frontend's custom.css - see home/common/apps/ai/open-webui/theme.nix.
     BindReadOnlyPaths = [
       "${themeCss}:${config.services.open-webui.package.frontend}/share/open-webui/static/custom.css"
     ];
