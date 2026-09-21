@@ -1,7 +1,5 @@
-# Picks the wallpaper by whether this host is Apple Silicon running Asahi.
-# Other files that need the same fact (home/linux/desktop/sessions/cosmic/wallpaper.nix,
-# compositor.nix in this directory) each compute it themselves rather than
-# importing one shared value, so any single file reads standalone.
+# Picks the wallpaper by whether this host is Apple Silicon running Asahi
+# (hostFacts.isApple, threaded via extraSpecialArgs same as selfPath).
 #
 # No hyprpaper-style daemon/workaround needed: Sway's own `output <name> bg`
 # directive spawns swaybg itself as part of normal startup. swaybg is added
@@ -10,11 +8,11 @@
 {
   pkgs,
   selfPath,
-  osConfig ? null,
+  hostFacts,
   ...
 }:
 let
-  inherit ((import (selfPath "home/common/lib/host.nix") { inherit osConfig; })) isApple;
+  inherit (hostFacts) isApple;
   wallpaper = selfPath (
     if isApple then "home/common/assets/wallpaper/asahi.jpg" else "home/common/assets/wallpaper/nix.jpg"
   );

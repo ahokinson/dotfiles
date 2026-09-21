@@ -5,27 +5,24 @@
   username,
   ...
 }:
+let
+  hostFacts = import (selfPath "home/common/lib/host.nix") { osConfig = config; };
+in
 {
-  imports = [ inputs.home-manager.nixosModules.home-manager ];
+  imports = [
+    inputs.home-manager.nixosModules.home-manager
+    (selfPath "modules/shared/nix/home-manager.nix")
+  ];
 
   home-manager = {
-    useGlobalPkgs = true;
-    useUserPackages = true;
-    # Back up pre-existing real files rather than hard-failing on them.
-    backupFileExtension = "hm-backup";
-    users.${username} = {
-      imports = [
-        (selfPath "home/common")
-        (selfPath "home/linux")
-        (selfPath "home/linux/desktop/sessions/cosmic")
-        (selfPath "home/linux/desktop/sessions/sway")
-        inputs.cosmic-manager.homeManagerModules.cosmic-manager
-        inputs.zen-browser.homeModules.beta
-      ];
-      home.username = username;
-      home.homeDirectory = config.users.users.${username}.home;
-      home.stateVersion = "26.05";
-    };
+    users.${username}.imports = [
+      (selfPath "home/common")
+      (selfPath "home/linux")
+      (selfPath "home/linux/desktop/sessions/cosmic")
+      (selfPath "home/linux/desktop/sessions/sway")
+      inputs.cosmic-manager.homeManagerModules.cosmic-manager
+      inputs.zen-browser.homeModules.beta
+    ];
     # cosmic-greeter (modules/nixos/desktop/cosmic.nix) draws both the login
     # and lock screens as its own process under /var/lib/cosmic-greeter, with
     # no config of its own - just wallpaper.nix and theme.nix, so it matches
@@ -43,7 +40,14 @@
       home.homeDirectory = "/var/lib/cosmic-greeter";
       home.stateVersion = "26.05";
     };
-    extraSpecialArgs = { inherit inputs selfPath username; };
+    extraSpecialArgs = {
+      inherit
+        inputs
+        selfPath
+        username
+        hostFacts
+        ;
+    };
   };
 
   # cosmic-greeter-daemon is one long-lived process for the whole boot; it

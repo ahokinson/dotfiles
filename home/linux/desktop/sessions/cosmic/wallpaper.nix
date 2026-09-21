@@ -5,11 +5,11 @@
 # activation with no login-time script.
 {
   selfPath,
-  osConfig ? null,
+  hostFacts,
   ...
 }:
 let
-  inherit ((import (selfPath "home/common/lib/host.nix") { inherit osConfig; })) isApple;
+  inherit (hostFacts) isApple;
   wallpaper = selfPath (
     if isApple then "home/common/assets/wallpaper/asahi.jpg" else "home/common/assets/wallpaper/nix.jpg"
   );

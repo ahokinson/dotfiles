@@ -5,12 +5,11 @@
 {
   pkgs,
   lib,
-  selfPath,
-  osConfig ? null,
+  hostFacts,
   ...
 }:
 let
-  inherit ((import (selfPath "home/common/lib/host.nix") { inherit osConfig; })) forWork;
+  inherit (hostFacts) forWork;
   # Identical today; diverge model/effort here (e.g. a work-provisioned
   # account) the same way home/common/development/source-control/git/config.nix diverges git identity.
   modelSettings = {

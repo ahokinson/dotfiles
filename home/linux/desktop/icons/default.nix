@@ -13,7 +13,7 @@
   selfPath,
   lib,
   pkgs,
-  osConfig ? null,
+  hostFacts,
   ...
 }:
 let
@@ -23,7 +23,7 @@ let
 
   themeName = "WhiteSur-dark-catppuccin";
 
-  inherit ((import (selfPath "home/common/lib/host.nix") { inherit osConfig; })) isApple;
+  inherit (hostFacts) isApple;
 
   # Both logos below ship their own brand colors; swapped hex-for-hex onto
   # Mocha so the app-library button matches the rest of the icon theme.

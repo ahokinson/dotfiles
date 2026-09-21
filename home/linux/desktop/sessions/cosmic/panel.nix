@@ -23,7 +23,7 @@
   selfPath,
   lib,
   pkgs,
-  osConfig ? null,
+  hostFacts,
   ...
 }:
 let
@@ -36,7 +36,7 @@ let
 
   # Asahi hosts run some apps' unofficial ARM64 builds under a different
   # .desktop id (home/common/theme/dock-apps.nix's asahi* overrides).
-  inherit ((import (selfPath "home/common/lib/host.nix") { inherit osConfig; })) isApple;
+  inherit (hostFacts) isApple;
   desktopIdFor =
     app: if isApple then (app.asahiLinuxDesktopId or app.linuxDesktopId) else app.linuxDesktopId;
 

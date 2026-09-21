@@ -8,7 +8,7 @@
   lib,
   pkgs,
   selfPath,
-  osConfig ? null,
+  hostFacts,
   ...
 }:
 let
@@ -22,7 +22,7 @@ let
   # Each file in this directory computes this itself rather than importing
   # one shared value, so any single file can be read on its own without an
   # import chain.
-  inherit ((import (selfPath "home/common/lib/host.nix") { inherit osConfig; })) displayScale;
+  inherit (hostFacts) displayScale;
 
   workspaceBinds = lib.concatMapStringsSep "\n" (i: ''
     bindsym $mod+${toString i} workspace number ${toString i}
