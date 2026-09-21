@@ -4,24 +4,16 @@
 { inputs, selfPath, ... }:
 {
   imports = [
-    (selfPath "modules/nixos/core/audio.nix")
-    (selfPath "modules/nixos/core/boot.nix")
+    (selfPath "modules/nixos/core")
+    (selfPath "modules/nixos/desktop")
+    (selfPath "modules/nixos/security")
     (selfPath "modules/nixos/programs/chromium.nix")
-    (selfPath "modules/nixos/security/clamav.nix")
     (selfPath "modules/nixos/services/containers.nix")
-    (selfPath "modules/nixos/desktop/cosmic.nix")
-    (selfPath "modules/nixos/desktop/sway.nix")
     (selfPath "modules/nixos/services/hermes.nix")
     (selfPath "modules/nixos/user/home-manager.nix")
-    (selfPath "modules/nixos/core/locale.nix")
     (selfPath "modules/nixos/networking/networkmanager.nix")
-    (selfPath "modules/nixos/core/packages.nix")
     (selfPath "modules/nixos/services/printing.nix")
-    (selfPath "modules/nixos/security/usbguard.nix")
-    (selfPath "modules/nixos/core/settings.nix")
-    (selfPath "modules/nixos/desktop/splash.nix")
     (selfPath "modules/nixos/networking/ssh.nix")
-    (selfPath "modules/nixos/core/user.nix")
     inputs.hermes-agent.nixosModules.default
   ];
 
