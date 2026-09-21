@@ -3,7 +3,7 @@
 { selfPath, username, ... }: {
   networking.hostName = "macbookpro16-m5";
   # MDM-managed work machine: keep personal-only apps off it.
-  forWork = true;
+  local.host.forWork = true;
 
   # Cato VPN TLS-inspects HTTPS traffic; Nix's own cacert bundle doesn't
   # trust its CA even though the system keychain does. Point Nix at the

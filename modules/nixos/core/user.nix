@@ -1,5 +1,11 @@
-{ pkgs, username, ... }: {
-  programs.zsh.enable = true;
+{
+  pkgs,
+  username,
+  selfPath,
+  ...
+}:
+{
+  imports = [ (selfPath "modules/shared/nix/shell.nix") ];
 
   users.users.${username} = {
     isNormalUser = true;

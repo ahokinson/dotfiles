@@ -16,10 +16,12 @@
   ];
 
   # Set by the work host to drop personal-only apps. home-manager modules
-  # read it via osConfig (home/common/lib/host.nix), not through specialArgs.
-  options.forWork = lib.mkOption {
+  # read it via hostFacts.forWork (home/common/lib/host.nix, threaded through
+  # extraSpecialArgs), not through this option directly.
+  options.local.host.forWork = lib.mkOption {
     type = lib.types.bool;
     default = false;
+    description = "Whether this Mac is the MDM-managed work machine.";
   };
 
   config.networking.computerName = config.networking.hostName;

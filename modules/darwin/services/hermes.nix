@@ -14,7 +14,7 @@ let
   homeDir = config.users.users.${username}.home;
 in
 {
-  config = lib.mkIf (!config.forWork) {
+  config = lib.mkIf (!config.local.host.forWork) {
     launchd.agents.hermes-agent = {
       serviceConfig = {
         ProgramArguments = [

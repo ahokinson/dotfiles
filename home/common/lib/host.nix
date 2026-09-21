@@ -12,7 +12,7 @@
   # Whether this Mac is the MDM-managed work machine, as opposed to a
   # personal one. NixOS hosts never declare a forWork option, so this
   # doubles as their default.
-  forWork = osConfig.forWork or false;
+  forWork = osConfig.local.host.forWork or false;
 
   # Sway output scale (modules/nixos/desktop/sway.nix's local.display.scale)
   # for this host's built-in panel.
