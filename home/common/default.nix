@@ -11,6 +11,7 @@ in
   imports = [
     (selfPath "home/common/agents/claude")
     (selfPath "home/common/agents/codex")
+    (selfPath "home/common/agents/mitos")
     (selfPath "home/common/agents/opencode")
     (selfPath "home/common/apps/browsers/chromium")
     (selfPath "home/common/apps/browsers/zen")

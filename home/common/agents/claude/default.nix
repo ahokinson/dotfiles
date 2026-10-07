@@ -25,11 +25,6 @@ let
     permissions.defaultMode = "bypassPermissions";
     model = "sonnet[1m]";
     enableAllProjectMcpServers = false;
-    statusLine = {
-      type = "command";
-      command = "pharos statusline scrape";
-      refreshInterval = 15;
-    };
     hooks = {
       PreToolUse = [
         {
@@ -38,81 +33,6 @@ let
             {
               type = "command";
               command = "cerberus guard";
-            }
-          ];
-        }
-        {
-          matcher = ".*";
-          hooks = [
-            {
-              type = "command";
-              command = "pharos tmux dispatch tool --tool=claude";
-            }
-          ];
-        }
-        {
-          matcher = "AskUserQuestion";
-          hooks = [
-            {
-              type = "command";
-              command = "pharos tmux dispatch ask --tool=claude";
-            }
-          ];
-        }
-      ];
-      PostToolUse = [
-        {
-          matcher = ".*";
-          hooks = [
-            {
-              type = "command";
-              command = "pharos tmux dispatch think --tool=claude";
-            }
-            {
-              type = "command";
-              command = "pharos tmux render --tool=claude";
-            }
-          ];
-        }
-      ];
-      UserPromptSubmit = [
-        {
-          hooks = [
-            {
-              type = "command";
-              command = "pharos tmux dispatch think --tool=claude";
-            }
-            {
-              type = "command";
-              command = "pharos tmux render --tool=claude";
-            }
-          ];
-        }
-      ];
-      Stop = [
-        {
-          hooks = [
-            {
-              type = "command";
-              command = "pharos tmux render --tool=claude";
-            }
-            {
-              type = "command";
-              command = "pharos tmux dispatch off --tool=claude";
-            }
-          ];
-        }
-      ];
-      Notification = [
-        {
-          hooks = [
-            {
-              type = "command";
-              command = "pharos tmux dispatch notify --tool=claude";
-            }
-            {
-              type = "command";
-              command = "pharos tmux render --tool=claude";
             }
           ];
         }
@@ -127,28 +47,6 @@ let
             {
               type = "command";
               command = "psyche --format claude ~/.claude/plugins/marketplaces/local/plugins/custom/SOUL.md";
-            }
-            {
-              type = "command";
-              command = "pharos tmux dispatch off --tool=claude";
-            }
-            {
-              type = "command";
-              command = "pharos tmux render --tool=claude";
-            }
-          ];
-        }
-      ];
-      SessionEnd = [
-        {
-          hooks = [
-            {
-              type = "command";
-              command = "pharos tmux render --tool=claude";
-            }
-            {
-              type = "command";
-              command = "pharos tmux dispatch off --tool=claude";
             }
           ];
         }
@@ -186,9 +84,6 @@ let
         allowLocalBinding = true;
         strictAllowlist = true;
         allowedDomains = [
-          "grype.anchore.io"
-          "toolbox-data.anchore.io"
-          "api.armosec.io"
           "astral.sh"
           "*.astral.sh"
           "acli.atlassian.com"
@@ -215,16 +110,11 @@ let
           "*.hashicorp.com"
           "*.nixos.org"
           "*.npmjs.org"
-          "api.osv.dev"
           "pypi.org"
           "*.pypi.org"
           "*.pythonhosted.org"
           "*.rust-lang.org"
           "*.schemastore.org"
-          "api.securityscorecards.dev"
-          "semgrep.dev"
-          "*.semgrep.dev"
-          "*.sigstore.dev"
           "taskfile.dev"
           "registry.terraform.io"
           "ziglang.org"

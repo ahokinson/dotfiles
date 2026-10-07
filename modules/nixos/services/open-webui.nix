@@ -1,11 +1,39 @@
 {
   config,
   pkgs,
+  lib,
   selfPath,
   ...
 }:
 let
   themeCss = import (selfPath "home/common/apps/ai/open-webui/theme.nix") { inherit pkgs selfPath; };
+
+  # Model settings that only exist as Open WebUI's DB-backed model metadata,
+  # not an env var - not a PersistentConfig setting, so ENABLE_PERSISTENT_CONFIG
+  # doesn't reset them, and they're safe to (re-)apply on every boot. Extend
+  # this attrset for other such settings; the service below stays generic.
+  openWebuiModelDefaults = {
+    meta.capabilities.builtin_tools = false; # attached to every request otherwise; local models without tool-call training reject it outright.
+    params = { };
+    access_grants = [
+      {
+        resource_type = "model";
+        principal_type = "user";
+        principal_id = "*"; # public - BYPASS_MODEL_ACCESS_CONTROL doesn't exist in current open-webui, this is the real mechanism.
+        permission = "read";
+      }
+    ];
+  };
+
+  openWebuiModelPayload =
+    id:
+    builtins.toJSON (
+      openWebuiModelDefaults
+      // {
+        inherit id;
+        name = id;
+      }
+    );
 in
 {
   services.open-webui = {
@@ -14,7 +42,6 @@ in
     port = 6604;
     environment = {
       ANONYMIZED_TELEMETRY = "false";
-      BYPASS_MODEL_ACCESS_CONTROL = "True";
       DEFAULT_PROMPT_SUGGESTIONS = builtins.toJSON [
         {
           title = [
@@ -69,5 +96,39 @@ in
     BindReadOnlyPaths = [
       "${themeCss}:${config.services.open-webui.package.frontend}/share/open-webui/static/custom.css"
     ];
+  };
+
+  # WEBUI_AUTH=False means sign-in always resolves to this same fixed,
+  # hardcoded admin@localhost/admin pair - not a secret to protect.
+  systemd.services.open-webui-model-settings = {
+    after = [ "open-webui.service" ];
+    wants = [ "open-webui.service" ];
+    wantedBy = [ "multi-user.target" ];
+    path = [ pkgs.curl ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+    };
+    script = ''
+      set -eu
+      base="http://127.0.0.1:${toString config.services.open-webui.port}"
+
+      until curl -sf "$base/health" >/dev/null; do sleep 1; done
+
+      token=$(curl -sf -X POST "$base/api/v1/auths/signin" \
+        -H "Content-Type: application/json" \
+        -d '{"email":"admin@localhost","password":"admin"}' \
+        | grep -o '"token":"[^"]*"' | cut -d'"' -f4)
+
+      ${lib.concatMapStringsSep "\n" (id: ''
+        payload=${lib.escapeShellArg (openWebuiModelPayload id)}
+        curl -sf -X POST "$base/api/v1/models/create" \
+          -H "Authorization: Bearer $token" -H "Content-Type: application/json" \
+          -d "$payload" >/dev/null \
+        || curl -sf -X POST "$base/api/v1/models/model/update" \
+          -H "Authorization: Bearer $token" -H "Content-Type: application/json" \
+          -d "$payload" >/dev/null
+      '') config.services.ollama.loadModels}
+    '';
   };
 }

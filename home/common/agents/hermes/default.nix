@@ -5,35 +5,10 @@ in
 {
   home.packages = [ pkgs.hermes ];
 
-  # home/common/agents/hermes/_files/ used to hold these three as real files, copied
+  # home/common/agents/hermes/_files/ used to hold these as real files, copied
   # in wholesale; now that every one of them is inlined below, the directory
   # is empty and gone, so each gets its own explicit home.file entry instead.
   home.file = {
-    ".hermes/agent-hooks/pharos" = {
-      executable = true;
-      text = ''
-        #!/bin/sh
-        # Bridge Hermes shell-hook JSON into Pharos's tmux activity and card render.
-        # Hermes runs hooks fail-open; this script does the same if tmux is absent.
-        set -eu
-
-        payload=$(cat)
-        event=$(printf '%s' "$payload" | sed -n 's/.*"hook_event_name"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p')
-
-        case "$event" in
-          pre_tool_call) pharos tmux dispatch tool --tool=hermes ;;
-          post_tool_call|pre_llm_call) pharos tmux dispatch think --tool=hermes ;;
-          on_session_start|on_session_end) pharos tmux dispatch off --tool=hermes ;;
-        esac
-
-        case "$event" in
-          post_tool_call|on_session_start|on_session_end)
-            printf '%s' "$payload" | pharos tmux render --tool=hermes
-            ;;
-        esac
-      '';
-    };
-
     ".hermes/config.yaml".text = ''
       # hermes agent config. this is a full settings dump, so most keys sit at their
       # defaults and read for themselves; `_config_version` at the bottom tracks the
@@ -473,17 +448,6 @@ in
         destructive_slash_confirm: false
       command_allowlist: []
       hooks_auto_accept: false
-      hooks:
-        on_session_start:
-          - command: ~/.hermes/agent-hooks/pharos
-        pre_llm_call:
-          - command: ~/.hermes/agent-hooks/pharos
-        pre_tool_call:
-          - command: ~/.hermes/agent-hooks/pharos
-        post_tool_call:
-          - command: ~/.hermes/agent-hooks/pharos
-        on_session_end:
-          - command: ~/.hermes/agent-hooks/pharos
       security:
         allow_private_urls: false
         redact_secrets: true

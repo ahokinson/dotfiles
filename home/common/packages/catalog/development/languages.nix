@@ -6,6 +6,7 @@ with pkgs;
   clippy
   go
   nodejs
+  pnpm
   python3
   rust-analyzer
   rustc

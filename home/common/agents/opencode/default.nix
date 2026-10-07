@@ -51,13 +51,6 @@ let
             output = 32768;
           };
         };
-        "hf.co/unsloth/gemma-4-12b-it-GGUF:Q5_K_M" = {
-          name = "Gemma 4 12B";
-          limit = {
-            context = 131072;
-            output = 32768;
-          };
-        };
         "hf.co/unsloth/Qwen3.5-4B-GGUF:Q5_K_M" = {
           name = "Qwen3.5 4B";
           limit = {
@@ -119,7 +112,6 @@ in
           && !(lib.hasSuffix "/_files/opencode-work.json" path)
           && !(lib.hasSuffix "/_files/tui.json" path)
           && !(lib.hasSuffix "/plugin/cerberus-guard.ts" path)
-          && !(lib.hasSuffix "/plugin/pharos.ts" path)
           && !(lib.hasSuffix "/plugin/psyche.js" path)
           && !(lib.hasSuffix "/themes/catppuccin-mocha.json" path);
       };
@@ -315,99 +307,6 @@ in
             },
           }
         }
-      '';
-    };
-
-    "opencode/plugin/pharos.ts" = {
-      force = true;
-      text = ''
-        // Connects OpenCode events to pharos's tmux status integration.
-
-        const RENDER_INTERVAL_MS = 5000;
-
-        type PulseState = "think" | "tool" | "ask" | "off";
-
-        interface PartEventProperties {
-          sessionID?: string;
-          part?: {
-            type?: string;
-            tool?: string;
-            state?: { status?: string };
-          };
-        }
-
-        interface BusEvent {
-          type?: string;
-          properties?: unknown;
-        }
-
-        function propertiesOf(event: BusEvent): PartEventProperties {
-          return (event.properties as PartEventProperties | undefined) ?? {};
-        }
-
-        // Must stay private: OpenCode's legacy loader treats every exported function
-        // in the module as a plugin.
-        function pulseStateFor(event: BusEvent): PulseState | null {
-          if (event.type === "session.idle") return "off";
-          if (event.type !== "message.part.updated") return null;
-          const part = propertiesOf(event).part;
-          if (!part) return null;
-          if (part.type === "tool") {
-            if (part.state?.status !== "running") return null;
-            return part.tool === "question" ? "ask" : "tool";
-          }
-          if (part.type === "text" || part.type === "reasoning" || part.type === "step-start") return "think";
-          return null;
-        }
-
-        type Shell = (strings: TemplateStringsArray, ...values: unknown[]) => Promise<unknown>;
-
-        export const PharosBridge = async ({ $ }: { $: Shell }) => {
-          let lastState: PulseState | null = null;
-          let lastRender = 0;
-
-          const dispatch = async (state: PulseState): Promise<void> => {
-            if (state === lastState) return;
-            lastState = state;
-            try {
-              await $`pharos tmux dispatch ''${state} --tool=opencode`;
-            } catch {
-              // Best effort; never break OpenCode over the status line.
-            }
-          };
-
-          const render = async (sessionId: string): Promise<void> => {
-            const now = Date.now();
-            if (now - lastRender < RENDER_INTERVAL_MS) return;
-            lastRender = now;
-            try {
-              const payload = JSON.stringify({ session_id: sessionId });
-              await $`echo ''${payload} | pharos tmux render --tool=opencode`;
-            } catch {
-              // Best effort; never break OpenCode over the status line.
-            }
-          };
-
-          return {
-            event: async ({ event }: { event: BusEvent }) => {
-              if (event.type === "session.idle") {
-                await dispatch("off");
-                lastRender = 0;
-                const sessionId = propertiesOf(event).sessionID;
-                if (sessionId) await render(sessionId);
-                return;
-              }
-
-              const state = pulseStateFor(event);
-              if (state) await dispatch(state);
-
-              if (event.type === "session.updated") {
-                const sessionId = propertiesOf(event).sessionID;
-                if (sessionId) await render(sessionId);
-              }
-            },
-          };
-        };
       '';
     };
 

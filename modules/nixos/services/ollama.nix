@@ -14,7 +14,6 @@
       "hf.co/bartowski/Dolphin3.0-Llama3.2-3B-GGUF:Q5_K_M"
       "hf.co/bartowski/NousResearch_Hermes-4-14B-GGUF:Q5_K_M"
       "hf.co/unsloth/DeepSeek-R1-Distill-Qwen-14B-GGUF:Q5_K_M"
-      "hf.co/unsloth/gemma-4-12b-it-GGUF:Q5_K_M"
       "hf.co/unsloth/Qwen3.5-4B-GGUF:Q5_K_M"
     ];
     syncModels = true;

@@ -70,6 +70,15 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Own tool: a session handoff TUI across coding-agent harnesses. No tags
+    # yet, so pinned to develop like lifesaver. Also no overlays.default of
+    # its own, so overlays/default.nix maps it onto pkgs directly, like
+    # hermes, instead of folding it into ownToolInputs.
+    mitos = {
+      url = "github:ahokinson/mitos/develop";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     nix-darwin = {
       url = "github:nix-darwin/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";

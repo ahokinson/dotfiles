@@ -11,7 +11,14 @@ with pkgs;
   ruff
   stylua
   terraform
-  texliveBasic
+  (texlive.combine {
+    inherit (texlive)
+      scheme-basic
+      xcolor
+      pgf
+      fontspec
+      ;
+  })
   turso-cli
   uv
 ]
