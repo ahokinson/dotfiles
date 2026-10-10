@@ -38,7 +38,7 @@ in
 {
   services.open-webui = {
     enable = true;
-    host = "0.0.0.0";
+    host = "127.0.0.1"; # WEBUI_AUTH=False below: loopback only, reach it over an SSH tunnel.
     port = 6604;
     environment = {
       ANONYMIZED_TELEMETRY = "false";
@@ -88,7 +88,6 @@ in
       USER_PERMISSIONS_CHAT_TEMPORARY_ENFORCED = "True";
       WEBUI_AUTH = "False";
     };
-    openFirewall = true;
   };
 
   systemd.services.open-webui.serviceConfig = {

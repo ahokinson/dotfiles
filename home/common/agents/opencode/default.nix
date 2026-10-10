@@ -2,25 +2,13 @@
   selfPath,
   pkgs,
   lib,
-  hostFacts,
   ...
 }:
 let
   wireShared = import (selfPath "home/common/agents/shared/default.nix") { inherit selfPath; };
-  wireSkills = import (selfPath "home/common/agents/shared/skill.nix") { inherit selfPath lib; };
-  skillNames = [
-    "code-security"
-    "container-security"
-    "iac-security"
-    "pipeline-security"
-    "supply-chain-security"
-    "technical-documentation"
-    "threat-modeling"
-  ];
+  skills = import (selfPath "home/common/agents/shared/skill.nix") { inherit selfPath lib; };
 
-  inherit (hostFacts) forWork;
-  # Identical today; hand-edit opencodeWorkConfig to diverge (model/provider,
-  # permission mode, etc.) the same way opencodeConfig is hand-edited.
+  ollamaModels = import (selfPath "modules/nixos/services/models.nix");
   opencodeConfig = {
     "$schema" = "https://opencode.ai/config.json";
     model = "opencode-go/glm-5";
@@ -29,36 +17,13 @@ let
       npm = "@ai-sdk/openai-compatible";
       name = "Local";
       options.baseURL = "http://localhost:11434/v1";
-      models = {
-        "hf.co/bartowski/Dolphin3.0-Llama3.2-3B-GGUF:Q5_K_M" = {
-          name = "Dolphin3.0 3B";
-          limit = {
-            context = 131072;
-            output = 32768;
-          };
+      models = lib.mapAttrs (_: name: {
+        inherit name;
+        limit = {
+          context = 131072;
+          output = 32768;
         };
-        "hf.co/bartowski/NousResearch_Hermes-4-14B-GGUF:Q5_K_M" = {
-          name = "Hermes 4 14B";
-          limit = {
-            context = 131072;
-            output = 32768;
-          };
-        };
-        "hf.co/unsloth/DeepSeek-R1-Distill-Qwen-14B-GGUF:Q5_K_M" = {
-          name = "DeepSeek R1 14B";
-          limit = {
-            context = 131072;
-            output = 32768;
-          };
-        };
-        "hf.co/unsloth/Qwen3.5-4B-GGUF:Q5_K_M" = {
-          name = "Qwen3.5 4B";
-          limit = {
-            context = 131072;
-            output = 32768;
-          };
-        };
-      };
+      }) ollamaModels;
     };
     permission = {
       edit = "allow";
@@ -97,7 +62,6 @@ let
       plan.disable = false;
     };
   };
-  opencodeWorkConfig = opencodeConfig;
 in
 {
   home.packages = [ pkgs.opencode ];
@@ -109,7 +73,6 @@ in
         filter =
           path: _type:
           !(lib.hasSuffix "/_files/opencode.json" path)
-          && !(lib.hasSuffix "/_files/opencode-work.json" path)
           && !(lib.hasSuffix "/_files/tui.json" path)
           && !(lib.hasSuffix "/plugin/cerberus-guard.ts" path)
           && !(lib.hasSuffix "/plugin/psyche.js" path)
@@ -123,7 +86,7 @@ in
     };
 
     "opencode/opencode.json" = {
-      text = builtins.toJSON (if forWork then opencodeWorkConfig else opencodeConfig);
+      text = builtins.toJSON opencodeConfig;
       force = true;
     };
 
@@ -335,5 +298,5 @@ in
     "system.md"
     "SOUL.md"
   ]
-  // wireSkills "opencode/skill" "home/common/agents/opencode/_skills" skillNames;
+  // skills.opencode "opencode/skill";
 }

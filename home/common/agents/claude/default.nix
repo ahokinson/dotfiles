@@ -7,16 +7,7 @@
 }:
 let
   wireShared = import (selfPath "home/common/agents/shared/default.nix") { inherit selfPath; };
-  wireSkills = import (selfPath "home/common/agents/shared/skill.nix") { inherit selfPath lib; };
-  skillNames = [
-    "code-security"
-    "container-security"
-    "iac-security"
-    "pipeline-security"
-    "supply-chain-security"
-    "technical-documentation"
-    "threat-modeling"
-  ];
+  skills = import (selfPath "home/common/agents/shared/skill.nix") { inherit selfPath lib; };
 
   inherit (hostFacts) forWork;
   # Identical today; hand-edit settingsWorkContent to diverge (permission
@@ -417,10 +408,7 @@ in
     "system.md"
     "SOUL.md"
   ]
-  //
-    wireSkills ".claude/plugins/marketplaces/local/plugins/custom/skills"
-      "home/common/agents/claude/_skills"
-      skillNames;
+  // skills.claude ".claude/plugins/marketplaces/local/plugins/custom/skills";
 
   home.activation.claudeSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     run ${claudeSettingsSeed}

@@ -11,7 +11,6 @@
   imports = [
     (selfPath "modules/darwin/system")
     (selfPath "modules/darwin/user/home-manager.nix")
-    (selfPath "modules/darwin/services/hermes.nix")
     (selfPath "modules/darwin/desktop/idle.nix")
   ];
 

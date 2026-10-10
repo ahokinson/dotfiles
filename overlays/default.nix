@@ -5,10 +5,10 @@
 # are the odd ones out: neither has an overlays.default of its own.
 # busy-nas is reached directly by
 # home/common/infrastructure/services/busy-nas/default.nix via
-# inputs.busy-nas.packages.<system>.default; mitos is mapped below alongside
-# hermes, so pkgs.mitos works everywhere the overlay lands.
+# inputs.busy-nas.packages.<system>.default; mitos is mapped below, so
+# pkgs.mitos works everywhere the overlay lands.
 #
-# Everything below own tools/hermes is grouped by what kind of override it
+# Everything below own tools is grouped by what kind of override it
 # is, not which package it touches: cosmic (pop-os desktop-shell behavior
 # patches), fixes (workarounds for a broken nixpkgs derivation), packages
 # (a whole package nixpkgs doesn't have), theme (a reskin of an otherwise
@@ -30,7 +30,6 @@ let
 in
 ownTools
 // {
-  hermes = inputs.hermes-agent.packages.${system}.default;
   mitos = inputs.mitos.packages.${system}.default;
 }
 // import ./cosmic { inherit prev; }

@@ -1,4 +1,13 @@
-{ pkgs, lib, ... }: {
+{
+  pkgs,
+  lib,
+  hostFacts,
+  ...
+}:
+let
+  agent = if hostFacts.forWork then "claude" else "opencode";
+in
+{
   home.packages = [ pkgs.bloom ];
 
   xdg.configFile."bloom/config.yml".text = lib.generators.toYAML { } {
@@ -17,16 +26,8 @@
         command = "nvim";
       }
       {
-        name = "opencode";
-        command = "opencode";
-      }
-      {
-        name = "hermes";
-        command = "hermes";
-      }
-      {
-        name = "claude";
-        command = "claude";
+        name = agent;
+        command = agent;
       }
     ];
   };

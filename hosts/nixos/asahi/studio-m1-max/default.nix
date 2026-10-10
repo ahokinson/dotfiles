@@ -9,7 +9,6 @@
     (selfPath "hosts/nixos/asahi/studio-m1-max/hardware-configuration.nix")
     (selfPath "hosts/nixos/asahi/common.nix")
     (selfPath "modules/nixos/networking/nas-mount.nix")
-    (selfPath "modules/nixos/services/ollama.nix")
-    (selfPath "modules/nixos/services/open-webui.nix")
+    (selfPath "modules/nixos/services/llm.nix")
   ];
 }

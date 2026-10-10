@@ -1,6 +1,5 @@
 # Maps a subset of docs/system.md/SOUL.md under `prefix`, for the caller to
-# merge into its own home.file/xdg.configFile. Used by claude, opencode,
-# hermes.
+# merge into its own home.file/xdg.configFile. Used by claude, opencode.
 { selfPath }:
 prefix: names:
 builtins.listToAttrs (

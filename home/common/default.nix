@@ -9,8 +9,6 @@ let
 in
 {
   imports = [
-    (selfPath "home/common/agents/claude")
-    (selfPath "home/common/agents/codex")
     (selfPath "home/common/agents/mitos")
     (selfPath "home/common/agents/opencode")
     (selfPath "home/common/apps/browsers/chromium")
@@ -47,9 +45,13 @@ in
     (selfPath "home/common/terminal/zoxide")
     (selfPath "home/common/theme/catppuccin.nix")
   ]
+  # Work-only: claude and codex are dropped everywhere else.
+  ++ lib.optionals forWork [
+    (selfPath "home/common/agents/claude")
+    (selfPath "home/common/agents/codex")
+  ]
   # Personal-only: dropped on the work Mac.
   ++ lib.optionals (!forWork) [
-    (selfPath "home/common/agents/hermes")
     (selfPath "home/common/apps/media/libation.nix")
     (selfPath "home/common/apps/messaging/vesktop.nix")
   ];

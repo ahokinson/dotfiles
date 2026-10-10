@@ -222,13 +222,13 @@ let
   #
   # The count is asserted so the build fails if upstream moves this literal.
   linuxFramePatch = lib.optionalString (!final.stdenv.hostPlatform.isDarwin) ''
-    sites=$(grep -c 'minWidth:300,minHeight:200,autoHideMenuBar:!1,titleBarStyle:Jv,backgroundColor:d,' "$workDir/bundles/main.js")
+    sites=$(grep -cE 'minWidth:300,minHeight:200,autoHideMenuBar:!1,titleBarStyle:[A-Za-z_$][A-Za-z0-9_$]*,backgroundColor:d,' "$workDir/bundles/main.js")
     if [ "$sites" != 1 ]; then
       echo "signal overlay: expected 1 main-window options site, found $sites" >&2
       exit 1
     fi
-    sed -i \
-      's/minWidth:300,minHeight:200,autoHideMenuBar:!1,titleBarStyle:Jv,backgroundColor:d,/minWidth:300,minHeight:200,autoHideMenuBar:!1,frame:!1,titleBarStyle:Jv,backgroundColor:d,/' \
+    sed -i -E \
+      's/(minWidth:300,minHeight:200,autoHideMenuBar:!1,)(titleBarStyle:[A-Za-z_$][A-Za-z0-9_$]*,backgroundColor:d,)/\1frame:!1,\2/' \
       "$workDir/bundles/main.js"
   '';
 

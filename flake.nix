@@ -52,10 +52,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # No `follows`: hermes-agent pins its own nixpkgs deliberately.
-    # Tag-pinned because its default branch is shared development.
-    hermes-agent.url = "github:NousResearch/hermes-agent/v2026.8.27";
-
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -72,8 +68,8 @@
 
     # Own tool: a session handoff TUI across coding-agent harnesses. No tags
     # yet, so pinned to develop like lifesaver. Also no overlays.default of
-    # its own, so overlays/default.nix maps it onto pkgs directly, like
-    # hermes, instead of folding it into ownToolInputs.
+    # its own, so overlays/default.nix maps it onto pkgs directly instead
+    # of folding it into ownToolInputs.
     mitos = {
       url = "github:ahokinson/mitos/develop";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -99,7 +95,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # No `follows`: like hermes-agent above, nixos-raspberrypi pins its own
+    # No `follows`: nixos-raspberrypi pins its own
     # nixpkgs deliberately - its Pi-specific kernel/firmware/u-boot
     # packaging is validated against that release branch, and forcing it
     # onto this repo's nixos-unstable on every `nix flake update` would
