@@ -17,6 +17,13 @@ with pkgs;
       xcolor
       pgf
       fontspec
+      booktabs
+      enumitem
+      microtype
+      pdfcol
+      tcolorbox
+      tikzfill
+      titlesec
       ;
   })
   turso-cli

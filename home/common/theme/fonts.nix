@@ -3,8 +3,15 @@
 { pkgs }:
 {
   packages = with pkgs; [
+    cinzel
+    ibm-plex
+    inter
+    lora
+    montserrat
     nerd-fonts.jetbrains-mono
     nerd-fonts.meslo-lg
+    source-code-pro
+    source-sans
   ];
 
   monoFamily = "MesloLGS Nerd Font Mono";
