@@ -10,6 +10,7 @@
     (selfPath "home/darwin/apps/browsers/zen.nix")
     (selfPath "home/darwin/apps/desktop/lifesaver.nix")
     (selfPath "home/darwin/apps/desktop/monitorcontrol.nix")
+    (selfPath "home/darwin/apps/desktop/yabai.nix")
     (selfPath "home/darwin/desktop/wallpaper.nix")
     (selfPath "home/darwin/development/reliquary-codesign.nix")
     (selfPath "home/darwin/theme/catppuccin.nix")

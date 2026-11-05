@@ -161,10 +161,12 @@ in
     WindowManager.GloballyEnabled = false; # Stage Manager off
     WindowManager.EnableStandardClickToShowDesktop = true;
     WindowManager.AutoHide = false;
-    WindowManager.EnableTilingByEdgeDrag = true;
-    WindowManager.EnableTopTilingByEdgeDrag = true;
-    WindowManager.EnableTilingOptionAccelerator = true;
-    WindowManager.EnableTiledWindowMargins = true;
+    # yabai (modules/darwin/services/yabai.nix) owns tiling now; leaving
+    # native edge-drag tiling on fights it for window geometry.
+    WindowManager.EnableTilingByEdgeDrag = false;
+    WindowManager.EnableTopTilingByEdgeDrag = false;
+    WindowManager.EnableTilingOptionAccelerator = false;
+    WindowManager.EnableTiledWindowMargins = false;
 
     hitoolbox.AppleFnUsageType = "Do Nothing";
 

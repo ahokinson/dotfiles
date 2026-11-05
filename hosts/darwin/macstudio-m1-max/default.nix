@@ -7,5 +7,6 @@
     (selfPath "hosts/darwin/common.nix")
     (selfPath "modules/darwin/desktop/universalaccess.nix")
     (selfPath "modules/darwin/services/podman-machine-boot.nix")
+    (selfPath "modules/darwin/services/yabai.nix")
   ];
 }
